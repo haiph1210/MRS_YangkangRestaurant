@@ -1,4 +1,4 @@
-package com.haiph.common.status.combo;
+package com.haiph.common.enums.status.combo;
 
 public enum NumberOfPeople {
     FOUR(4,"COMBO 4 NGƯỜI"),

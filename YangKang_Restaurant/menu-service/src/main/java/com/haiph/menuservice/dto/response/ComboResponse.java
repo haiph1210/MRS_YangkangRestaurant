@@ -1,6 +1,6 @@
 package com.haiph.menuservice.dto.response;
 
-import com.haiph.common.status.combo.NumberOfPeople;
+import com.haiph.common.enums.status.combo.NumberOfPeople;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
