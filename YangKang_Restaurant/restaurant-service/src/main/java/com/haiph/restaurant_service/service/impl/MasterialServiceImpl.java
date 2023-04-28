@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,17 +45,16 @@ public class MasterialServiceImpl implements com.haiph.restaurant_service.servic
     }
 
     @Override
-    public MasterialResponse findByName(String name) {
-        MasterialResponse newMasterial = null;
+    public List<MasterialResponse> findByName(String name) {
+        List<MasterialResponse> newMasterial = new ArrayList<>();
         List<Masterial> masterials = masterialRepository.findByName(name);
         for (Masterial masterial : masterials) {
-            newMasterial= findById(masterial.getId());
-            return newMasterial;
-        }
-        if (masterials == null) {
-            throw new CommonException(Response.NOT_FOUND, "Cannot find name: " + name);
+            MasterialResponse response = MasterialResponse.build(masterial.getId(),masterial.getName(), masterial.getQuantity(), masterial.getPrice(), masterial.getInitPrice(),masterial.getDetail().getName());
+            newMasterial.add(response);
         }
         return newMasterial;
+
+//        throw new CommonException(Response.NOT_FOUND, "Cannot find name: " + name);
     }
 
     @Override

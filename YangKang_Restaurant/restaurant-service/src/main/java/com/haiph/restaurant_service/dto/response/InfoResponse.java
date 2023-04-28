@@ -21,12 +21,12 @@ public class InfoResponse {
     private RestaurantStar star;
     private LocalDate createdAt;
     private String imgUrl;
-    private List<DetailDTO> details;
-    @Data
-    @AllArgsConstructor(staticName = "build")
-    @NoArgsConstructor
-    public static class DetailDTO {
-        private Integer id;
-        private String name;
-    }
+    private List<DetailResponse> details;
+//    @Data
+//    @AllArgsConstructor(staticName = "build")
+//    @NoArgsConstructor
+//    public static class DetailDTO {
+//        private Integer id;
+//        private String name;
+//    }
 }
