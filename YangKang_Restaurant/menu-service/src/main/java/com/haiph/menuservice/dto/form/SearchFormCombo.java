@@ -1,6 +1,5 @@
 package com.haiph.menuservice.dto.form;
 
-import com.haiph.common.status.combo.NumberOfPeople;
 import lombok.Getter;
 import lombok.Setter;
 

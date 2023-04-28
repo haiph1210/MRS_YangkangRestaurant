@@ -14,7 +14,7 @@ public interface MenuRepository extends JpaRepository<Menu,Integer> {
     @Query(nativeQuery = true,
             value = "SELECT * FROM menu " +
                     "WHERE " +
-                    "(?1 IS NULL OR id like ?1 OR name LIKE ?1)" +
+                    "(?1 IS NULL OR id = ?1 OR name LIKE ?1)" +
                     "AND (?2 IS NULL OR price >= ?2) " +
                     "AND (?3 IS NULL OR price <= ?3) " +
                     "AND (?4 IS NULL OR img_url like ?4) " +

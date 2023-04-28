@@ -48,7 +48,7 @@ public class MenuController {
         }
     }
 
-    @GetMapping("/search-form")
+    @PostMapping("/search-form")
     public ResponseEntity<ResponseBody> searchForm(@RequestBody SearchFormMenu request) {
         try {
             return ResponseEntity.ok(

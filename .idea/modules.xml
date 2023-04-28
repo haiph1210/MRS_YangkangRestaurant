@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/MRS_YangkangRestaurant.iml" filepath="$PROJECT_DIR$/.idea/MRS_YangkangRestaurant.iml" />
+      <module fileurl="file://$PROJECT_DIR$/YangKang_Restaurant/YangKang_Restaurant.iml" filepath="$PROJECT_DIR$/YangKang_Restaurant/YangKang_Restaurant.iml" />
+      <module fileurl="file://$PROJECT_DIR$/YangKang_Restaurant/eureka/eureka.iml" filepath="$PROJECT_DIR$/YangKang_Restaurant/eureka/eureka.iml" />
+    </modules>
+  </component>
+</project>

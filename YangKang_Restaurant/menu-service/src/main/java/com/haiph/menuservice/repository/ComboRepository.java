@@ -1,13 +1,10 @@
 package com.haiph.menuservice.repository;
 
-import com.haiph.common.status.combo.NumberOfPeople;
 import com.haiph.menuservice.entity.Combo;
-import com.haiph.menuservice.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ComboRepository extends JpaRepository<Combo,Integer> {
     @Query(nativeQuery = true,value = "SELECT * FROM yangkang_data.combo WHERE `name` = ?1")

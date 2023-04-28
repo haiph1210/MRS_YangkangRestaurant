@@ -9,6 +9,7 @@ import java.util.Map;
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.dto.response.ResponseBody;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Log4j2(topic = "ErrorLogger")
+@Configuration
 @RestControllerAdvice
 public class BaseErrorHandlers {
 

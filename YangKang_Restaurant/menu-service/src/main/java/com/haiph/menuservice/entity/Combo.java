@@ -2,7 +2,7 @@ package com.haiph.menuservice.entity;
 
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.exception.CommonException;
-import com.haiph.common.status.combo.NumberOfPeople;
+import com.haiph.common.enums.status.combo.NumberOfPeople;
 import jakarta.persistence.*;
 import lombok.*;
 
