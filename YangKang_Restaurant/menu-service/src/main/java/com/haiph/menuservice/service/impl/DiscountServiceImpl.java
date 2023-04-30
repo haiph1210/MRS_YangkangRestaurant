@@ -94,7 +94,7 @@ public class DiscountServiceImpl implements com.haiph.menuservice.service.Discou
 //    }
 
     public String create(DiscountRequest request) {
-        Discount discount = new Discount(request.getInfoId(), request.getStartDate(), request.getEndDate());
+        Discount discount = new Discount(request.getInfoId(), request.getPercentDiscount(), request.getStartDate(), request.getEndDate());
         discount.setDiscountCode(genDiscountCode(request.getStartDate(), request.getEndDate(), findByInfoId(request.getInfoId()).getName()));
         discount.setStatus(DiscountStatus.CREATE);
         Discount checkDiscountCode = discountRepository.findByDiscountCode(discount.getDiscountCode());
@@ -112,7 +112,7 @@ public class DiscountServiceImpl implements com.haiph.menuservice.service.Discou
     @Override
     public String update(Integer id, DiscountRequest request) {
         if (findById(id) != null) {
-            Discount discount = new Discount(request.getInfoId(), request.getStartDate(), request.getEndDate());
+            Discount discount = new Discount(request.getInfoId(), request.getPercentDiscount(), request.getStartDate(), request.getEndDate());
             discount.setDiscountCode(genDiscountCode(request.getStartDate(), request.getEndDate(), findByInfoId(request.getInfoId()).getName()));
             discount.setStatus(checkExpired(request.getStartDate(), request.getEndDate()));
             DiscountResponse checkDiscountCode = findByDiscountCode(discount.getDiscountCode());
