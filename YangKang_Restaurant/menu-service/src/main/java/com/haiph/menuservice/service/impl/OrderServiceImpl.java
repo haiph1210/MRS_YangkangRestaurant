@@ -3,6 +3,7 @@ package com.haiph.menuservice.service.impl;
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.enums.status.order.OrderStatus;
 import com.haiph.common.exception.CommonException;
+import com.haiph.menuservice.dto.form.SearchFormOrder;
 import com.haiph.menuservice.dto.request.OrderRequest;
 import com.haiph.menuservice.dto.response.ComboResponse;
 import com.haiph.menuservice.dto.response.restApi.APIResponse;
@@ -16,13 +17,10 @@ import com.haiph.menuservice.service.ComboService;
 import com.haiph.menuservice.service.MenuService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,10 +37,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
     private MenuService menuService;
     @Autowired
     private ModelMapper mapper;
-//    @Value("${url.restaurant.http.findListId}")
-//    private String urlRestaurantFormList;
-    @Autowired
-    private RestTemplate restTemplate;
+
     @Autowired
     private RestaurantController getFormCode;
 
@@ -54,18 +49,11 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         return comboService.findByListId(ids);
     }
 
-//    private APIResponse findRestaurantFormList(List<Integer> ids) {
-//        APIResponse response = restTemplate.getForObject(urlRestaurantFormList + "{ids}", APIResponse.class, ids);
-//        return response;
-//    }
-//    private List<RestaurantFormResponse> findRestaurantFormList2(List<Integer> ids) {
-//        return  findRestaurantFormList(ids).getResponseData();
-//    }
-
     private List<RestaurantFormResponse> findRestaurantFormList(List<Integer> ids) {
         APIResponse response = getFormCode.findByListId(ids);
         return response.getResponseData();
     }
+
     @Override
     public Page<OrderResponse> findAllPage(Pageable pageable) {
         Page<Order> page = orderRepository.findAll(pageable);
@@ -77,7 +65,6 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                             order.getOrderCode(),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
-//                            findRestaurantFormList("order.getIdForms()"),
                             findRestaurantFormList(order.getIdForms()),
                             order.getPeoples(),
                             order.getTotalAmount(),
@@ -92,6 +79,51 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         }
         return new PageImpl<>(responses, pageable, page.getTotalPages());
     }
+
+    @Override
+    public OrderResponse findById(Integer id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> {
+            throw new CommonException(Response.NOT_FOUND, "Cannot find Order id: " + id);
+        });
+        OrderResponse response = OrderResponse
+                .build(order.getId(),
+                        order.getOrderCode(),
+                        findMenuList(order.getIdMenus()),
+                        findComboList(order.getIdCombos()),
+                        findRestaurantFormList(order.getIdForms()),
+                        order.getPeoples(),
+                        order.getTotalAmount(),
+                        order.getTotalPrice(),
+                        order.getCreateDate(),
+                        order.getHour(),
+                        order.getDescription(),
+                        order.getType(),
+                        order.getStatus());
+        return response;
+    }
+
+    @Override
+    public OrderResponse findByOrderCode(String orderCode) {
+        Order order = orderRepository.findByOrderCode(orderCode);
+        if (order != null) {
+            OrderResponse response = OrderResponse
+                    .build(order.getId(),
+                            order.getOrderCode(),
+                            findMenuList(order.getIdMenus()),
+                            findComboList(order.getIdCombos()),
+                            findRestaurantFormList(order.getIdForms()),
+                            order.getPeoples(),
+                            order.getTotalAmount(),
+                            order.getTotalPrice(),
+                            order.getCreateDate(),
+                            order.getHour(),
+                            order.getDescription(),
+                            order.getType(),
+                            order.getStatus());
+            return response;
+        } else throw new CommonException(Response.NOT_FOUND, "Cannot find OrderCode: " + orderCode);
+    }
+
 
     @Override
     public String create(OrderRequest request) {
@@ -114,6 +146,94 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         return "Create Success";
     }
 
+    @Override
+    public String update(Integer id, OrderRequest request) {
+        OrderResponse response = findById(id);
+        if (response != null) {
+            Order order = new Order(
+                    genarateOrderCode(request.getHour(),
+                            findRestaurantFormList(request.getIdForms()).iterator().next().getFormCode(),
+                            request.getType().getDescription()),
+                    request.getIdMenus(),
+                    request.getIdCombos(),
+                    request.getIdForms(),
+                    totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
+                    totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
+                    LocalDate.now(),
+                    request.getHour(),
+                    request.getDescription(),
+                    request.getType(),
+                    OrderStatus.PENDING,
+                    request.getPeople());
+            orderRepository.save(order);
+            return "Update success";
+        }
+        return "Update fail";
+    }
+
+    @Override
+    public String delete(Integer id) {
+        OrderResponse response = findById(id);
+        if (response != null) {
+            orderRepository.deleteById(id);
+            return "Delete success";
+        }
+        return "Delete fail";
+    }
+
+//    public String deleteAllById(List<Integer> ids) {
+//
+//    }
+
+    @Override
+    public String approvedOrder(Integer id) {
+        if (orderRepository.approvedOrder(id) > 0) {
+            return "update Approved success";
+        }
+        return "update Approved fails";
+    }
+
+    @Override
+    public String refuseOrder(Integer id) {
+        if (orderRepository.refuseOrder(id) > 0) {
+            return "update refuse success";
+        }
+        return "update refuse fails";
+    }
+
+    @Override
+    public List<OrderResponse> findFormOrder(SearchFormOrder formOrder) {
+        List<Order> orders = orderRepository.
+                findByFormOrder(formOrder.getSearch(),
+                        formOrder.getMinTotalPrice(),
+                        formOrder.getMaxTotalPrice(),
+                        formOrder.getHour(),
+                        formOrder.getType(),
+                        formOrder.getStatus());
+        if (orders.isEmpty()) {
+            throw new CommonException(Response.NOT_FOUND, "NOT DATA");
+        }
+        List<OrderResponse> responses = new ArrayList<>();
+        for (Order order : orders) {
+            OrderResponse response = OrderResponse
+                    .build(order.getId(),
+                            order.getOrderCode(),
+                            findMenuList(order.getIdMenus()),
+                            findComboList(order.getIdCombos()),
+                            findRestaurantFormList(order.getIdForms()),
+                            order.getPeoples(),
+                            order.getTotalAmount(),
+                            order.getTotalPrice(),
+                            order.getCreateDate(),
+                            order.getHour(),
+                            order.getDescription(),
+                            order.getType(),
+                            order.getStatus());
+            responses.add(response);
+        }
+        return responses;
+    }
+
     private Double totalPrice(List<MenuResponse> menuResponses, List<ComboResponse> comboResponses) {
         Double initPrice = 0d;
         for (MenuResponse menuRespons : menuResponses) {
@@ -127,7 +247,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
 
     private Integer totalAmount(List<MenuResponse> responses, List<ComboResponse> comboResponses) {
         Integer totalAmountMenu = responses.size();
-        Integer totalAmountCombo = responses.size();
+        Integer totalAmountCombo = comboResponses.size();
         Integer totalAmount = totalAmountCombo + totalAmountMenu;
         return totalAmount;
     }

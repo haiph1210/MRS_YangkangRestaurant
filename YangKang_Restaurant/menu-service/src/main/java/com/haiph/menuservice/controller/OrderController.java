@@ -3,6 +3,7 @@ package com.haiph.menuservice.controller;
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.common.exception.CommonException;
+import com.haiph.menuservice.dto.form.SearchFormOrder;
 import com.haiph.menuservice.dto.request.OrderRequest;
 import com.haiph.menuservice.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     @Autowired
     private OrderService service;
+
     @GetMapping("/findAll")
     public ResponseEntity<ResponseBody> findAll(Pageable pageable) {
         try {
@@ -26,8 +28,68 @@ public class OrderController {
                             service.findAllPage(pageable)
                     )
             );
-        }catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @GetMapping("/findId/{id}")
+    public ResponseEntity<ResponseBody> findById(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            service.findById(id)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @GetMapping("/findForm")
+    public ResponseEntity<ResponseBody> findForm(@RequestBody SearchFormOrder formOrder) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            service.findFormOrder(formOrder)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @PutMapping("/updateApproved/{id}")
+    public ResponseEntity<ResponseBody> updateApproved(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            service.approvedOrder(id)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @PutMapping("/updateRefuse/{id}")
+    public ResponseEntity<ResponseBody> updateRefuse(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            service.refuseOrder(id)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
         }
     }
 
@@ -41,8 +103,38 @@ public class OrderController {
                             service.create(request)
                     )
             );
-        }catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ResponseBody> update(@PathVariable Integer id, @RequestBody OrderRequest request) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            service.update(id, request)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseBody> delete(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            service.delete(id)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
         }
     }
 }

@@ -22,7 +22,6 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
-    @Column(unique = true)
     private String orderCode;
     @ElementCollection
     @CollectionTable(name = "order_menu_ids", joinColumns = @JoinColumn(name = "order_id"))

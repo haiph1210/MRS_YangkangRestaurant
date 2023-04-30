@@ -8,6 +8,9 @@ import java.util.Map;
 
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.dto.response.ResponseBody;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.constraints.NotBlank;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,11 +22,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.constraints.NotBlank;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,7 +79,7 @@ public class BaseErrorHandlers {
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    @ExceptionHandler(value = EntityNotFoundException.class)
+    @ExceptionHandler(value = jakarta.persistence.EntityNotFoundException.class)
     public ResponseBody handleException(EntityNotFoundException exception) {
         log.error("EntityNotFound Exception Error: ", exception);
         return new ResponseBody(Response.OBJECT_NOT_FOUND);
