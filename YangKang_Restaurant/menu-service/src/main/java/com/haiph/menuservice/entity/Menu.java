@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
-public class Menu {
+public class Menu implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -22,7 +23,12 @@ public class Menu {
     private Double price;
     private String imgUrl;
     private String description;
-    private Integer comboId;
 
+    public Menu(String name, Double price, String imgUrl, String description) {
+        this.name = name;
+        this.price = price;
+        this.imgUrl = imgUrl;
+        this.description = description;
 
+    }
 }

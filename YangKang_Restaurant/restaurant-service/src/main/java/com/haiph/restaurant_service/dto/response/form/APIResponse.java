@@ -15,7 +15,4 @@ public class APIResponse {
     private String responseCode;
     private String responseMessage;
     private List<MasterialDTO> responseData;
-
-
-
 }

@@ -1,4 +1,4 @@
-package com.haiph.common.enums.status.order;
+package com.haiph.common.enums.status.restaurant;
 
 import lombok.Getter;
 

@@ -14,30 +14,32 @@ import java.util.Map;
 
 public interface MenuService {
 
-    @Cacheable(cacheNames = "Menu")
+    //     @Cacheable(cacheNames = "Menu")
     Map<Integer, List<MenuResponse>> findAll();
 
-    @Cacheable(cacheNames = "Menu")
+    //    @Cacheable(cacheNames = "Menu")
     Page<MenuResponse> findAll(Pageable pageable);
 
-    @Cacheable(cacheNames = "Menu")
+    //    @Cacheable(cacheNames = "Menu")
     List<MenuResponse> findForm(SearchFormMenu request);
 
-    @Cacheable(cacheNames = "Menu")
+    List<MenuResponse> findByListId(List<Integer> ids);
+
+    //   @Cacheable(cacheNames = "Menu")
     MenuResponse findById(Integer id);
 
-    @Cacheable(cacheNames = "Menu")
+    // @Cacheable(cacheNames = "Menu")
     List<MenuResponse> findByName(String name);
 
-    @Cacheable(cacheNames = "Menu")
+    //  @Cacheable(cacheNames = "Menu")
     List<MenuResponse> findByPrice(Double price);
 
-    @CachePut(cacheNames = "Menu")
+    //   @CachePut(cacheNames = "Menu")
     String create(MenuRequest menuRequest);
 
-    @CachePut(cacheNames = "Menu")
+    //  @CachePut(cacheNames = "Menu")
     String update(Integer id, MenuRequest menuRequest);
 
-    @CacheEvict(cacheNames = "Menu")
+    //  @CacheEvict(cacheNames = "Menu")
     String deleteById(Integer id);
 }

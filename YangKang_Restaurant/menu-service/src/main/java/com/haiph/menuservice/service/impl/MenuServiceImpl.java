@@ -39,7 +39,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    @Cacheable(cacheNames = "Menu")
+    //    @Cacheable(cacheNames = "Menu")
     public Map<Integer, List<MenuResponse>> findAll() {
         Map<Integer, List<MenuResponse>> findAll = new HashMap<>();
         List<Menu> menus = menuRepository.findAll();
@@ -47,7 +47,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         Integer number = 0;
         for (Menu menu : menus) {
 
-            MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription(), findComboName(menu.getComboId()));
+            MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
             menuResponses.add(response);
             if (menu != null) {
                 number++;
@@ -59,14 +59,15 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    @Cacheable(cacheNames = "Menu")
+    // //    @Cacheable(cacheNames = "Menu")
     public Page<MenuResponse> findAll(Pageable pageable) {
         Page<Menu> page = menuRepository.findAll(pageable);
         List<Menu> menus = page.getContent();
         List<MenuResponse> dtos = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription(), findComboName(menu.getComboId()));
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription()
+                );
                 dtos.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "List Menu Have Not Data");
@@ -75,13 +76,13 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    @Cacheable(cacheNames = "Menu")
+    //   @Cacheable(cacheNames = "Menu")
     public List<MenuResponse> findForm(SearchFormMenu request) {
         List<Menu> menus = menuRepository.findWithForm(request.getSearch(), request.getMinPrice(), request.getMaxPrice(), request.getImgUrl(), request.getDescription());
         List<MenuResponse> dtos = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription(), findComboName(menu.getComboId()));
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 dtos.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Search With Form Haven't Data");
@@ -89,13 +90,29 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         return dtos;
     }
 
+    private String findMenuNameByID(Integer id)  {
+        return menuRepository.findById(id).get().getName();
+    }
+
     @Override
-    @Cacheable(cacheNames = "Menu")
+    public List<MenuResponse> findByListId(List<Integer> ids) {
+        List<MenuResponse> responses = new ArrayList<>();
+        List<Menu> menus = menuRepository.findByListId(ids);
+        for (Menu menu : menus) {
+            MenuResponse response = MenuResponse.build(menu.getId(),menu.getName(),menu.getPrice(),menu.getImgUrl()
+                    ,menu.getDescription());
+            responses.add(response);
+        }
+        return responses;
+    }
+
+    @Override
+    //   @Cacheable(cacheNames = "Menu")
     public MenuResponse findById(Integer id) {
         try {
             Menu menu = menuRepository.findById(id).orElse(null);
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription(), findComboName(menu.getComboId()));
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 return response;
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Menu cannot having Id: " + id);
@@ -107,13 +124,13 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    @Cacheable(cacheNames = "Menu")
+    //    @Cacheable(cacheNames = "Menu")
     public List<MenuResponse> findByName(String name) {
         List<Menu> menus = menuRepository.findByName(name);
         List<MenuResponse> menuResponses = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription(), findComboName(menu.getComboId()));
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 menuResponses.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Menu haven't name: " + name);
@@ -122,13 +139,13 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    @Cacheable(cacheNames = "Menu")
+//    @Cacheable(cacheNames = "Menu")
     public List<MenuResponse> findByPrice(Double price) {
         List<Menu> menus = menuRepository.findByPrice(price);
         List<MenuResponse> menuResponses = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription(), findComboName(menu.getComboId()));
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 menuResponses.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Menu haven't price: " + price);
@@ -138,19 +155,23 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
 
 
     @Override
-    @CachePut(cacheNames = "Menu")
     public String create(MenuRequest menuRequest) {
-        try {
-            Menu menu = mapper.map(menuRequest, Menu.class);
+            Menu menu = new Menu(menuRequest.getName(),menuRequest.getPrice(),menuRequest.getImgUrl(),menuRequest.getDescription());
             menuRepository.save(menu);
-            return "Create Success";
-        } catch (CommonException exception) {
-            throw new CommonException(Response.PARAM_NOT_VALID, exception.getMessage());
-        }
+
+            return "create Success";
+    }
+
+    private Double updateComboPrice(Integer id,Double menuPrice) {
+        Combo combo = comboRepository.findById(id).orElseThrow(() -> {throw new CommonException(Response.NOT_FOUND,"NO DATA WITH COMBO ID: "+ id );});
+        Double price = combo.getPrice();
+        Double initPrice = 0d;
+        initPrice+= menuPrice;
+        return initPrice;
     }
 
     @Override
-    @CachePut(cacheNames = "Menu")
+    //    @CachePut(cacheNames = "Menu")
     public String update(Integer id, MenuRequest menuRequest) {
         try {
             Menu menu = menuRepository.findById(id).orElseThrow(() ->
@@ -159,7 +180,6 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
             menuUpdate.setName(menuRequest.getName());
             menuUpdate.setPrice(menuRequest.getPrice());
             menuUpdate.setDescription(menuRequest.getDescription());
-            menuUpdate.setComboId(menuRequest.getComboId());
             menuRepository.save(menuUpdate);
             return "Update Success";
         } catch (CommonException exception) {
@@ -168,7 +188,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    @CacheEvict(cacheNames = "Menu")
+    //   @CacheEvict(cacheNames = "Menu")
     public String deleteById(Integer id) {
         try {
             Menu menu = menuRepository.findById(id).orElse(null);

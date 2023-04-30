@@ -1,6 +1,6 @@
 package com.haiph.menuservice.dto.response;
 
-import com.haiph.common.enums.status.combo.NumberOfPeople;
+import com.haiph.common.enums.status.menu.NumberOfPeople;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,15 +16,8 @@ public class ComboResponse {
     private Integer id;
     private String name;
     private Double price;
-    private NumberOfPeople numberOfPeople;
     private String description;
     private List<String> imgUrl;
-    private List<MenuDTO> menus;
-    @Data
-    @AllArgsConstructor(staticName = "build")
-    @NoArgsConstructor
-    public static class MenuDTO{
-        private String name;
-        private String description;
-    }
+    private List<MenuResponse> menus;
+
 }

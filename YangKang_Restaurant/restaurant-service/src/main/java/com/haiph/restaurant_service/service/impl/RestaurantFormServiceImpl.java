@@ -1,7 +1,7 @@
 package com.haiph.restaurant_service.service.impl;
 
 import com.haiph.common.dto.response.Response;
-import com.haiph.common.enums.status.order.RestaurantFormStatus;
+import com.haiph.common.enums.status.restaurant.RestaurantFormStatus;
 import com.haiph.common.exception.CommonException;
 
 import com.haiph.restaurant_service.dto.request.form.RestaurantFormCreate;
@@ -13,6 +13,7 @@ import com.haiph.restaurant_service.entity.RestaurantForm;
 import com.haiph.restaurant_service.repository.RestaurantFormRepository;
 import com.haiph.restaurant_service.service.RestaurantFormService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -140,4 +141,13 @@ public class RestaurantFormServiceImpl implements RestaurantFormService {
         return formCode.toString();
     }
 
+    @Override
+    public List<RestaurantFormResponse> findByListId(List<Integer> ids) {
+        List<RestaurantForm> forms = formRepository.findByListID(ids);
+        if (forms.isEmpty()) {
+            throw new CommonException(Response.NOT_FOUND,"NO DATA");
+        }
+        List<RestaurantFormResponse> responses = mapper.map(forms,new TypeToken<List<RestaurantFormResponse>>(){}.getType());
+        return responses;
+    }
 }

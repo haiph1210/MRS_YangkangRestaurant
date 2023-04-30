@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/menu")
 public class MenuController {
@@ -84,6 +86,21 @@ public class MenuController {
                             Response.SUCCESS.getResponseCode(),
                             Response.SUCCESS.getResponseMessage(),
                             menuService.findByName(name)
+                    )
+            );
+        }catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
+
+    @GetMapping("/findList/{ids}")
+    public ResponseEntity<ResponseBody> findListId(@PathVariable List<Integer> ids) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            menuService.findByListId(ids)
                     )
             );
         }catch (CommonException exception) {

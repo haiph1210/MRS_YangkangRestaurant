@@ -14,8 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("api/restaurarnt/form")
+@RequestMapping("api/restaurant/form")
 public class RestaurantFormController {
     @Autowired
     private RestaurantFormService formService;
@@ -91,6 +93,19 @@ public class RestaurantFormController {
                     new ResponseBody(
                             Response.SUCCESS,
                             formService.deleteById(id)
+                    ));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @GetMapping("findList/{ids}")
+    public ResponseEntity<ResponseBody> findByListId(@PathVariable List<Integer> ids) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS,
+                            formService.findByListId(ids)
                     ));
         } catch (CommonException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));

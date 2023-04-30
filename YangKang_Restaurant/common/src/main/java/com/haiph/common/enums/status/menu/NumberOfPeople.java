@@ -1,12 +1,12 @@
-package com.haiph.common.enums.status.combo;
+package com.haiph.common.enums.status.menu;
 
 public enum NumberOfPeople {
-    FOUR(4,"COMBO 4 NGƯỜI"),
-    EIGHT(8,"COMBO 8 NGƯỜI"),
     TEN(10,"COMBO 10 NGƯỜI"),
-    TWIFTEEN(12,"COMBO 12 NGƯỜI"),
-    TWIFTY(12,"COMBO 12 NGƯỜI"),
-    FULL(50,"ĐẶT TIỆC");
+    FIVETEEN(15,"COMBO 15 NGƯỜI"),
+    TWENTY(20,"COMBO 20 NGƯỜI"),
+    THIRTY(30,"COMBO 30 NGƯỜI"),
+    FIVETY(50,"COMBO 50 NGƯỜI"),
+    ONE(1,"ĐẶT TIỆC - 1 Tầng ");
 
     NumberOfPeople(Integer totalPeople,String description) {
         this.totalPeople = totalPeople;
