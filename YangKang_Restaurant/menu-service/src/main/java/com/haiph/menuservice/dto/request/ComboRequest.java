@@ -1,6 +1,5 @@
 package com.haiph.menuservice.dto.request;
 
-import com.haiph.common.enums.status.menu.NumberOfPeople;
 import lombok.*;
 
 import java.util.List;

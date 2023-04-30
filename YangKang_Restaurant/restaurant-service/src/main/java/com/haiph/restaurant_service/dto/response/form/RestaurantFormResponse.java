@@ -1,6 +1,6 @@
 package com.haiph.restaurant_service.dto.response.form;
 
-import com.haiph.common.enums.status.restaurant.RestaurantFormStatus;
+import com.haiph.common.enums.status.restaurantService.RestaurantFormStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

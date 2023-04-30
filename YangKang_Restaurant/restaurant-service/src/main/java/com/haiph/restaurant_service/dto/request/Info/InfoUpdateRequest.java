@@ -1,6 +1,6 @@
 package com.haiph.restaurant_service.dto.request.Info;
 
-import com.haiph.common.enums.status.restaurant.RestaurantStar;
+import com.haiph.common.enums.status.restaurantService.RestaurantStar;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

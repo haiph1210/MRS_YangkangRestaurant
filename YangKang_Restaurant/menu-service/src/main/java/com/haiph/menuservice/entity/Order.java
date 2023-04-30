@@ -1,8 +1,8 @@
 package com.haiph.menuservice.entity;
 
-import com.haiph.common.enums.status.menu.NumberOfPeople;
-import com.haiph.common.enums.status.order.OrderStatus;
-import com.haiph.common.enums.status.order.OrderType;
+import com.haiph.common.enums.status.menuService.menu.NumberOfPeople;
+import com.haiph.common.enums.status.menuService.order.OrderStatus;
+import com.haiph.common.enums.status.menuService.order.OrderType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

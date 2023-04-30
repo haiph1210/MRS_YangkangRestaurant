@@ -1,6 +1,5 @@
 package com.haiph.menuservice.dto.response;
 
-import com.haiph.common.enums.status.menu.NumberOfPeople;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

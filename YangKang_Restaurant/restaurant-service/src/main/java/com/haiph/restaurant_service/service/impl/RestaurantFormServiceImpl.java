@@ -1,7 +1,7 @@
 package com.haiph.restaurant_service.service.impl;
 
 import com.haiph.common.dto.response.Response;
-import com.haiph.common.enums.status.restaurant.RestaurantFormStatus;
+import com.haiph.common.enums.status.restaurantService.RestaurantFormStatus;
 import com.haiph.common.exception.CommonException;
 
 import com.haiph.restaurant_service.dto.request.form.RestaurantFormCreate;

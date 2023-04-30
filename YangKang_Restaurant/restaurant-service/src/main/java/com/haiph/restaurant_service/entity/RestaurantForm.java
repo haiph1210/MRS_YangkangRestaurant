@@ -1,6 +1,6 @@
 package com.haiph.restaurant_service.entity;
 
-import com.haiph.common.enums.status.restaurant.RestaurantFormStatus;
+import com.haiph.common.enums.status.restaurantService.RestaurantFormStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

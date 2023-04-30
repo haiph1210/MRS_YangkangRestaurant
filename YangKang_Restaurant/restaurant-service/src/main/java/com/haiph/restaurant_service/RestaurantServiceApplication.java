@@ -1,6 +1,6 @@
 package com.haiph.restaurant_service;
 
-import com.haiph.common.enums.status.restaurant.RestaurantFormStatus;
+import com.haiph.common.enums.status.restaurantService.RestaurantFormStatus;
 import com.haiph.restaurant_service.entity.RestaurantForm;
 import com.haiph.restaurant_service.repository.RestaurantFormRepository;
 import org.springframework.beans.factory.annotation.Autowired;

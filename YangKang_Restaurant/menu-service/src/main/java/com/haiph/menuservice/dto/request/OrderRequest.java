@@ -1,15 +1,11 @@
 package com.haiph.menuservice.dto.request;
 
-import com.haiph.common.enums.status.menu.NumberOfPeople;
-import com.haiph.common.enums.status.order.OrderStatus;
-import com.haiph.common.enums.status.order.OrderType;
+import com.haiph.common.enums.status.menuService.menu.NumberOfPeople;
+import com.haiph.common.enums.status.menuService.order.OrderType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

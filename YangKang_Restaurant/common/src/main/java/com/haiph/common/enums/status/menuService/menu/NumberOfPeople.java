@@ -1,4 +1,4 @@
-package com.haiph.common.enums.status.menu;
+package com.haiph.common.enums.status.menuService.menu;
 
 public enum NumberOfPeople {
     TEN(10,"COMBO 10 NGƯỜI"),
