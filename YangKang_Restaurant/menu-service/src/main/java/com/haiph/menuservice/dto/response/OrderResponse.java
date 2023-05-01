@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
 public class OrderResponse {
-    public Integer id;
+    private Integer id;
     private String orderCode;
     private List<MenuResponse> menus;
     private List<ComboResponse> combos;

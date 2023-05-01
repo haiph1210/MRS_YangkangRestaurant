@@ -37,6 +37,8 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
     private MenuService menuService;
     @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private RestaurantController restaurantController;
 
     @Autowired
     private RestaurantController getFormCode;
@@ -143,6 +145,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                 OrderStatus.PENDING,
                 request.getPeople());
         orderRepository.save(order);
+        restaurantController.updateBooked(request.getIdForms());
         return "Create Success";
     }
 

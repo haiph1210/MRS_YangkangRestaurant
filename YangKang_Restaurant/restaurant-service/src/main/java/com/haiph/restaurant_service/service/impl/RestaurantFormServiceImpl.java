@@ -112,6 +112,55 @@ public class RestaurantFormServiceImpl implements RestaurantFormService {
         return "delete fails";
     }
 
+    @Override
+    public String updateReady(List<Integer> ids) {
+        for (Integer id : ids) {
+            if (findById(id).getStatus().equals(RestaurantFormStatus.READY)) {
+                return "updateReady with id: " + ids + " fail";
+            }
+        }
+        formRepository.updateReady(ids);
+        return "updateReady with id: " + ids + " success";
+    }
+
+
+    @Override
+    public String updatePending(List<Integer> ids) {
+
+        for (Integer id : ids) {
+            if (findById(id).getStatus().equals(RestaurantFormStatus.PENDING)) {
+                return "updatePending with id: " + ids + " fails";
+            }
+
+        }
+        formRepository.updatePending(ids);
+        return "updatePending with id: " + ids + " success";
+    }
+
+    @Override
+    public String updateRefuse(List<Integer> ids) {
+
+        for (Integer id : ids) {
+            if (findById(id).getStatus().equals(RestaurantFormStatus.MAINTENANCE)) {
+                return "updateRefuse with id: " + ids + " fail";
+            }
+
+        }
+        formRepository.updateRefuse(ids);
+        return "updateRefuse with id: " + ids + " success";
+    }
+
+    @Override
+    public String updateBooked(List<Integer> ids) {
+        for (Integer id : ids) {
+            if (findById(id).getStatus().equals(RestaurantFormStatus.BOOKED)) {
+                return "updateBooked with id: " + ids + " fail";
+            }
+        }
+        formRepository.updateBooked(ids);
+        return "updateBooked with id: " + ids + " success";
+    }
+
     private List<MasterialDTO> findByMasterialName(String name) {
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -145,9 +194,10 @@ public class RestaurantFormServiceImpl implements RestaurantFormService {
     public List<RestaurantFormResponse> findByListId(List<Integer> ids) {
         List<RestaurantForm> forms = formRepository.findByListID(ids);
         if (forms.isEmpty()) {
-            throw new CommonException(Response.NOT_FOUND,"NO DATA");
+            throw new CommonException(Response.NOT_FOUND, "NO DATA");
         }
-        List<RestaurantFormResponse> responses = mapper.map(forms,new TypeToken<List<RestaurantFormResponse>>(){}.getType());
+        List<RestaurantFormResponse> responses = mapper.map(forms, new TypeToken<List<RestaurantFormResponse>>() {
+        }.getType());
         return responses;
     }
 }

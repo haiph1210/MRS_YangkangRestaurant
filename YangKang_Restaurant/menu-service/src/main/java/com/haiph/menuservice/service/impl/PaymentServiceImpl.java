@@ -6,7 +6,10 @@ import com.haiph.menuservice.dto.request.PaymentRequest;
 import com.haiph.menuservice.dto.response.DiscountResponse;
 import com.haiph.menuservice.dto.response.OrderResponse;
 import com.haiph.menuservice.dto.response.PaymentResponse;
+import com.haiph.menuservice.dto.response.restApi.RestaurantFormResponse;
 import com.haiph.menuservice.entity.Payment;
+import com.haiph.menuservice.feignClient.OrderFeignClient;
+import com.haiph.menuservice.feignClient.RestaurantController;
 import com.haiph.menuservice.repository.PaymentRepository;
 import com.haiph.menuservice.service.DiscountService;
 import com.haiph.menuservice.service.OrderService;
@@ -33,7 +36,12 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
     private OrderService orderService;
     @Autowired
     private DiscountService discountService;
-//    List<PaymentResponse> paymentResponses = new ArrayList<>();
+    @Autowired
+    private RestaurantController restaurantController;
+    @Autowired
+    private OrderFeignClient orderFeignClient;
+
+
 
     private List<OrderResponse> findListIdOrder(List<Integer> ids) {
         List<OrderResponse> responses = orderService.findListId(ids);
@@ -233,6 +241,7 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
 
     @Override
     public String create(PaymentRequest request) {
+
         Payment payment = new Payment(
                 request.getPersonCode(),
                 genPaymentCode(LocalDate.now(), request.getPersonCode()),
@@ -246,8 +255,23 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
                 LocalDateTime.now()
         );
         paymentRepository.save(payment);
+        restaurantController.updateReady(findFormIdWithListIdOrder(request.getOrderIds()));
         return "create succes";
     }
+
+    private List<Integer> findFormIdWithListIdOrder(List<Integer> ids) {
+        List<OrderResponse> responses = findListIdOrder(ids);
+        List<Integer> listFormCode = new ArrayList<>();
+        for (OrderResponse respons : responses) {
+            List<RestaurantFormResponse> list = respons.getForms();
+            for (RestaurantFormResponse response : list) {
+                listFormCode.add(response.getId());
+            }
+        }
+        return listFormCode;
+    }
+    
+
 
     @Override
     public String update(Integer id, PaymentRequest request) {

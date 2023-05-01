@@ -22,5 +22,13 @@ public interface RestaurantFormService {
 
     String deleteById(Integer id);
 
+    String updateReady(List<Integer> id);
+
+    String updatePending(List<Integer> id);
+
+    String updateRefuse(List<Integer> id);
+
+    String updateBooked(List<Integer> id);
+
     List<RestaurantFormResponse> findByListId(List<Integer> ids);
 }

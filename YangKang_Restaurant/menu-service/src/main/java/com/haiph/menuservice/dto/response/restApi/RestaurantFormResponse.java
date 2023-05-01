@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
 public class RestaurantFormResponse {
+    private Integer id;
     private String formCode;
 }
     

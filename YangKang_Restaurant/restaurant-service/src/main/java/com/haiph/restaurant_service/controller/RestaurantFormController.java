@@ -99,6 +99,56 @@ public class RestaurantFormController {
         }
     }
 
+    @PutMapping("/updateReady/{id}")
+    public ResponseEntity<ResponseBody> updateReady(@PathVariable List<Integer> id) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS,
+                            formService.updateReady(id)
+                    ));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+    @PutMapping("/updatePending/{id}")
+    public ResponseEntity<ResponseBody> updatePending(@PathVariable List<Integer> id) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS,
+                            formService.updatePending(id)
+                    ));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+    @PutMapping("/updateRefuse/{id}")
+    public ResponseEntity<ResponseBody> updateRefuse(@PathVariable List<Integer> id) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS,
+                            formService.updateRefuse(id)
+                    ));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+    @PutMapping("/updateBooked/{id}")
+    public ResponseEntity<ResponseBody> updateBooked(@PathVariable List<Integer> id) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS,
+                            formService.updateBooked(id)
+                    ));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+
     @GetMapping("findList/{ids}")
     public ResponseEntity<ResponseBody> findByListId(@PathVariable List<Integer> ids) {
         try {
