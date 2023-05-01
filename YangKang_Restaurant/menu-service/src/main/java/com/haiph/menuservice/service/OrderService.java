@@ -26,4 +26,6 @@ public interface OrderService {
     String refuseOrder(Integer id);
 
     List<OrderResponse> findFormOrder(SearchFormOrder formOrder);
+
+    List<OrderResponse> findListId(List<Integer> ids);
 }

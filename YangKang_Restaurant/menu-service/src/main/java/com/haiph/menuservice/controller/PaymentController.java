@@ -5,7 +5,9 @@ import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.common.exception.CommonException;
 import com.haiph.menuservice.dto.form.SearchFormOrder;
 import com.haiph.menuservice.dto.request.OrderRequest;
+import com.haiph.menuservice.dto.request.PaymentRequest;
 import com.haiph.menuservice.service.OrderService;
+import com.haiph.menuservice.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,10 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/order")
-public class OrderController {
+@RequestMapping("api/payment")
+public class PaymentController {
     @Autowired
-    private OrderService service;
+    private PaymentService service;
 
     @GetMapping("/findAll")
     public ResponseEntity<ResponseBody> findAll(Pageable pageable) {
@@ -66,53 +68,27 @@ public class OrderController {
     }
 
 
-    @GetMapping("/findForm")
-    public ResponseEntity<ResponseBody> findForm(@RequestBody SearchFormOrder formOrder) {
-        try {
-            return ResponseEntity.ok(
-                    new ResponseBody(
-                            Response.SUCCESS.getResponseCode(),
-                            Response.SUCCESS.getResponseMessage(),
-                            service.findFormOrder(formOrder)
-                    )
-            );
-        } catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
-        }
-    }
+//    @GetMapping("/findForm")
+//    public ResponseEntity<ResponseBody> findForm(@RequestBody SearchFormOrder formOrder) {
+//        try {
+//            return ResponseEntity.ok(
+//                    new ResponseBody(
+//                            Response.SUCCESS.getResponseCode(),
+//                            Response.SUCCESS.getResponseMessage(),
+//                            service.findFormOrder(formOrder)
+//                    )
+//            );
+//        } catch (CommonException exception) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+//        }
+//    }
 
-    @PutMapping("/updateApproved/{id}")
-    public ResponseEntity<ResponseBody> updateApproved(@PathVariable Integer id) {
-        try {
-            return ResponseEntity.ok(
-                    new ResponseBody(
-                            Response.SUCCESS.getResponseCode(),
-                            Response.SUCCESS.getResponseMessage(),
-                            service.approvedOrder(id)
-                    )
-            );
-        } catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
-        }
-    }
 
-    @PutMapping("/updateRefuse/{id}")
-    public ResponseEntity<ResponseBody> updateRefuse(@PathVariable Integer id) {
-        try {
-            return ResponseEntity.ok(
-                    new ResponseBody(
-                            Response.SUCCESS.getResponseCode(),
-                            Response.SUCCESS.getResponseMessage(),
-                            service.refuseOrder(id)
-                    )
-            );
-        } catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
-        }
-    }
+
+
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseBody> create(@RequestBody OrderRequest request) {
+    public ResponseEntity<ResponseBody> create(@RequestBody PaymentRequest request) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
@@ -127,7 +103,7 @@ public class OrderController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseBody> update(@PathVariable Integer id, @RequestBody OrderRequest request) {
+    public ResponseEntity<ResponseBody> update(@PathVariable Integer id, @RequestBody PaymentRequest request) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(

@@ -39,6 +39,7 @@ public class DiscountServiceImpl implements com.haiph.menuservice.service.Discou
                             discount.getStartDate(),
                             discount.getEndDate(),
                             findByInfoId(discount.getInfoId()),
+                            discount.getPercentDiscount(),
                             checkExpired(discount.getStartDate(), discount.getEndDate()));
             responses.add(response);
         }
@@ -54,6 +55,7 @@ public class DiscountServiceImpl implements com.haiph.menuservice.service.Discou
                         discount.getStartDate(),
                         discount.getEndDate(),
                         findByInfoId(discount.getInfoId()),
+                        discount.getPercentDiscount(),
                         checkExpired(discount.getStartDate(), discount.getEndDate()));
         return response;
     }
@@ -71,6 +73,7 @@ public class DiscountServiceImpl implements com.haiph.menuservice.service.Discou
                             discount.getStartDate(),
                             discount.getEndDate(),
                             findByInfoId(discount.getInfoId()),
+                            discount.getPercentDiscount(),
                             checkExpired(discount.getStartDate(), discount.getEndDate()));
             return response;
         }

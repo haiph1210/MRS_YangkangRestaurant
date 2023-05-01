@@ -234,6 +234,33 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         return responses;
     }
 
+    @Override
+    public List<OrderResponse> findListId(List<Integer> ids) {
+        List<Order> orders = orderRepository.findByListId(ids);
+        if (orders.isEmpty()) {
+            throw new CommonException(Response.NOT_FOUND, "NOT DATA");
+        }
+        List<OrderResponse> responses = new ArrayList<>();
+        for (Order order : orders) {
+            OrderResponse response = OrderResponse
+                    .build(order.getId(),
+                            order.getOrderCode(),
+                            findMenuList(order.getIdMenus()),
+                            findComboList(order.getIdCombos()),
+                            findRestaurantFormList(order.getIdForms()),
+                            order.getPeoples(),
+                            order.getTotalAmount(),
+                            order.getTotalPrice(),
+                            order.getCreateDate(),
+                            order.getHour(),
+                            order.getDescription(),
+                            order.getType(),
+                            order.getStatus());
+            responses.add(response);
+        }
+        return responses;
+    }
+
     private Double totalPrice(List<MenuResponse> menuResponses, List<ComboResponse> comboResponses) {
         Double initPrice = 0d;
         for (MenuResponse menuRespons : menuResponses) {

@@ -9,8 +9,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
-public class APIResponse {
+public class APIResponse<T> {
     private String responseCode;
     private String responseMessage;
-    private List<RestaurantFormResponse> responseData;
+    private List<T> responseData;
 }

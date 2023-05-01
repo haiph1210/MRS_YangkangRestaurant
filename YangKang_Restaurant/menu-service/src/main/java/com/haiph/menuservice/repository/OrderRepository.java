@@ -1,5 +1,6 @@
 package com.haiph.menuservice.repository;
 
+import com.haiph.menuservice.entity.Menu;
 import com.haiph.menuservice.entity.Order;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,5 +37,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
                                  LocalDateTime hour,
                                  Integer type,
                                  Integer status);
+     @Query(nativeQuery = true, value = ("SELECT * FROM `order` WHERE id IN ?1"))
 
+     List<Order> findByListId(List<Integer> ids);
 }

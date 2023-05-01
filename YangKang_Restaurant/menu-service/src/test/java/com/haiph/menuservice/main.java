@@ -1,19 +1,32 @@
 package com.haiph.menuservice;
 
+import com.haiph.menuservice.dto.response.DiscountResponse;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class main {
     public static void main(String[] args) {
-        System.out.println("genDisscountCode(LocalDateTime.of(2022,12,10,12,00,00),LocalDateTime.of(2023,01,10,12,00,00),\"Hai Cut\") = " + genDisscountCode(LocalDateTime.of(2022, 12, 10, 12, 00, 00), LocalDateTime.of(2023, 01, 10, 12, 00, 00), "Hai Cut"));
+        genPaymentCode(LocalDate.now(), "HAIPQ");
     }
 
-    public static String genDisscountCode(LocalDateTime startDate,LocalDateTime endDate,String infoName) {
+    public static String genPaymentCode(LocalDate createDate, String personCode) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String createDateStr = createDate.format(formatter).replace("-", "");
+        String genPaymentCode = personCode + "-" + createDateStr;
+        System.out.println("genPaymentCode = " + genPaymentCode);
+        return genPaymentCode;
+    }
+
+    public static String genDisscountCode(LocalDateTime startDate, LocalDateTime endDate, String infoName) {
         String[] gendisscountCode = infoName.split(" ");
         String discountCode = "";
         for (int i = 0; i < gendisscountCode.length; i++) {
-            discountCode+= gendisscountCode[i].substring(0,1);
+            discountCode += gendisscountCode[i].substring(0, 1);
         }
         StringBuilder builder = new StringBuilder();
         int mounthStart = startDate.getMonth().getValue();
@@ -24,7 +37,8 @@ public class main {
         builder.append(discountCode).append(mounthEnd).append(dayEnd);
         return builder.toString().concat("-" + 1);
     }
-    public class menu{
+
+    public class menu {
         int stamen;
 
         public menu(int stamen) {

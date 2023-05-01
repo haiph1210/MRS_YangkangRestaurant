@@ -1,6 +1,7 @@
 package com.haiph.menuservice.dto.response;
 
 import com.haiph.common.enums.status.menuService.discount.DiscountStatus;
+import com.haiph.common.enums.status.menuService.discount.PercentDiscount;
 import com.haiph.menuservice.dto.response.restApi.InfoResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class DiscountResponse {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private InfoResponse info;
+    private PercentDiscount percentDiscount;
     private DiscountStatus status;
 }
