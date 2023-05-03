@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "user-service")
 public interface PersonController {
-    @GetMapping("/api/person/personCode")
-    public APIResponse2<PersonResponse> findByPersonCode(@PathVariable("personCode") String personCode) ;
+    @GetMapping("/api/person/findPerCode/{personCode}")
+    APIResponse2<PersonResponse> findByPersonCode(@PathVariable("personCode") String personCode);
 }

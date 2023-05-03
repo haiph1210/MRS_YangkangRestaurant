@@ -6,7 +6,7 @@ import com.haiph.userservice.entity.person.Person;
 import com.haiph.userservice.entity.person.User;
 
 import com.haiph.userservice.feignClient.MailController;
-import com.haiph.userservice.model.request.email.SendMail;
+import com.haiph.common.email.SendMail;
 import com.haiph.userservice.model.request.user.UserRequest;
 import com.haiph.userservice.model.response.UserResponse;
 import com.haiph.userservice.repository.person.PersonRepository;

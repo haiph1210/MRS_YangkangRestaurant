@@ -1,4 +1,4 @@
-package com.haiph.userservice.model.request.email;
+package com.haiph.common.email;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

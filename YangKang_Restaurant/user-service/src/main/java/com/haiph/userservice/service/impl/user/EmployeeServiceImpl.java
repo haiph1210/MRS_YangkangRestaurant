@@ -4,7 +4,7 @@ import com.haiph.common.formEmail.ActivePerson;
 import com.haiph.userservice.entity.person.Employee;
 import com.haiph.userservice.entity.person.Person;
 import com.haiph.userservice.feignClient.MailController;
-import com.haiph.userservice.model.request.email.SendMail;
+import com.haiph.common.email.SendMail;
 import com.haiph.userservice.model.request.employee.EmployeeRequest;
 import com.haiph.userservice.model.response.EmployeeResponse;
 import com.haiph.userservice.repository.person.EmployeeRepository;

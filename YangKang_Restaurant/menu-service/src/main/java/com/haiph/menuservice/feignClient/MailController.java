@@ -1,4 +1,4 @@
-package com.haiph.userservice.feignClient;
+package com.haiph.menuservice.feignClient;
 
 import com.haiph.common.dto.response.APIResponse;
 import com.haiph.common.email.SendMail;

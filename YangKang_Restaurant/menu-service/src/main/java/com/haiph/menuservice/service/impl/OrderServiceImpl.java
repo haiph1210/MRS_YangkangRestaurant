@@ -1,8 +1,10 @@
 package com.haiph.menuservice.service.impl;
 
 import com.haiph.common.dto.response.Response;
+import com.haiph.common.email.SendMail;
 import com.haiph.common.enums.status.menuService.order.OrderStatus;
 import com.haiph.common.exception.CommonException;
+import com.haiph.common.formEmail.ApprovedOrder;
 import com.haiph.menuservice.dto.form.SearchFormOrder;
 import com.haiph.menuservice.dto.request.OrderRequest;
 import com.haiph.menuservice.dto.response.ComboResponse;
@@ -13,6 +15,7 @@ import com.haiph.menuservice.dto.response.restApi.RestaurantFormResponse;
 import com.haiph.menuservice.dto.response.MenuResponse;
 import com.haiph.menuservice.dto.response.OrderResponse;
 import com.haiph.menuservice.entity.Order;
+import com.haiph.menuservice.feignClient.MailController;
 import com.haiph.menuservice.feignClient.PersonController;
 import com.haiph.menuservice.feignClient.RestaurantController;
 import com.haiph.menuservice.repository.OrderRepository;
@@ -45,6 +48,8 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
     private RestaurantController getFormCode;
     @Autowired
     private PersonController personController;
+    @Autowired
+    private MailController mailController;
 
     private List<MenuResponse> findMenuList(List<Integer> ids) {
         return menuService.findByListId(ids);
@@ -202,7 +207,12 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
 
     @Override
     public String approvedOrder(Integer id) {
+        OrderResponse response = findById(id);
         if (orderRepository.approvedOrder(id) > 0) {
+            sendMail(response.getPersonResponses().getPersonCode(),
+                    response.getCombos(),
+                    response.getMenus(),
+                    response.getForms());
             return "update Approved success";
         }
         return "update Approved fails";
@@ -313,5 +323,89 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         builder.append(day).append(month).append(year).append(".").append(hours).append(minute);
         String result = gentypes + "." + builder + "." + formCode;
         return result;
+    }
+
+
+    private String sendMail(String personCode,
+                            List<ComboResponse> comboResponses,
+                            List<MenuResponse> menuResponses,
+                            List<RestaurantFormResponse> formResponses) {
+
+        List<String> listCombo = new ArrayList<>();
+        List<String> listMenu = new ArrayList<>();
+        List<String> listForm = new ArrayList<>();
+        for (ComboResponse comboRespons : comboResponses) {
+            String comboName = comboRespons.getName();
+            listCombo.add(comboName);
+        }
+
+        for (MenuResponse menuRespons : menuResponses) {
+            String menuName = menuRespons.getName();
+            listMenu.add(menuName);
+        }
+
+        for (RestaurantFormResponse formRespons : formResponses) {
+            String formName = formRespons.getFormCode();
+            listForm.add(formName);
+        }
+
+        APIResponse2<PersonResponse> person = personController.findByPersonCode(personCode);
+
+        if (person.getResponseData() !=null) {
+            String html = "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "\n" +
+                    "<style>\n" +
+                    "    html{\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        box-sizing: border-box;\n" +
+                    "        margin: 0px;\n" +
+                    "        padding: 0px;\n" +
+                    "        width: 1200px;\n" +
+                    "    }\n" +
+                    "    body{\n" +
+                    "    }\n" +
+                    "    .heading{\n" +
+                    "        padding: 2rem 0rem 1.5rem 10rem;\n" +
+                    "        font-size: 22px;\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        font-family: Arial, Helvetica, sans-serif;\n" +
+                    "        color: brown;\n" +
+                    "    }\n" +
+                    "    .content{\n" +
+                    "        padding: 2rem 0rem 0rem 10rem ;\n" +
+                    "        font-size: 18px;\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        font-family: Arial, Helvetica, sans-serif;\n" +
+                    "        color: brown;\n" +
+                    "    }\n" +
+                    "   \n" +
+                    "</style>\n" +
+                    "</head>\n" +
+                    "\n" +
+                    "<body>\n" +
+                    "    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ\" crossorigin=\"anonymous\">\n" +
+                    "    <div class=\"heading\">" + ApprovedOrder.SUBJECT + "</div>\n" +
+                    "    <div class=\"content\"><p>" + ApprovedOrder.MESSAGE + "</p>\n" +
+                    "            <br> \n" +
+                    "        <p>" + "Menu: "+ listMenu + "</p>\n" +
+                    "        <p>" + "Combo: "+ listCombo + "</p>\n" +
+                    "        <p>" + "Mã Bàn: "+ listForm + "</p>\n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "    </div>\n" +
+                    "            \n" +
+                    "</body>\n" +
+                    "</html>";
+            SendMail sendMail = SendMail.build(person.getResponseData().getEmail(),ApprovedOrder.SUBJECT,html);
+            mailController.sendMail(sendMail);
+            return "Send mail to person: " + person.getResponseData().getPersonCode() + " success";
+        }else
+            return "Send mail to person: " + person.getResponseData().getPersonCode() + " fail";
     }
 }
