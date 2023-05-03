@@ -76,7 +76,7 @@ public class ComboController {
         }
     }
 
-    @GetMapping("/search-form")
+    @PostMapping("/search-form")
     public ResponseEntity<ResponseBody> searchForm(@RequestBody SearchFormCombo request) {
         try {
             return ResponseEntity.ok(
@@ -160,6 +160,21 @@ public class ComboController {
                             Response.SUCCESS.getResponseCode(),
                             Response.SUCCESS.getResponseMessage(),
                             comboService.deleteById(id)
+                    )
+            );
+        }catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseBody> deleteAllById(@RequestBody List<Integer> ids) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            comboService.deleteListById(ids)
                     )
             );
         }catch (CommonException exception) {

@@ -7,10 +7,13 @@ import com.haiph.menuservice.dto.form.SearchFormOrder;
 import com.haiph.menuservice.dto.request.OrderRequest;
 import com.haiph.menuservice.dto.response.ComboResponse;
 import com.haiph.menuservice.dto.response.restApi.APIResponse;
+import com.haiph.menuservice.dto.response.restApi.APIResponse2;
+import com.haiph.menuservice.dto.response.restApi.PersonResponse;
 import com.haiph.menuservice.dto.response.restApi.RestaurantFormResponse;
 import com.haiph.menuservice.dto.response.MenuResponse;
 import com.haiph.menuservice.dto.response.OrderResponse;
 import com.haiph.menuservice.entity.Order;
+import com.haiph.menuservice.feignClient.PersonController;
 import com.haiph.menuservice.feignClient.RestaurantController;
 import com.haiph.menuservice.repository.OrderRepository;
 import com.haiph.menuservice.service.ComboService;
@@ -37,11 +40,11 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
     private MenuService menuService;
     @Autowired
     private ModelMapper mapper;
-    @Autowired
-    private RestaurantController restaurantController;
 
     @Autowired
     private RestaurantController getFormCode;
+    @Autowired
+    private PersonController personController;
 
     private List<MenuResponse> findMenuList(List<Integer> ids) {
         return menuService.findByListId(ids);
@@ -51,6 +54,10 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         return comboService.findByListId(ids);
     }
 
+    private PersonResponse findPerson(String personCode) {
+        APIResponse2<PersonResponse> response = personController.findByPersonCode(personCode);
+        return response.getResponseData();
+    }
     private List<RestaurantFormResponse> findRestaurantFormList(List<Integer> ids) {
         APIResponse response = getFormCode.findByListId(ids);
         return response.getResponseData();
@@ -65,6 +72,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
             OrderResponse response = OrderResponse
                     .build(order.getId(),
                             order.getOrderCode(),
+                            findPerson(order.getPersonCode()),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
                             findRestaurantFormList(order.getIdForms()),
@@ -90,6 +98,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         OrderResponse response = OrderResponse
                 .build(order.getId(),
                         order.getOrderCode(),
+                        findPerson(order.getPersonCode()),
                         findMenuList(order.getIdMenus()),
                         findComboList(order.getIdCombos()),
                         findRestaurantFormList(order.getIdForms()),
@@ -111,6 +120,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
             OrderResponse response = OrderResponse
                     .build(order.getId(),
                             order.getOrderCode(),
+                            findPerson(order.getPersonCode()),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
                             findRestaurantFormList(order.getIdForms()),
@@ -133,6 +143,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                 genarateOrderCode(request.getHour(),
                         findRestaurantFormList(request.getIdForms()).iterator().next().getFormCode(),
                         request.getType().getDescription()),
+                request.getPersonCode(),
                 request.getIdMenus(),
                 request.getIdCombos(),
                 request.getIdForms(),
@@ -145,7 +156,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                 OrderStatus.PENDING,
                 request.getPeople());
         orderRepository.save(order);
-        restaurantController.updateBooked(request.getIdForms());
+        getFormCode.updateBooked(request.getIdForms());
         return "Create Success";
     }
 
@@ -157,6 +168,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                     genarateOrderCode(request.getHour(),
                             findRestaurantFormList(request.getIdForms()).iterator().next().getFormCode(),
                             request.getType().getDescription()),
+                    request.getPersonCode(),
                     request.getIdMenus(),
                     request.getIdCombos(),
                     request.getIdForms(),
@@ -221,6 +233,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
             OrderResponse response = OrderResponse
                     .build(order.getId(),
                             order.getOrderCode(),
+                            findPerson(order.getPersonCode()),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
                             findRestaurantFormList(order.getIdForms()),
@@ -248,6 +261,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
             OrderResponse response = OrderResponse
                     .build(order.getId(),
                             order.getOrderCode(),
+                            findPerson(order.getPersonCode()),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
                             findRestaurantFormList(order.getIdForms()),

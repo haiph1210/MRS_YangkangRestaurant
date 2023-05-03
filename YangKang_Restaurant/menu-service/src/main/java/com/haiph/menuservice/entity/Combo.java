@@ -25,7 +25,7 @@ public class Combo implements Serializable {
     @Column(name = "img_url")
     private List<String> imgUrl;
     @ElementCollection
-    @CollectionTable(name = "menu_ids", joinColumns = @JoinColumn(name = "id"))
+    @CollectionTable(name = "combo_menu_ids", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "menu_id")
     private List<Integer> menuIds;
 

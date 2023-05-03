@@ -3,6 +3,7 @@ package com.haiph.menuservice.dto.response;
 import com.haiph.common.enums.status.menuService.menu.NumberOfPeople;
 import com.haiph.common.enums.status.menuService.order.OrderStatus;
 import com.haiph.common.enums.status.menuService.order.OrderType;
+import com.haiph.menuservice.dto.response.restApi.PersonResponse;
 import com.haiph.menuservice.dto.response.restApi.RestaurantFormResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ import java.util.List;
 public class OrderResponse {
     private Integer id;
     private String orderCode;
+    private PersonResponse personResponses;
     private List<MenuResponse> menus;
     private List<ComboResponse> combos;
     private List<RestaurantFormResponse> forms;

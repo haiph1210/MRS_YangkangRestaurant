@@ -9,6 +9,4 @@ public class SearchFormCombo {
     private String search;
     private Double minPrice;
     private Double maxPrice;
-    private String numberOfPeople;
-    private String description;
 }

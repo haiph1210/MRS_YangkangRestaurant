@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
 public class OrderRequest {
+    private String personCode;
     private List<Integer> idMenus;
     private List<Integer> idCombos;
     private List<Integer> idForms;

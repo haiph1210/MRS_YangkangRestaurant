@@ -16,9 +16,8 @@ public interface ComboRepository extends JpaRepository<Combo,Integer> {
                     "WHERE " +
                     "(?1 IS NULL OR id like ?1 OR name LIKE ?1)" +
                     "AND (?2 IS NULL OR price >= ?2) " +
-                    "AND (?3 IS NULL OR price <= ?3) " +
-                    "AND (?4 IS NULL OR description like ?4 ) " )
-    List<Combo> findWithForm(String orderNameOrId, Double minPrice, Double maxPrice, String description);
+                    "AND (?3 IS NULL OR price <= ?3) " )
+    List<Combo> findWithForm(String orderNameOrId, Double minPrice, Double maxPrice);
     @Query(nativeQuery = true, value = ("SELECT * FROM combo WHERE id IN ?1"))
 
     List<Combo> findByListId(List<Integer> ids);

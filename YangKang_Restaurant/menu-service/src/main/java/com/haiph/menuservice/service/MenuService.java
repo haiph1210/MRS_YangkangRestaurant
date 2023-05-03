@@ -42,4 +42,6 @@ public interface MenuService {
 
     //  @CacheEvict(cacheNames = "Menu")
     String deleteById(Integer id);
+
+    String deleteByListId(List<Integer> ids);
 }

@@ -43,4 +43,6 @@ public interface ComboService {
 
 //    @CacheEvict(cacheNames = "Combo")
     String deleteById(Integer id);
+
+    String deleteListById(List<Integer> ids);
 }

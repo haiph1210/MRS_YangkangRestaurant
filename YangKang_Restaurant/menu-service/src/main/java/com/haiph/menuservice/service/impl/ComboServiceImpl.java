@@ -7,16 +7,11 @@ import com.haiph.menuservice.dto.request.ComboRequest;
 import com.haiph.menuservice.dto.response.ComboResponse;
 import com.haiph.menuservice.dto.response.MenuResponse;
 import com.haiph.menuservice.entity.Combo;
-import com.haiph.menuservice.entity.Menu;
 import com.haiph.menuservice.repository.ComboRepository;
 import com.haiph.menuservice.repository.MenuRepository;
 import com.haiph.menuservice.service.MenuService;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -86,7 +81,7 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     @Override
 //    @Cacheable(cacheNames = "Combo")
     public List<ComboResponse> findForm(SearchFormCombo request) {
-        List<Combo> combos = comboRepository.findWithForm(request.getSearch(), request.getMinPrice(), request.getMaxPrice(), request.getDescription());
+        List<Combo> combos = comboRepository.findWithForm(request.getSearch(), request.getMinPrice(), request.getMaxPrice());
         List<ComboResponse> dtos = new ArrayList<>();
         for (Combo combo : combos) {
             if (combo != null) {
@@ -102,7 +97,7 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     }
 
     @Override
-    @Cacheable(cacheNames = "Combo")
+//    @Cacheable(cacheNames = "Combo")
     public ComboResponse findById(Integer id) {
         Combo combo = comboRepository.findById(id).orElseThrow(() ->
                 new CommonException(Response.DATA_NOT_FOUND.getResponseCode(), "Combo cannot having Id: " + id));
@@ -181,13 +176,18 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     @Override
 //    @CachePut(cacheNames = "Combo")
     public String create(ComboRequest request) {
-            Combo combo = new Combo(request.getName(),totalPriceMenu(request.getMenuIds()),request.getDescription(),request.getImgUrl(),request.getMenuIds());
+            Combo combo = new Combo
+                    (request.getName(),
+                            totalPriceMenu(request.getMenuIds()),
+                            request.getDescription(),
+                            request.getImgUrl(),
+                            request.getMenuIds());
             comboRepository.save(combo);
             return "Create Success";
     }
 
     private Double totalPriceMenu(List<Integer> ids) {
-       List<MenuResponse> responses =  findListMenuByID(ids);
+       List<MenuResponse> responses = findListMenuByID(ids);
        Double initPrice = 0d;
         for (MenuResponse respons : responses) {
             initPrice += respons.getPrice();
@@ -202,7 +202,8 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
                     new CommonException(Response.PARAM_INVALID, "Id NOT Exists,Cannot Update"));
             Combo comboUpdate = combo;
             comboUpdate.setName(request.getName());
-            comboUpdate.setPrice(comboUpdate.getPrice());
+            comboUpdate.setPrice(totalPriceMenu(request.getMenuIds()));
+            comboUpdate.setDescription(request.getDescription());
             comboUpdate.setImgUrl(request.getImgUrl());
             comboUpdate.setMenuIds(request.getMenuIds());
             comboRepository.save(comboUpdate);
@@ -223,6 +224,12 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
         } catch (CommonException exception) {
             throw new CommonException(Response.PARAM_NOT_VALID, exception.getMessage());
         }
+    }
+
+    @Override
+    public String deleteListById(List<Integer> ids) {
+            comboRepository.deleteAllById(ids);
+            return "Delete Success";
     }
 
 

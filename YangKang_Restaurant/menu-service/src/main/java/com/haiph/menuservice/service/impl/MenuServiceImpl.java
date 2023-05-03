@@ -11,9 +11,6 @@ import com.haiph.menuservice.repository.ComboRepository;
 import com.haiph.menuservice.repository.MenuRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -200,5 +197,16 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
             throw new CommonException(Response.PARAM_NOT_VALID, exception.getMessage());
         }
     }
+
+    @Override
+    public String deleteByListId(List<Integer> ids) {
+        try {
+                menuRepository.deleteAllById(ids);
+                return "Delete " + ids +" Success ";
+            } catch (CommonException exception) {
+            throw new CommonException(Response.PARAM_NOT_VALID, exception.getMessage());
+        }
+    }
+
 
 }

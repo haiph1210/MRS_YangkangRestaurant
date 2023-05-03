@@ -166,10 +166,20 @@ public class MenuController {
         }
     }
 
-
-
-
-
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseBody> deleteListId(@RequestBody List<Integer> ids) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            menuService.deleteByListId(ids)
+                    )
+            );
+        }catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
 
 
 }
