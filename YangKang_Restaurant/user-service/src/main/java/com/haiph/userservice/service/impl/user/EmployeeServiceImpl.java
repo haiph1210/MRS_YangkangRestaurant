@@ -1,9 +1,12 @@
 package com.haiph.userservice.service.impl.user;
 
+import com.haiph.common.formEmail.ActivePerson;
 import com.haiph.userservice.entity.person.Employee;
 import com.haiph.userservice.entity.person.Person;
+import com.haiph.userservice.feignClient.MailController;
+import com.haiph.userservice.model.request.email.SendMail;
 import com.haiph.userservice.model.request.employee.EmployeeRequest;
-import com.haiph.userservice.model.response.dto.EmployeeResponse;
+import com.haiph.userservice.model.response.EmployeeResponse;
 import com.haiph.userservice.repository.person.EmployeeRepository;
 import com.haiph.userservice.repository.person.PersonRepository;
 import org.modelmapper.ModelMapper;
@@ -28,7 +31,8 @@ public class EmployeeServiceImpl implements com.haiph.userservice.service.Employ
     private PersonRepository personRepository;
     @Autowired
     private ModelMapper mapper;
-
+    @Autowired
+    private MailController mailController;
 
     @Override
     public List<Employee> findAll() {
@@ -112,6 +116,7 @@ public class EmployeeServiceImpl implements com.haiph.userservice.service.Employ
         employee.setPersonCode(generatePersonCode(fullName));
         employee.setCmnd(request.getCmnd());
         employeeRepository.save(employee);
+        sendMail(request.getEmail());
         return "Create Success";
     }
 
@@ -165,5 +170,63 @@ public class EmployeeServiceImpl implements com.haiph.userservice.service.Employ
             }
         }
         return newPersonCode;
+    }
+
+
+    private String sendMail(String email) {
+
+        Optional<Person> person = personRepository.findByEmail(email);
+
+        if (person.isPresent()) {
+            String confirm = ActivePerson.CONFIRM + person.get().getPersonCode();
+            StringBuilder message = new StringBuilder();
+            message.append(confirm);
+            String html = "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "\n" +
+                    "<style>\n" +
+                    "    html{\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        box-sizing: border-box;\n" +
+                    "        margin: 0px;\n" +
+                    "        padding: 0px;\n" +
+                    "        width: 1200px;\n" +
+                    "    }\n" +
+                    "    body{\n" +
+                    "    }\n" +
+                    "    .heading{\n" +
+                    "        padding: 2rem 0rem 1.5rem 10rem;\n" +
+                    "        font-size: 22px;\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        font-family: Arial, Helvetica, sans-serif;\n" +
+                    "        color: brown;\n" +
+                    "    }\n" +
+                    "    .content{\n" +
+                    "        padding: 2rem 0rem 0rem 10rem ;\n" +
+                    "        font-size: 18px;\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        font-family: Arial, Helvetica, sans-serif;\n" +
+                    "        color: brown;\n" +
+                    "    }\n" +
+                    "   \n" +
+                    "</style>\n" +
+                    "</head>\n" +
+                    "\n" +
+                    "<body>\n" +
+                    "    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ\" crossorigin=\"anonymous\">\n" +
+                    "    <div class=\"heading\">" + ActivePerson.SUBJECT + "</div>\n" +
+                    "    <div class=\"content\"><p>" + ActivePerson.MESSAGE + "</p>\n" +
+                    "            <br> \n" +
+                    "        <p>" + message + "</p>\n" +
+                    "    </div>\n" +
+                    "            \n" +
+                    "</body>\n" +
+                    "</html>";
+            SendMail emailRequest = SendMail.build(person.get().getEmail(), ActivePerson.SUBJECT, html);
+            mailController.sendMail(emailRequest);
+            return "Send mail to person: " + person.get().getPersonCode() + " success";
+        }else
+            return "Send mail to person: " + person.get().getPersonCode() + " fail";
     }
 }

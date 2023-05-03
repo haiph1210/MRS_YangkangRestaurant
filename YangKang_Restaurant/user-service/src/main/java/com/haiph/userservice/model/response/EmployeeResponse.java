@@ -1,5 +1,6 @@
-package com.haiph.userservice.model.response.dto;
+package com.haiph.userservice.model.response;
 
+import com.haiph.common.enums.status.personService.empl.PositionEmpl;
 import com.haiph.common.enums.status.personService.person.Active;
 import com.haiph.common.enums.status.personService.person.Gender;
 import com.haiph.common.enums.status.personService.person.Role;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
-public class PersonResponse {
+public class EmployeeResponse {
     private String personCode;
     private String fullName;
     private String email;
@@ -19,5 +20,8 @@ public class PersonResponse {
     private Gender gender;
     private Active status;
     private Role role;
-    private LocalDate createDate;
+    private PositionEmpl position;
+    private Float salary;
+    private String cmnd;
+    private LocalDate createdDate;
 }

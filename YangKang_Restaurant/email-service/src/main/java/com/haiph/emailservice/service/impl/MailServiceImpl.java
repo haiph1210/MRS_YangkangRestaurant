@@ -21,6 +21,23 @@ public class MailServiceImpl implements com.haiph.emailservice.service.MailServi
     private String sender;
 
     @Override
+    public String sendMailVersion2(String emailRevice,String subject, String message) {
+        try {
+            MimeMessagePreparator messagePreparator = mimeMessage -> {
+                MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+                messageHelper.setFrom(sender);
+                messageHelper.setTo(emailRevice);
+                messageHelper.setSubject(subject);
+                messageHelper.setText(message);
+            };
+            javaMailSender.send(messagePreparator);
+            return "SendMail Success";
+        }catch (CommonException exception){
+            throw new CommonException(Response.SYSTEM_ERROR,exception.getMessage());
+        }
+    }
+
+    @Override
     public String sendMail(SendMail sendMail) {
         try {
             MimeMessagePreparator messagePreparator = mimeMessage -> {
@@ -35,7 +52,6 @@ public class MailServiceImpl implements com.haiph.emailservice.service.MailServi
         }catch (CommonException exception){
             throw new CommonException(Response.SYSTEM_ERROR,exception.getMessage());
         }
-
     }
 
     @Override

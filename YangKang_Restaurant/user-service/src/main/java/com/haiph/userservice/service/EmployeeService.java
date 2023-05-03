@@ -2,7 +2,7 @@ package com.haiph.userservice.service;
 
 import com.haiph.userservice.entity.person.Employee;
 import com.haiph.userservice.model.request.employee.EmployeeRequest;
-import com.haiph.userservice.model.response.dto.EmployeeResponse;
+import com.haiph.userservice.model.response.EmployeeResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

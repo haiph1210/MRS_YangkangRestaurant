@@ -3,10 +3,8 @@ package com.haiph.userservice.controller;
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.common.exception.CommonException;
-import com.haiph.userservice.entity.person.Employee;
 import com.haiph.userservice.model.request.employee.EmployeeRequest;
 import com.haiph.userservice.model.request.user.UserRequest;
-import com.haiph.userservice.model.response.dto.PersonResponse;
 
 import com.haiph.userservice.service.EmployeeService;
 import com.haiph.userservice.service.PersonService;
@@ -15,7 +13,6 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -234,18 +231,16 @@ public class PersonController {
     }
 
     @GetMapping("/active")
-    public ResponseEntity<ResponseBody> activeAccount(@RequestParam("personcode") String personcode) {
+    public ResponseEntity<ResponseBody> activeAccount(@RequestParam("personCode") String personCode) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
                             Response.SUCCESS,
-                            personService.activePerson(personcode)
+                            personService.activePerson(personCode)
                     )
             );
         } catch (CommonException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
         }
-
     }
-
 }

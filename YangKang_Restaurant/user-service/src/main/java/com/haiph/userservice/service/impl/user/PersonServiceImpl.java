@@ -5,7 +5,7 @@ import com.haiph.common.enums.status.personService.person.Active;
 import com.haiph.common.exception.CommonException;
 
 import com.haiph.userservice.entity.person.Person;
-import com.haiph.userservice.model.response.dto.PersonResponse;
+import com.haiph.userservice.model.response.PersonResponse;
 import com.haiph.userservice.repository.person.PersonRepository;
 import com.haiph.userservice.service.PersonService;
 import org.modelmapper.ModelMapper;
