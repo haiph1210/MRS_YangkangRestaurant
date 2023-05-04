@@ -7,7 +7,7 @@ $(function () {
 
         $.ajax({
             method: 'POST',
-            url: 'http://localhost:8000/combo/create',
+            url: UrlCombo +'create',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
                 name: $('#form-name').val(),
@@ -31,7 +31,7 @@ $(function () {
         const id = $('#form-id').val();
         $.ajax({
             method: 'PUT',
-            url: 'http://localhost:8000/combo/update/' + id,
+            url: UrlCombo+'update/' + id,
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
                 id: id,
@@ -57,24 +57,41 @@ $(function () {
     function loadMenu() {
         $.ajax({
             method: 'GET',
-            url: 'http://localhost:8000/menu/findPage',
+            url: UrlMenu+'findPage',
             contentType: 'application/json; charset=utf-8',
             beforeSend: () => showLoading(),
             success: function(data) {
                 var contents = data.responseData.content;
+                console.log(contents);
                 showMenu(contents);
             }
         })
     }
 
     function showMenu(content) {
-        const menuIds = $('#form-menu-id');
+        const menuIds = $('#menuTableBody');
         menuIds.empty();
-        for(const menu of content) {
-            menuIds.append(`
-            <input type="checkbox" class="btn-check" id="${menu.name}" name="menu-lists[]" value="${menu.id}">
-            <label class="btn btn-outline-primary" for="${menu.name}">${menu.name}</label>
-            `);
+        const rows = [];
+        for (let i = 0; i < content.length; i++) {
+          const menu = content[i];
+          const checkbox = `<input type="checkbox" class="btn-check" id="${menu.name}" name="menu-lists[]" value="${menu.id}">`;
+          const label = `<label class="btn btn-outline-primary" for="${menu.name}">${menu.name}</label>`;
+          const td = `<td>${checkbox}${label}</td>`;
+      
+          if (i % 3 == 0) {
+            rows.push('<tr>');
+          }
+      
+          rows.push(td);
+      
+          if ((i + 1) % 3 == 0) {
+            rows.push('</tr>');
+          }
         }
-        
-    }
+      
+        menuIds.append(rows.join(''));
+      }
+      
+
+    // <input type="checkbox" class="btn-check" id="${menu.name}" name="menu-lists[]" value="${menu.id}">
+    // <label class="btn btn-outline-primary" for="${menu.name}">${menu.name}</label>

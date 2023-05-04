@@ -1,5 +1,6 @@
 var KEY_ENTER = 13;
 var sort = null;
+var UrlCombo= "http://localhost:8000/api/combo/"
 
 
 $('#btn-search').on('click',searchForm)
@@ -7,7 +8,7 @@ $('#btn-search').on('click',searchForm)
     function searchForm()   {
         $.ajax({
             method: 'POST',
-            url: 'http://localhost:8000/combo/search-form',
+            url: UrlCombo +'search-form',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
                 search: $('#form-combo').val(),
@@ -26,7 +27,7 @@ $(function () {
             const selectedComboId = $('.selected .combo-name').attr('value').split('.')[0];
             $.ajax({
                 method: 'DELETE',
-                url: 'http://localhost:8000/combo/delete',
+                url: UrlCombo+'delete',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify($('.selected .combo-name').toArray().map(id => selectedComboId)),
                 beforeSend: () => showLoading(),
@@ -138,11 +139,12 @@ function updateStatus() {
 function loadCombos() {
     $.ajax({
         method: 'GET',
-        url: 'http://localhost:8000/combo/findPage',
+        url: UrlCombo+'findPage',
         beforeSend: () => showLoading(),
         success: function (data) {
+            var showPage = data.responseData;
             var contents = data.responseData.content;
-            showPageInfo(contents);
+            showPageInfo(showPage);
             showCombos(contents);
             updateStatus();
         },
@@ -152,7 +154,7 @@ function loadCombos() {
 }
 
 function showPageInfo(data) {
-    const start = data.pageable;
+    const start = data.pageable.offset;
     $('#page-info').text(`Showing ${start + 1} to ${start + data.numberOfElements} of ${data.totalElements} rows.`);
     $('#page-number').attr('max', data.totalPages);
     if (data.last) {
@@ -254,7 +256,7 @@ $('.main').on('click', '.combo-detail', function (event) {
 function showComboDetail(id) {
     $.ajax({
         method: 'GET',
-        url: 'http://localhost:8000/combo/id/' + id,
+        url: UrlCombo+'id/' + id,
         beforeSend: () => showLoading(),
         success: function (data) {
             var combo = data.responseData;

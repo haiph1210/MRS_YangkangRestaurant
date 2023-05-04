@@ -1,16 +1,15 @@
 var KEY_ENTER = 13;
 var sort = null;
+var UrlMenu = 'http://localhost:8000/api/menu/'
 
 
 $('#btn-search').on('click',searchForm)
 
     function searchForm()   {
 
-        
-
         $.ajax({
             method: 'POST',
-            url: 'http://localhost:8000/menu/search-form',
+            url: UrlMenu+'search-form',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
                 search: $('#form-menu').val(),
@@ -28,7 +27,7 @@ $(function () {
         $('#delete-modal-btn-remove').on('click', function (event) {
             $.ajax({
                 method: 'DELETE',
-                url: 'http://localhost:8000/menu/delete',
+                url: UrlMenu+'delete',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify($('.selected .id').toArray().map(id => id.innerText)),
                 beforeSend: () => showLoading(),
@@ -128,13 +127,27 @@ function updateStatus() {
 }
 
 function loadMenus() {
+    const searchParams = new URLSearchParams();
+
+    const params = {
+        page: $('#page-number').val(),
+        size: $('#page-size').val(),
+        sort: sort
+    }
+    for (const key in params) {
+        if (params[key]) {
+            searchParams.set(key, params[key]);
+        }
+    }
+
     $.ajax({
         method: 'GET',
-        url: 'http://localhost:8000/menu/findPage',
+        url: UrlMenu+'findPage?' + searchParams,
         beforeSend: () => showLoading(),
         success: function (data) {
+            var showPage = data.responseData;
             var contents = data.responseData.content;
-            showPageInfo(contents);
+            showPageInfo(showPage);
             showMenus(contents);
             updateStatus();
         },
@@ -144,7 +157,7 @@ function loadMenus() {
 }
 
 function showPageInfo(data) {
-    const start = data.pageable;
+    const start = data.pageable.offset;
     $('#page-info').text(`Showing ${start + 1} to ${start + data.numberOfElements} of ${data.totalElements} rows.`);
     $('#page-number').attr('max', data.totalPages);
     if (data.last) {

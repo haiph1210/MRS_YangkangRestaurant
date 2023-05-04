@@ -1,40 +1,43 @@
 var KEY_ENTER = 13;
 var sort = null;
+var UrlMenu = 'http://localhost:8000/api/menu/'
 
-UrlOrder ="http://localhost:8000/api/order/"
 
 $('#btn-search').on('click',searchForm)
 
     function searchForm()   {
+
         $.ajax({
             method: 'POST',
-            url: UrlOrder+'search-form',
+            url: UrlMenu+'search-form',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
-                search: $('#form-order').val(),
+                search: $('#form-menu').val(),
                 minPrice: $('#form-minPrice').val(),
                 maxPrice: $('#form-maxPrice').val()
             }),
             success: function (data) {
-                showOrders(data.responseData);
+                showMenus(data.responseData);
             }
         });
 }
 $(function () {
-    $('#form-modal-container').load('/page/main/order-service/order/form-modal.html');
+    $('#form-modal-container').load('/page/main/menu-service/menu/form-modal.html');
     $('#delete-modal-container').load('/common/modal/delete-modal.html', null, function () {
         $('#delete-modal-btn-remove').on('click', function (event) {
             $.ajax({
                 method: 'DELETE',
-                url: UrlOrder+'delete',
+                url: UrlMenu+'delete',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify($('.selected .id').toArray().map(id => id.innerText)),
                 beforeSend: () => showLoading(),
-                success: data => loadOrders(),
+                success: data => loadMenus(),
                 complete: () => hideLoading()
             });
             bootstrap.Modal.getOrCreateInstance($('#delete-modal')).hide();
-        });
+        }
+        
+        );
     });
 
     // if (storage.getItem('key_role') != 'ADMIN') {
@@ -44,23 +47,23 @@ $(function () {
     // }
 
     addListeners();
-    loadOrders();
+    loadMenus();
 });
 
 function addListeners() {
-    $( '#btn-refresh').on('click', event => loadOrders());
+    $( '#btn-refresh').on('click', event => loadMenus());
 
     // Khi người dùng thay đổi page size
-    $('#page-size').on('change', event => loadOrders());
+    $('#page-size').on('change', event => loadMenus());
 
     // Khi người dùng thay đổi page number và nhấn ENTER
     $('#page-number').on('keypress', event => {
         if (event.which == KEY_ENTER) {
-            loadOrders();
+            loadMenus();
         }
     });
 
-    $('#order-tbody').on('click', 'tr', function (event) {
+    $('#menu-tbody').on('click', 'tr', function (event) {
         if (event.ctrlKey) {
             $(this).toggleClass('selected');
         } else {
@@ -68,48 +71,8 @@ function addListeners() {
         }
         updateStatus();
     });
-    
-    $('#order-tbody').on('click', '.approval-button', function (event) {
-        // event.stopPropagation();
-        const row = $(this).closest('tr');
-        const id = row.find('.id').attr('value');
-        console.log("Id:", id);
-        if (confirm("Bạn có chắc chắn muốn approve?")) {
-            $.ajax({
-                method: 'PUT',
-                url: UrlOrder+'updateApproved/' + id,
-                contentType: 'application/json; charset=utf-8',
-                success: function (data) {
-                    loadOrders();
-                }
-            });
-        }
-  });
 
-  $('#order-tbody').on('click', '.refuse-button', function (event) {
-    // event.stopPropagation();
-    const row = $(this).closest('tr');
-    const id = row.find('.id').attr('value');
-    console.log("Id:", id);
-    if (confirm("Bạn có chắc chắn muốn refuse?")) {
-        $.ajax({
-            method: 'PUT',
-            url: UrlOrder+'updateRefuse/' + id,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                loadOrders();
-            }
-        });
-    }
-});
-
-
-    $('#order-tbody').on('dblclick', 'tr', function () {
-        $(this).removeClass('selected');
-        updateStatus();
-    });
-
-    $('#order-thead').on('click', 'th', function (event) {
+    $('#menu-thead').on('click', 'th', function (event) {
         $(this).siblings().find('i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
 
         const i = $(this).find('i');
@@ -121,11 +84,11 @@ function addListeners() {
 
         let type = i.hasClass('fa-sort-up') ? 'asc' : 'desc';
         sort = `${$(this).attr('key')},${type}`
-        loadOrder();
+        loadMenus();
     });
 
     $('#btn-add').on('click', event => {
-        $('#order-form').trigger('reset');
+        $('#menu-form').trigger('reset');
         $('#form-id-container').hide();
         $('#form-modal-btn-update').hide();
         $('#form-modal-btn-create').show();
@@ -133,7 +96,7 @@ function addListeners() {
     });
 
     $('#btn-edit').on('click', event => {
-        $('#order-form').trigger('reset');
+        $('#menu-form').trigger('reset');
         $('#form-modal-btn-create').hide();
         $('#form-modal-btn-update').show();
         $('#form-id-container').show();
@@ -165,7 +128,7 @@ function updateStatus() {
     }
 }
 
-function loadOrders() {
+function loadMenus() {
     const searchParams = new URLSearchParams();
 
     const params = {
@@ -181,11 +144,13 @@ function loadOrders() {
 
     $.ajax({
         method: 'GET',
-        url: UrlOrder+'findAll?' + searchParams,
+        url: UrlMenu+'findPage?' + searchParams,
         beforeSend: () => showLoading(),
         success: function (data) {
-            showPageInfo(data.responseData);
-            showOrders(data.responseData.content);
+            var showPage = data.responseData;
+            var contents = data.responseData.content;
+            showPageInfo(showPage);
+            showMenus(contents);
             updateStatus();
         },
         error: () => location.replace('/common/error/404-not-found.html'),
@@ -211,50 +176,23 @@ function showPageInfo(data) {
 
 
 
-function showOrders(content) {
-    const tbody = $('#order-tbody');
-    console.log(content);
+function showMenus(content) {
+    const tbody = $('#menu-tbody');
     tbody.empty();
     var number = 1;
-    for (const order of content) {
-        const menus = order.menus;
-        const combos = order.combos;
-        const forms = order.forms;
-        const menuNames = menus.map(menu => menu.name); 
-        const comboNames = combos.map(combo => combo.name);
-        const formCodes = forms.map(form => form.formCode);
-
-        const hourUpdate = new Date(order.hour).toLocaleTimeString();
+    for (const menu of content) {
         tbody.append(`
             <tr>
                 <th class='stt' value='${number}' scope="row">${number++}</th>
-                <td class='id' value='${order.id}'>${order.id}</td>
-                <td class='orderCode' value='${order.orderCode}'>${order.orderCode}</td>
-                <td class='personCode' value='${order.personResponses.personCode}'>${order.personResponses.personCode}</td>
-                <td class='menus' value='${menuNames}'>${menuNames}</td>
-                <td class='combos' value='${comboNames}'>${comboNames}</td>
-                <td class='forms' value='${formCodes}'>${formCodes}</td>
-                <td class='people' value='${order.people}'>${order.people}</td>
-                <td class='hour' value='${hourUpdate}'>${hourUpdate}</td>
-                <td class='description' value='${order.description}'>${order.description}</td>
-                <td class='type' value='${order.type}'>${order.type}</td>
-                <td class='totalAmount' value='${order.totalAmount}'>${order.totalAmount}</td>
-                <td class='totalPrice' value='${order.totalPrice}'>${order.totalPrice.toLocaleString('vi-VN')}₫</td>
-                <td class='status' value='${order.status}'>${order.status}</td>
-                <td class='isApproved ${order.status === "PENDING" ? "can-approve" : ""}'>
-  <button class="approval-button" ${order.status !== "PENDING" ? "disabled" : ""}>
-    <i class="fas fa-check approve-icon" title="APPROVED"></i>
-  </button>
-  <button class="refuse-button" ${order.status !== "PENDING" ? "disabled" : ""}>
-    <i class="fas fa-times refuse-icon" title="Refuse"></i>
-  </button>
-</td>
-
+                <td class='id' value='${menu.id}'>${menu.id}</td>
+                <td class='name' value='${menu.name}'>${menu.name}</td>
+                <td class='price' value='${menu.price}'>${menu.price.toLocaleString('vi-VN')}₫</td>
+                <td class='imgUrl' value='${menu.imgUrl}'><img src="${menu.imgUrl}" width="96"> </td>
+                <td class='description' value='${menu.description}'>${menu.description}</td>
             </tr>
         `);
     }
 }
-
 
 function showLoading() {
     $('#loading').show();
@@ -267,7 +205,7 @@ function hideLoading() {
 function changePageNumberBy(value) {
     const page = $('#page-number');
     page.val(+page.val() + value);
-    loadOrders();
+    loadMenus();
 }
 
 
