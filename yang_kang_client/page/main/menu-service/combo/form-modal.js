@@ -77,21 +77,14 @@ $(function () {
           const checkbox = `<input type="checkbox" class="btn-check" id="${menu.name}" name="menu-lists[]" value="${menu.id}">`;
           const label = `<label class="btn btn-outline-primary" for="${menu.name}">${menu.name}</label>`;
           const td = `<td>${checkbox}${label}</td>`;
-      
           if (i % 3 == 0) {
             rows.push('<tr>');
           }
-      
           rows.push(td);
-      
           if ((i + 1) % 3 == 0) {
             rows.push('</tr>');
           }
         }
-      
         menuIds.append(rows.join(''));
       }
       
-
-    // <input type="checkbox" class="btn-check" id="${menu.name}" name="menu-lists[]" value="${menu.id}">
-    // <label class="btn btn-outline-primary" for="${menu.name}">${menu.name}</label>

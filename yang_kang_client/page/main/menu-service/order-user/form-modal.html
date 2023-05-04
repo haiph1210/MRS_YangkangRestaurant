@@ -27,36 +27,77 @@
                                 disabled>
                         </div>
                         <div class="mb-3">
-                            <label for="form-name" class="form-label">Tên Món</label>
-                            <input type="text" class="form-control form-control-sm" name="form-name" id="form-name"
-                                aria-describedby="form-name-help" placeholder="VD: Thịt dê cơm cháy">
+                            <label for="form-name" class="form-label">Nhập Mã Người Dùng</label>
+                            <input type="text" class="form-control form-control-sm" name="form-personCode"
+                                id="form-personCode" aria-describedby="form-name-help"
+                                placeholder="VD: Thịt dê cơm cháy">
                             <!-- <small id="form-name-help" class="form-text text-muted">Tên món có tối đa 50
                                 ký
                                 tự.</small> -->
                         </div>
 
                         <div class="mb-3">
-                            <label for="form-price" class="form-label">Giá bán</label>
-                            <input type="text" class="form-control form-control-sm" name="form-price" id="form-price"
-                                aria-describedby="form-price-help" placeholder="VD: 1">
-                            <!-- <small id="form-amount-help" class="form-text text-muted">Nhập số lượng.</small> -->
+                            <table class="table table-bordered">
+                                Menu
+                                <tbody id="menuTableBody"></tbody>
+                            </table>
                         </div>
 
-
+                        <div class="mb-3">
+                            <table class="table table-bordered">
+                                Combo
+                                <tbody id="comboTableBody"></tbody>
+                            </table>
+                        </div>
 
                         <div class="mb-3">
-                            <label for="form-imgUrl" class="form-label">Ảnh</label>
-                            <input type="text" class="form-control form-control-sm" name="form-imgUrl" id="form-imgUrl"
-                                aria-describedby="form-imgUrl-help" placeholder="">
-                            <!-- <small id="form-amount-help" class="form-text text-muted">Nhập số lượng.</small> -->
+                            <table class="table table-bordered">
+                                Số Bàn:(Xanh: Sẵn Sàng, Vàng: Đã Đặt, Đỏ: Bảo Trì,Xám: Đang Dọn)
+                                <tbody id="formTableBody"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-people">
+                                <label for="form-people">Tổng số Người</label>
+                                <select class="form-control" id="form-people">
+                                    <option value="">-------------------------------Chọn----------------------------
+                                    </option>
+                                    <option value="TEN">Lớn Hơn Hoặc Bằng 10 Người</option>
+                                    <option value="FIVETEEN">Lớn Hơn Hoặc Bằng 15 Người</option>
+                                    <option value="TWENTY">Lớn Hơn Hoặc Bằng 20 Người</option>
+                                    <option value="THIRTY">Lớn Hơn Hoặc Bằng 30 Người</option>
+                                    <option value="FIVETY">Lớn Hơn Hoặc Bằng 50 Người</option>
+                                    <option value="ONE">Đặt Tiệc</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-hour">
+                                <label for="datetime-input">Đặt Giờ</label>
+                                <input type="datetime-local" class="form-control" id="datetime-input">
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="form-description" class="form-label">Mô tả</label>
                             <input type="text" class="form-control form-control-sm" name="form-description"
                                 id="form-description" aria-describedby="form-description-help" placeholder="">
-                            <!-- <small id="form-amount-help" class="form-text text-muted">Nhập số lượng.</small> -->
                         </div>
+
+                        <div class="mb-3">
+                            <div class="form-type">
+                                <label for="form-type">Dùng Kiểu</label>
+                                <select class="form-control" id="form-type">
+                                    <option value="">-------------------------------Chọn----------------------------
+                                    </option>
+                                    <option value="RESTAURANT">Dùng Tại Nhà Hàng</option>
+                                    <option value="TAKE_HOME">Mua Mang Về</option>
+                                </select>
+                            </div>
+                        </div>
+
 
                         <!-- <div class="mb-3">
                             <label for="form-orderId" class="form-label">order</label>

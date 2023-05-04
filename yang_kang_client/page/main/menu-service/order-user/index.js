@@ -1,6 +1,9 @@
 var KEY_ENTER = 13;
 var sort = null;
 var UrlMenu = 'http://localhost:8000/api/menu/'
+var UrlCombos = 'http://localhost:8000/api/combo/'
+var UrlForms = 'http://localhost:8002/api/restaurant/form/'
+var UrlOrder = 'http://localhost:8000/api/order/'
 
 
 $('#btn-search').on('click',searchForm)
@@ -22,7 +25,7 @@ $('#btn-search').on('click',searchForm)
         });
 }
 $(function () {
-    $('#form-modal-container').load('/page/main/menu-service/menu/form-modal.html');
+    $('#form-modal-container').load('/page/main/menu-service/order-user/form-modal.html');
     $('#delete-modal-container').load('/common/modal/delete-modal.html', null, function () {
         $('#delete-modal-btn-remove').on('click', function (event) {
             $.ajax({
@@ -92,7 +95,7 @@ function addListeners() {
         $('#form-id-container').hide();
         $('#form-modal-btn-update').hide();
         $('#form-modal-btn-create').show();
-        $('#form-modal-title').text('Thêm danh mục sản phẩm');
+        $('#form-modal-title').text('Thêm Đơn Hàng Mới');
     });
 
     $('#btn-edit').on('click', event => {
@@ -100,7 +103,7 @@ function addListeners() {
         $('#form-modal-btn-create').hide();
         $('#form-modal-btn-update').show();
         $('#form-id-container').show();
-        $('#form-modal-title').text('Cập nhật danh mục sản phẩm');
+        $('#form-modal-title').text('Cập nhật Đơn Hàng');
 
         const row = $('.selected');
         $('#form-id').val(row.find('.id').attr('value'));
@@ -113,6 +116,45 @@ function addListeners() {
         $('#delete-modal-body').text(message);
     });
 }
+$('#order-tbody').on('click', '.approval-button', function (event) {
+    // event.stopPropagation();
+    const row = $(this).closest('tr');
+    const id = row.find('.id').attr('value');
+    console.log("Id:", id);
+    if (confirm("Bạn có chắc chắn muốn approve?")) {
+        $.ajax({
+            method: 'PUT',
+            url: UrlOrder+'updateApproved/' + id,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                loadOrders();
+            }
+        });
+    }
+});
+
+$('#order-tbody').on('click', '.refuse-button', function (event) {
+// event.stopPropagation();
+const row = $(this).closest('tr');
+const id = row.find('.id').attr('value');
+console.log("Id:", id);
+if (confirm("Bạn có chắc chắn muốn refuse?")) {
+    $.ajax({
+        method: 'PUT',
+        url: UrlOrder+'updateRefuse/' + id,
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            loadOrders();
+        }
+    });
+}
+});
+
+
+$('#order-tbody').on('dblclick', 'tr', function () {
+    $(this).removeClass('selected');
+    updateStatus();
+});
 
 function updateStatus() {
     const length = $('.selected').length;
