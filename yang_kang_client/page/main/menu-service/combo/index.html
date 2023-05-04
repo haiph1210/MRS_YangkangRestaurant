@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        #menu-table {
+            cursor: pointer;
+        }
+
+        #menu-table tr {
+            transition: 0.25s;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        #menu-table td {
+            text-align: center;
+        }
+
+        #menu-table th {
+            white-space: nowrap;
+        }
+
+        #menu-table-wrapper {
+            min-height: 128px;
+            max-width: 1000px;
+            max-height: 500px;
+            overflow-y: scroll;
+        }
+
+        .selected {
+            color: white;
+            background-color: #7bed9f;
+        }
+    </style>
+
+    <script src="/page/main/menu-service/combo/index.js "></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-3 mb-3">
+                <input id="form-minPrice" class="form-control form-control-sm me-2" type="search"
+                    placeholder="Tìm kiếm theo giá nhỏ nhất" aria-label="Search">
+            </div>
+
+            <div class="col-3 mb-3">
+                <input id="form-maxPrice" class="form-control form-control-sm me-2" type="search"
+                    placeholder="Tìm kiếm theo giá lớn nhất" aria-label="Search">
+            </div>
+
+        </div>
+        <div class="row mt-3">
+            <div class="col-6 d-flex">
+                <input id="form-combo" class="form-control form-control-sm me-2" type="search"
+                    placeholder="Tìm kiếm theo tên" aria-label="Search">
+                <button id="btn-search" class="col-auto btn btn-sm btn-outline-success" type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Tìm kiếm
+                </button>
+            </div>
+            <div class="col-6 d-flex justify-content-end">
+                <button id="btn-refresh" type="button" class="btn btn-sm btn-primary">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    Refresh
+                </button>
+                <button id="btn-add" type="button" class="btn btn-sm btn-success ms-2" data-bs-toggle="modal"
+                    data-bs-target="#form-modal">
+                    <i class="fa-solid fa-plus"></i>
+                    Thêm
+                </button>
+                <button id="btn-edit" type="button" class="btn btn-sm btn-warning ms-2" data-bs-toggle="modal"
+                    data-bs-target="#form-modal" disabled>
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Sửa
+                </button>
+                <button id="btn-delete" type="button" class="btn btn-sm btn-danger ms-2" data-bs-toggle="modal"
+                    data-bs-target="#delete-modal" disabled>
+                    <i class="fa-solid fa-trash"></i>
+                    Xóa
+                </button>
+            </div>
+        </div>
+
+        <div class="container mt-4">
+            <div class="main">
+            </div>
+        </div>
+
+        <div id="loading" class="position-absolute top-50 start-50 spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    </div>
+    <div class="row">
+        <p id="page-info" class="text-start col-auto"></p>
+        <div class="col-auto">
+            <select class="form-select form-select-sm" id="page-size">
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+        <p class="text-start col-auto">rows per page</p>
+        <nav class="col-auto ms-auto">
+            <ul class="pagination pagination-sm">
+                <li class="page-item">
+                    <a onclick="changePageNumberBy(-1)" id="previous" class="page-link" href="#">Previous</a>
+                </li>
+                <li class="page-item">
+                    <input id="page-number" min="1" class="form-control form-control-sm" type="number" value="1">
+                </li>
+                <li class="page-item">
+                    <a onclick="changePageNumberBy(1)" id="next" class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    </div>
+
+    <div id="form-modal-container"></div>
+    <div id="delete-modal-container"></div>
+</body>
+
+</html>

@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 import java.time.LocalDate;
 
 @SpringBootApplication(scanBasePackages = "com.haiph")
+@EnableDiscoveryClient
 public class RestaurantServiceApplication implements CommandLineRunner {
     @Autowired
     private RestaurantFormRepository formRepository;

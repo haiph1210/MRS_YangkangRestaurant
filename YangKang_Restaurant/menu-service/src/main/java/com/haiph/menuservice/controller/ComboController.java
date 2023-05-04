@@ -4,7 +4,6 @@ import com.haiph.common.dto.response.Response;
 import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.common.exception.CommonException;
 import com.haiph.menuservice.dto.form.SearchFormCombo;
-import com.haiph.menuservice.dto.form.SearchFormMenu;
 import com.haiph.menuservice.dto.request.ComboRequest;
 import com.haiph.menuservice.service.ComboService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/combo")
+@RequestMapping("/api/combo")
 public class ComboController {
     @Autowired
     private ComboService comboService;

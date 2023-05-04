@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/payment")
+@RequestMapping("/api/payment")
 public class PaymentController {
     @Autowired
     private PaymentService service;
