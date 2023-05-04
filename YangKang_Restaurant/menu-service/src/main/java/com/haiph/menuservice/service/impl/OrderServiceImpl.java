@@ -5,6 +5,8 @@ import com.haiph.common.email.SendMail;
 import com.haiph.common.enums.status.menuService.order.OrderStatus;
 import com.haiph.common.exception.CommonException;
 import com.haiph.common.formEmail.ApprovedOrder;
+import com.haiph.common.formEmail.AutoOrder;
+import com.haiph.common.formEmail.RefuseOrder;
 import com.haiph.menuservice.dto.form.SearchFormOrder;
 import com.haiph.menuservice.dto.request.OrderRequest;
 import com.haiph.menuservice.dto.response.ComboResponse;
@@ -144,25 +146,50 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
 
     @Override
     public String create(OrderRequest request) {
-        Order order = new Order(
-                genarateOrderCode(request.getHour(),
-                        findRestaurantFormList(request.getIdForms()).iterator().next().getFormCode(),
-                        request.getType().getDescription()),
-                request.getPersonCode(),
-                request.getIdMenus(),
-                request.getIdCombos(),
-                request.getIdForms(),
-                totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
-                totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
-                LocalDate.now(),
-                request.getHour(),
-                request.getDescription(),
-                request.getType(),
-                OrderStatus.PENDING,
-                request.getPeople());
-        orderRepository.save(order);
-        getFormCode.updateBooked(request.getIdForms());
-        return "Create Success";
+        if (request.getPersonCode() == null){
+            Order order = new Order(
+                    genarateOrderCode(request.getHour(),
+                            findRestaurantFormList(request.getIdForms()).iterator().next().getFormCode(),
+                            request.getType().getDescription()),
+                    request.getPersonCode(),
+                    request.getIdMenus(),
+                    request.getIdCombos(),
+                    request.getIdForms(),
+                    totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
+                    totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
+                    LocalDate.now(),
+                    request.getHour(),
+                    request.getDescription(),
+                    request.getType(),
+                    OrderStatus.PENDING,
+                    request.getPeople());
+            orderRepository.save(order);
+            getFormCode.updateBooked(request.getIdForms());
+            return "Create Success";
+        }else if (request.getPersonCode() != null){
+            Order order = new Order(
+                    genarateOrderCode(request.getHour(),
+                            findRestaurantFormList(request.getIdForms()).iterator().next().getFormCode(),
+                            request.getType().getDescription()),
+                    request.getPersonCode(),
+                    request.getIdMenus(),
+                    request.getIdCombos(),
+                    request.getIdForms(),
+                    totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
+                    totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
+                    LocalDate.now(),
+                    request.getHour(),
+                    request.getDescription(),
+                    request.getType(),
+                    OrderStatus.PENDING,
+                    request.getPeople());
+            orderRepository.save(order);
+            getFormCode.updateBooked(request.getIdForms());
+            sendMailAuto(request.getPersonCode());
+            return "Create Success";
+        }
+        return "Create false";
+
     }
 
     @Override
@@ -209,7 +236,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
     public String approvedOrder(Integer id) {
         OrderResponse response = findById(id);
         if (orderRepository.approvedOrder(id) > 0) {
-            sendMail(response.getPersonResponses().getPersonCode(),
+            sendMailApproved(response.getPersonResponses().getPersonCode(),
                     response.getCombos(),
                     response.getMenus(),
                     response.getForms());
@@ -220,7 +247,9 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
 
     @Override
     public String refuseOrder(Integer id) {
+        OrderResponse response = findById(id);
         if (orderRepository.refuseOrder(id) > 0) {
+            sendMailRefuse(response.getPersonResponses().getPersonCode());
             return "update refuse success";
         }
         return "update refuse fails";
@@ -326,10 +355,10 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
     }
 
 
-    private String sendMail(String personCode,
-                            List<ComboResponse> comboResponses,
-                            List<MenuResponse> menuResponses,
-                            List<RestaurantFormResponse> formResponses) {
+    private String sendMailApproved(String personCode,
+                                    List<ComboResponse> comboResponses,
+                                    List<MenuResponse> menuResponses,
+                                    List<RestaurantFormResponse> formResponses) {
 
         List<String> listCombo = new ArrayList<>();
         List<String> listMenu = new ArrayList<>();
@@ -386,7 +415,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                     "\n" +
                     "<body>\n" +
                     "    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ\" crossorigin=\"anonymous\">\n" +
-                    "    <div class=\"heading\">" + ApprovedOrder.SUBJECT + "</div>\n" +
+                    "    <div class=\"heading\">" + ApprovedOrder.SUBJECT_CENTER + "</div>\n" +
                     "    <div class=\"content\"><p>" + ApprovedOrder.MESSAGE + "</p>\n" +
                     "            <br> \n" +
                     "        <p>" + "Menu: "+ listMenu + "</p>\n" +
@@ -408,4 +437,123 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         }else
             return "Send mail to person: " + person.getResponseData().getPersonCode() + " fail";
     }
+
+    private String sendMailRefuse(String personCode) {
+
+        APIResponse2<PersonResponse> person = personController.findByPersonCode(personCode);
+
+        if (person.getResponseData() !=null) {
+            String html = "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "\n" +
+                    "<style>\n" +
+                    "    html{\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        box-sizing: border-box;\n" +
+                    "        margin: 0px;\n" +
+                    "        padding: 0px;\n" +
+                    "        width: 1200px;\n" +
+                    "    }\n" +
+                    "    body{\n" +
+                    "    }\n" +
+                    "    .heading{\n" +
+                    "        padding: 2rem 0rem 1.5rem 10rem;\n" +
+                    "        font-size: 22px;\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        font-family: Arial, Helvetica, sans-serif;\n" +
+                    "        color: brown;\n" +
+                    "    }\n" +
+                    "    .content{\n" +
+                    "        padding: 2rem 0rem 0rem 10rem ;\n" +
+                    "        font-size: 18px;\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        font-family: Arial, Helvetica, sans-serif;\n" +
+                    "        color: brown;\n" +
+                    "    }\n" +
+                    "   \n" +
+                    "</style>\n" +
+                    "</head>\n" +
+                    "\n" +
+                    "<body>\n" +
+                    "    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ\" crossorigin=\"anonymous\">\n" +
+                    "    <div class=\"heading\">" + RefuseOrder.SUBJECT_CENTER + "</div>\n" +
+                    "    <div class=\"content\"><p>" + RefuseOrder.MESSAGE + "</p>\n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "    </div>\n" +
+                    "            \n" +
+                    "</body>\n" +
+                    "</html>";
+            SendMail sendMail = SendMail.build(person.getResponseData().getEmail(),RefuseOrder.SUBJECT,html);
+            mailController.sendMail(sendMail);
+            return "Send mail to person: " + person.getResponseData().getPersonCode() + " success";
+        }else
+            return "Send mail to person: " + person.getResponseData().getPersonCode() + " fail";
+    }
+
+    private String sendMailAuto(String personCode) {
+
+        APIResponse2<PersonResponse> person = personController.findByPersonCode(personCode);
+
+        if (person.getResponseData() !=null) {
+            String html = "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "\n" +
+                    "<style>\n" +
+                    "    html{\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        box-sizing: border-box;\n" +
+                    "        margin: 0px;\n" +
+                    "        padding: 0px;\n" +
+                    "        width: 1200px;\n" +
+                    "    }\n" +
+                    "    body{\n" +
+                    "    }\n" +
+                    "    .heading{\n" +
+                    "        padding: 2rem 0rem 1.5rem 10rem;\n" +
+                    "        font-size: 22px;\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        font-family: Arial, Helvetica, sans-serif;\n" +
+                    "        color: brown;\n" +
+                    "    }\n" +
+                    "    .content{\n" +
+                    "        padding: 2rem 0rem 0rem 10rem ;\n" +
+                    "        font-size: 18px;\n" +
+                    "        background-color: rgba(255, 59, 9, 0.2); \n" +
+                    "        font-family: Arial, Helvetica, sans-serif;\n" +
+                    "        color: brown;\n" +
+                    "    }\n" +
+                    "   \n" +
+                    "</style>\n" +
+                    "</head>\n" +
+                    "\n" +
+                    "<body>\n" +
+                    "    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ\" crossorigin=\"anonymous\">\n" +
+                    "    <div class=\"heading\">" + AutoOrder.SUBJECT_CENTER + "</div>\n" +
+                    "    <div class=\"content\"><p>" + AutoOrder.MESSAGE + "</p>\n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "    </div>\n" +
+                    "            \n" +
+                    "</body>\n" +
+                    "</html>";
+            SendMail sendMail = SendMail.build(person.getResponseData().getEmail(),AutoOrder.SUBJECT,html);
+            mailController.sendMail(sendMail);
+            return "Send mail to person: " + person.getResponseData().getPersonCode() + " success";
+        }else
+            return "Send mail to person: " + person.getResponseData().getPersonCode() + " fail";
+    }
+
 }

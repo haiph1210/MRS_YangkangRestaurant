@@ -219,6 +219,11 @@ public class EmployeeServiceImpl implements com.haiph.userservice.service.Employ
                     "    <div class=\"content\"><p>" + ActivePerson.MESSAGE + "</p>\n" +
                     "            <br> \n" +
                     "        <p>" + message + "</p>\n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
                     "    </div>\n" +
                     "            \n" +
                     "</body>\n" +

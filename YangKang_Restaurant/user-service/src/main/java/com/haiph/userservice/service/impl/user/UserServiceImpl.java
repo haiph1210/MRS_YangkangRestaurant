@@ -257,6 +257,11 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                     "    <div class=\"content\"><p>" + ActivePerson.MESSAGE + "</p>\n" +
                     "            <br> \n" +
                     "        <p>" + message + "</p>\n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
+                    "            <br> \n" +
                     "    </div>\n" +
                     "            \n" +
                     "</body>\n" +
@@ -267,4 +272,5 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         } else
             return "Send mail to person: " + person.get().getPersonCode() + " fail";
     }
+
 }
