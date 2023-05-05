@@ -43,17 +43,25 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
 
 
 
-    private List<OrderResponse> findListIdOrder(List<Integer> ids) {
-        List<OrderResponse> responses = orderService.findListId(ids);
-        if (responses.isEmpty()) {
+    private OrderResponse findListIdOrder(Integer id) {
+        OrderResponse responses = orderService.findById(id);
+        if (responses == null ) {
             throw new CommonException(Response.NOT_FOUND, "Cannot find order");
         }
         return responses;
     }
 
-    private Double findTotalPrice(List<Integer> ids) {
-        List<OrderResponse> responses = findListIdOrder(ids);
-        return responses.iterator().next().getTotalPrice();
+    private String findPersonCodeListIdOrder(Integer ids) {
+      OrderResponse responses = orderService.findById(ids);
+        if (responses == null) {
+            throw new CommonException(Response.NOT_FOUND, "Cannot find order");
+        }
+        return responses.getPersonResponses().getPersonCode();
+    }
+
+    private Double findTotalPrice(Integer ids) {
+        OrderResponse responses = findListIdOrder(ids);
+        return responses.getTotalPrice();
     }
 
     private DiscountResponse findByDiscountId(Integer id) {
@@ -73,11 +81,10 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
                 PaymentResponse
                         .build(
                                 payment.getId(),
-                                payment.getPersonCode(),
                                 payment.getPaymentCode(),
-                                findListIdOrder(payment.getOrderIds()),
+                                findListIdOrder(payment.getOrderId()),
                                 findByDiscountId(payment.getDiscountId()),
-                                findTotalPrice(payment.getOrderIds()),
+                                findTotalPrice(payment.getOrderId()),
                                 payment.getCustomerPay(),
                                 payment.getRemain(),
                                 payment.getStatus(),
@@ -97,11 +104,10 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
                 PaymentResponse
                         .build(
                                 payment.getId(),
-                                payment.getPersonCode(),
                                 payment.getPaymentCode(),
-                                findListIdOrder(payment.getOrderIds()),
+                                findListIdOrder(payment.getOrderId()),
                                 findByDiscountId(payment.getDiscountId()),
-                                findTotalPrice(payment.getOrderIds()),
+                                findTotalPrice(payment.getOrderId()),
                                 payment.getCustomerPay(),
                                 payment.getRemain(),
                                 payment.getStatus(),
@@ -123,7 +129,7 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
         Double remain;
         if (checkExpired(create, response.getStartDate(), response.getEndDate())) {
             log.info("Đã Áp Dụng Mã Giảm Giá");
-            remain = customerPay - ((totalPrice * response.getPercentDiscount().getPercent()) / 100);
+            remain = customerPay - (totalPrice- ((totalPrice * response.getPercentDiscount().getPercent()) / 100));
         } else {
             log.info("Mã Giảm Giá Hết Hiệu Lực");
             remain = customerPay - totalPrice;
@@ -132,19 +138,18 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
     }
 
     @Override
-    public List<PaymentResponse> findAllPersonCode(String personCode) {
-        List<Payment> payments = paymentRepository.findAllByPersonCode(personCode);
+    public List<PaymentResponse> findAllByOrderId(Integer orderId) {
+        List<Payment> payments = paymentRepository.findAllByOrderId(orderId);
         List<PaymentResponse> paymentResponses = new ArrayList<>();
         for (Payment payment : payments) {
             PaymentResponse response =
                     PaymentResponse
                             .build(
                                     payment.getId(),
-                                    payment.getPersonCode(),
                                     payment.getPaymentCode(),
-                                    findListIdOrder(payment.getOrderIds()),
+                                    findListIdOrder(payment.getOrderId()),
                                     findByDiscountId(payment.getDiscountId()),
-                                    findTotalPrice(payment.getOrderIds()),
+                                    findTotalPrice(payment.getOrderId()),
                                     payment.getCustomerPay(),
                                     payment.getRemain(),
                                     payment.getStatus(),
@@ -165,11 +170,10 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
                     PaymentResponse
                             .build(
                                     payment.getId(),
-                                    payment.getPersonCode(),
                                     payment.getPaymentCode(),
-                                    findListIdOrder(payment.getOrderIds()),
+                                    findListIdOrder(payment.getOrderId()),
                                     findByDiscountId(payment.getDiscountId()),
-                                    findTotalPrice(payment.getOrderIds()),
+                                    findTotalPrice(payment.getOrderId()),
                                     payment.getCustomerPay(),
                                     payment.getRemain(),
                                     payment.getStatus(),
@@ -191,11 +195,10 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
                     PaymentResponse
                             .build(
                                     payment.getId(),
-                                    payment.getPersonCode(),
                                     payment.getPaymentCode(),
-                                    findListIdOrder(payment.getOrderIds()),
+                                    findListIdOrder(payment.getOrderId()),
                                     findByDiscountId(payment.getDiscountId()),
-                                    findTotalPrice(payment.getOrderIds()),
+                                    findTotalPrice(payment.getOrderId()),
                                     payment.getCustomerPay(),
                                     payment.getRemain(),
                                     payment.getStatus(),
@@ -203,7 +206,7 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
                                     payment.getCreateDate());
             paymentResponses.add(response);
         }
-        return new PageImpl<>(paymentResponses, pageable, page.getTotalPages());
+        return new PageImpl<>(paymentResponses, pageable, page.getTotalElements());
     }
 
     private String genPaymentCode(LocalDate createDate, String personCode) {
@@ -225,17 +228,17 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
         return paymentCode;
     }
 
-    private Double score(String personCode, Double totalPrice) {
+    private Double score(OrderResponse orderResponse) {
         Double maxScore =0d;
-        List<PaymentResponse> responses = findAllPersonCode(personCode);
+        List<PaymentResponse> responses = findAllByOrderId(orderResponse.getId());
         for (PaymentResponse respons : responses) {
             maxScore = respons.getScore();
         }
-        totalPrice += maxScore;
+         maxScore += orderResponse.getTotalPrice();
         if (!responses.isEmpty()) {
-            totalPrice += 0d;
+            maxScore += 0d;
         }
-        return totalPrice;
+        return maxScore;
     }
 
 
@@ -243,15 +246,14 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
     public String create(PaymentRequest request) {
 
         Payment payment = new Payment(
-                request.getPersonCode(),
-                genPaymentCode(LocalDate.now(), request.getPersonCode()),
+                genPaymentCode(LocalDate.now(), findPersonCodeListIdOrder(request.getOrderIds())),
                 request.getOrderIds(),
                 request.getDiscountId(),
                 findTotalPrice(request.getOrderIds()),
                 request.getCustomerPay(),
                 totalRemain(findTotalPrice(request.getOrderIds()), request.getCustomerPay(), findByDiscountId(request.getDiscountId()), LocalDate.now()),
                 request.getStatus(),
-                score(request.getPersonCode(), findTotalPrice(request.getOrderIds())),
+                score(findListIdOrder(request.getOrderIds())),
                 LocalDateTime.now()
         );
         paymentRepository.save(payment);
@@ -259,15 +261,15 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
         return "create succes";
     }
 
-    private List<Integer> findFormIdWithListIdOrder(List<Integer> ids) {
-        List<OrderResponse> responses = findListIdOrder(ids);
+    private List<Integer> findFormIdWithListIdOrder(Integer ids) {
+        OrderResponse responses = findListIdOrder(ids);
         List<Integer> listFormCode = new ArrayList<>();
-        for (OrderResponse respons : responses) {
-            List<RestaurantFormResponse> list = respons.getForms();
+
+            List<RestaurantFormResponse> list = responses.getForms();
             for (RestaurantFormResponse response : list) {
                 listFormCode.add(response.getId());
             }
-        }
+
         return listFormCode;
     }
     
@@ -279,15 +281,14 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
         if (response != null) {
             Payment payment =Payment.build(
                     response.getId(),
-                    request.getPersonCode(),
-                    genPaymentCode(LocalDate.now(), request.getPersonCode()),
+                    genPaymentCode(LocalDate.now(), findPersonCodeListIdOrder(request.getOrderIds())),
                     request.getOrderIds(),
                     request.getDiscountId(),
                     findTotalPrice(request.getOrderIds()),
                     request.getCustomerPay(),
                     totalRemain(findTotalPrice(request.getOrderIds()), request.getCustomerPay(), findByDiscountId(request.getDiscountId()), LocalDate.now()),
                     request.getStatus(),
-                    score(request.getPersonCode(), findTotalPrice(request.getOrderIds())),
+                    score(findListIdOrder(request.getOrderIds())),
                     LocalDateTime.now()
             );
             paymentRepository.save(payment);

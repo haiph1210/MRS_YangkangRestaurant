@@ -15,8 +15,7 @@ import java.util.List;
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
 public class PaymentRequest {
-    private String personCode;
-    private List<Integer> orderIds;
+    private Integer orderIds;
     private Integer discountId;
     private Double customerPay;
     private PaymenStatus status;

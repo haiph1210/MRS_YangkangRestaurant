@@ -40,4 +40,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
      @Query(nativeQuery = true, value = ("SELECT * FROM `order` WHERE id IN ?1"))
 
      List<Order> findByListId(List<Integer> ids);
+
+     @Query(nativeQuery = true,value = "SELECT * FROM yangkang_data.order\n" +
+             "WHERE `status` = 1")
+     List<Order> findAllIfApproved() ;
 }

@@ -16,7 +16,8 @@ public interface PaymentService {
 
     boolean checkExpired(LocalDate createDate, LocalDateTime startDate, LocalDateTime endDate);
 
-    List<PaymentResponse> findAllPersonCode(String personCode);
+
+    List<PaymentResponse> findAllByOrderId(Integer orderId);
 
     List<PaymentResponse> findListId(List<Integer> ids);
 

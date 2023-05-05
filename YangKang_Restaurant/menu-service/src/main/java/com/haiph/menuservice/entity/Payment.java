@@ -20,12 +20,8 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String personCode;
     private String paymentCode;
-    @ElementCollection
-    @CollectionTable(name = "payment_order_ids", joinColumns = @JoinColumn(name = "payment_id"))
-    @JoinColumn(name = "`payment_id`", referencedColumnName = "`id`")
-    private List<Integer> orderIds;
+    private Integer orderId;
     private Integer discountId;
     private Double totalPrice;
     private Double customerPay;
@@ -44,10 +40,9 @@ public class Payment {
         }
     }
 
-    public Payment(String personCode, String paymentCode, List<Integer> orderId, Integer discountId, Double totalPrice, Double customerPay, Double remain, PaymenStatus status, Double score, LocalDateTime createDate) {
-        this.personCode = personCode;
+    public Payment(String paymentCode, Integer orderId, Integer discountId, Double totalPrice, Double customerPay, Double remain, PaymenStatus status, Double score, LocalDateTime createDate) {
         this.paymentCode = paymentCode;
-        this.orderIds = orderId;
+        this.orderId = orderId;
         this.discountId = discountId;
         this.totalPrice = totalPrice;
         this.customerPay = customerPay;

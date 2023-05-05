@@ -4,14 +4,13 @@ import com.haiph.common.enums.status.personService.empl.PositionEmpl;
 import com.haiph.common.enums.status.personService.empl.Salary;
 import com.haiph.common.enums.status.personService.person.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table
-@Data
-//@AllArgsConstructor(staticName = "build")
+@Getter
+@Setter
+@AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
 public class Employee extends Person {

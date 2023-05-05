@@ -20,8 +20,23 @@ public class OrderController {
     @Autowired
     private OrderService service;
 
+    @GetMapping("/findAllIsApproved")
+    public ResponseEntity<ResponseBody> findAll() {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            service.findAll()
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
     @GetMapping("/findAll")
-    public ResponseEntity<ResponseBody> findAll(Pageable pageable) {
+    public ResponseEntity<ResponseBody> findPage(Pageable pageable) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
@@ -35,6 +50,7 @@ public class OrderController {
         }
     }
 
+
     @GetMapping("/findId/{id}")
     public ResponseEntity<ResponseBody> findById(@PathVariable Integer id) {
         try {
@@ -43,6 +59,21 @@ public class OrderController {
                             Response.SUCCESS.getResponseCode(),
                             Response.SUCCESS.getResponseMessage(),
                             service.findById(id)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @GetMapping("/orderCode/{orderCode}")
+    public ResponseEntity<ResponseBody> findByOrderCode(@PathVariable String orderCode) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            service.findByOrderCode(orderCode)
                     )
             );
         } catch (CommonException exception) {

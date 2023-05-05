@@ -17,9 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 public class PaymentResponse {
     private Integer id;
-    private String personCode;
     private String paymentCode;
-    private List<OrderResponse> orderResponse;
+    private OrderResponse orderResponse;
     private DiscountResponse discountResponse;
     private Double totalPrice;
     private Double customerPay;

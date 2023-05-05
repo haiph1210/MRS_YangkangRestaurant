@@ -69,7 +69,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "List Menu Have Not Data");
         }
-        return new PageImpl<>(dtos, pageable, page.getTotalPages());
+        return new PageImpl<>(dtos, pageable, page.getTotalElements());
     }
 
     @Override

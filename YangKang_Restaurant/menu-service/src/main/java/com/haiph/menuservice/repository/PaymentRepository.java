@@ -10,7 +10,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
-    List<Payment> findAllByPersonCode(String personCode);
+    @Query(nativeQuery = true, value = "" +
+            "SELECT p.* FROM yangkang_data.payment p\n" +
+            "JOIN yangkang_data.`order` o \n" +
+            "ON p.order_id = o.id\n" +
+            "WHERE o.id = ?1")
+    List<Payment> findAllByOrderId(Integer OrderId);
 
     Payment findByPaymentCode(String paymentCode);
 

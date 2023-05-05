@@ -75,7 +75,7 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
         if (dtos.isEmpty()) {
             throw new CommonException(Response.DATA_NOT_FOUND, "List Combo Have Not Data");
         }
-        return new PageImpl<>(dtos, pageable, page.getTotalPages());
+        return new PageImpl<>(dtos, pageable, page.getTotalElements());
     }
 
     @Override

@@ -43,7 +43,7 @@ public class DiscountServiceImpl implements com.haiph.menuservice.service.Discou
                             checkExpired(discount.getStartDate(), discount.getEndDate()));
             responses.add(response);
         }
-        return new PageImpl<>(responses, pageable, page.getTotalPages());
+        return new PageImpl<>(responses, pageable, page.getTotalElements());
     }
 
     @Override
