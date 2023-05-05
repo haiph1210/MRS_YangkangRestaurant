@@ -3,25 +3,25 @@
 
 <head>
     <style>
-        #order-table {
+        #payment-table {
             cursor: pointer;
         }
 
-        #order-table tr {
+        #payment-table tr {
             transition: 0.25s;
             vertical-align: middle;
             text-align: center;
         }
 
-        #order-table td {
+        #payment-table td {
             text-align: center;
         }
 
-        #order-table th {
+        #payment-table th {
             white-space: nowrap;
         }
 
-        #order-table-wrapper {
+        #payment-table-wrapper {
             min-height: 128px;
             max-width: 1000px;
             max-height: 500px;
@@ -34,18 +34,27 @@
         }
     </style>
 
-    <script src="/page/main/menu-service/order-user/index.js "></script>
+    <script src="/page/main/menu-service/payment/index.js "></script>
 </head>
 
 <body>
     <div class="container">
         <div class="row">
+            <div class="col-3 mb-3">
+                <input id="form-minPrice" class="form-control form-control-sm me-2" type="search"
+                    placeholder="Tìm kiếm theo giá nhỏ nhất" aria-label="Search">
+            </div>
+
+            <div class="col-3 mb-3">
+                <input id="form-maxPrice" class="form-control form-control-sm me-2" type="search"
+                    placeholder="Tìm kiếm theo giá lớn nhất" aria-label="Search">
+            </div>
 
         </div>
         <div class="row mt-3">
             <div class="col-6 d-flex">
-                <input id="form-orderCode" class="form-control form-control-sm me-2" type="search"
-                    placeholder="Tìm kiếm theo tên order" aria-label="Search">
+                <input id="form-payment" class="form-control form-control-sm me-2" type="search"
+                    placeholder="Tìm kiếm theo tên payment" aria-label="Search">
                 <button id="btn-search" class="col-auto btn btn-sm btn-outline-success" type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     Tìm kiếm
@@ -74,68 +83,69 @@
             </div>
         </div>
         <div class="position-relative">
-            <div id="order-table-wrapper" class="row my-4">
-                <table id="order-table" class="table">
-                    <thead id="order-thead">
+            <div id="payment-table-wrapper" class="row my-4">
+                <table id="payment-table" class="table">
+                    <thead id="payment-thead">
                         <tr class="text-primary sticky-top bg-light">
-                            <th>
+                            <th scope="col" class="px-3" key="stt">
                                 STT <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
-                            <th>
-                                ID <i class="fa-solid fa-sort fa-xs ms-2"></i>
+
+                            <th scope="col" class="px-4" key="id">
+                                ID
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+                            <th scope="col" class="px-4" key="personCode">
+                                Mã Người Dùng
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
                             <th scope="col" class="px-3" key="orderCode">
-                                OrderCode <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                                Mã Hóa Đơn
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="personCode">
-                                PersonCode <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            <th scope="col" class="px-3" key="paymentCode">
+                                Mã Thanh Toán
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="menus">
-                                Danh Sách Menu <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-
-                            <th scope="col" class="px-3" key="combos">
-                                Danh Sách Combo <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-
-                            <th scope="col" class="px-3" key="forms">
-                                Danh Sách Bàn <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-
-                            <th scope="col" class="px-3" key="people">
-                                Tổng Số Người <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-
-                            <th scope="col" class="px-3" key="hour">
-                                Đặt Giờ <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-
-                            <th scope="col" class="px-3" key="description">
-                                Mô Tả <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-
-                            <th scope="col" class="px-3" key="type">
-                                Kiểu <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-
-                            <th scope="col" class="px-3" key="totalAmount">
-                                Tổng Số Món <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            <th scope="col" class="px-3" key="discountCode">
+                                Mã Giảm Giá
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
                             <th scope="col" class="px-3" key="totalPrice">
-                                Tổng Số Tiền <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                                Tổng Số Tiền
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+                            <th scope="col" class="px-3" key="customerPay">
+                                Khách Trả
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+                            <th scope="col" class="px-3" key="remain">
+                                Tiền Thừa
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
                             <th scope="col" class="px-3" key="status">
-                                Trạng Thái <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                                Loại Tiền Nhận
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+                            <th scope="col" class="px-3" key="scrore">
+                                Điểm
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
+                            <th scope="col" class="px-3" key="createdDate">
+                                Ngày Tạo
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
                         </tr>
                     </thead>
-                    <tbody id="order-tbody"></tbody>
+                    <tbody id="payment-tbody"></tbody>
                 </table>
                 <div id="loading" class="position-absolute top-50 start-50 spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>

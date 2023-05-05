@@ -6,21 +6,20 @@ var UrlForms = 'http://localhost:8002/api/restaurant/form/'
 var UrlOrder = 'http://localhost:8000/api/order/'
 
 
+
 $('#btn-search').on('click',searchForm)
 
     function searchForm()   {
-
+        const orderCode = $('#form-orderCode').val();
+        console.log(orderCode);
         $.ajax({
-            method: 'POST',
-            url: UrlMenu+'search-form',
+            method: 'GET',
+            url: UrlOrder+'orderCode/' +orderCode,
             contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify({
-                search: $('#form-menu').val(),
-                minPrice: $('#form-minPrice').val(),
-                maxPrice: $('#form-maxPrice').val()
-            }),
             success: function (data) {
-                showMenus(data.responseData);
+                console.log(data.responseData);
+                showOrders(data.responseData);
+                hideLoading();
             }
         });
 }
@@ -66,7 +65,7 @@ function addListeners() {
         }
     });
 
-    $('#menu-tbody').on('click', 'tr', function (event) {
+    $('#order-tbody').on('click', 'tr', function (event) {
         if (event.ctrlKey) {
             $(this).toggleClass('selected');
         } else {
@@ -75,7 +74,7 @@ function addListeners() {
         updateStatus();
     });
 
-    $('#menu-thead').on('click', 'th', function (event) {
+    $('#order-thead').on('click', 'th', function (event) {
         $(this).siblings().find('i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
 
         const i = $(this).find('i');
@@ -91,7 +90,7 @@ function addListeners() {
     });
 
     $('#btn-add').on('click', event => {
-        $('#menu-form').trigger('reset');
+        $('#order-form').trigger('reset');
         $('#form-id-container').hide();
         $('#form-modal-btn-update').hide();
         $('#form-modal-btn-create').show();
@@ -99,7 +98,7 @@ function addListeners() {
     });
 
     $('#btn-edit').on('click', event => {
-        $('#menu-form').trigger('reset');
+        $('#order-form').trigger('reset');
         $('#form-modal-btn-create').hide();
         $('#form-modal-btn-update').show();
         $('#form-id-container').show();
@@ -107,7 +106,8 @@ function addListeners() {
 
         const row = $('.selected');
         $('#form-id').val(row.find('.id').attr('value'));
-        $('#form-name').val(row.find('.name').attr('value'));
+        $('#form-personCode').val(row.find('.personCode').attr('value'));
+        
     });
 
     $('#btn-delete').on('click', function (event) {
@@ -170,7 +170,7 @@ function updateStatus() {
     }
 }
 
-function loadMenus() {
+function loadOrder() {
     const searchParams = new URLSearchParams();
 
     const params = {
@@ -184,20 +184,20 @@ function loadMenus() {
         }
     }
 
-    $.ajax({
-        method: 'GET',
-        url: UrlMenu+'findPage?' + searchParams,
-        beforeSend: () => showLoading(),
-        success: function (data) {
-            var showPage = data.responseData;
-            var contents = data.responseData.content;
-            showPageInfo(showPage);
-            showMenus(contents);
-            updateStatus();
-        },
-        error: () => location.replace('/common/error/404-not-found.html'),
-        complete: () => hideLoading()
-    });
+    // $.ajax({
+    //     method: 'GET',
+    //     url: UrlOrder+'orderCode' + searchParams,
+    //     beforeSend: () => showLoading(),
+    //     success: function (data) {
+    //         var showPage = data.responseData;
+    //         var contents = data.responseData.content;
+    //         showPageInfo(showPage);
+    //         showOrders(contents);
+    //         updateStatus();
+    //     },
+    //     error: () => location.replace('/common/error/404-not-found.html'),
+    //     complete: () => hideLoading()
+    // });
 }
 
 function showPageInfo(data) {
@@ -218,22 +218,40 @@ function showPageInfo(data) {
 
 
 
-function showMenus(content) {
-    const tbody = $('#menu-tbody');
+
+function showOrders(order) {
+    const tbody = $('#order-tbody');
+    console.log(order);
     tbody.empty();
     var number = 1;
-    for (const menu of content) {
+  
+        const menus = order.menus;
+        const combos = order.combos;
+        const forms = order.forms;
+        const menuNames = menus.map(menu => menu.name); 
+        const comboNames = combos.map(combo => combo.name);
+        const formCodes = forms.map(form => form.formCode);
+
+        const hourUpdate = new Date(order.hour).toLocaleTimeString();
         tbody.append(`
             <tr>
                 <th class='stt' value='${number}' scope="row">${number++}</th>
-                <td class='id' value='${menu.id}'>${menu.id}</td>
-                <td class='name' value='${menu.name}'>${menu.name}</td>
-                <td class='price' value='${menu.price}'>${menu.price.toLocaleString('vi-VN')}₫</td>
-                <td class='imgUrl' value='${menu.imgUrl}'><img src="${menu.imgUrl}" width="96"> </td>
-                <td class='description' value='${menu.description}'>${menu.description}</td>
+                <td class='id' value='${order.id}'>${order.id}</td>
+                <td class='orderCode' value='${order.orderCode}'>${order.orderCode}</td>
+                <td class='personCode' value='${order.personResponses.personCode}'>${order.personResponses.personCode}</td>
+                <td class='menus' value='${menuNames}'>${menuNames}</td>
+                <td class='combos' value='${comboNames}'>${comboNames}</td>
+                <td class='forms' value='${formCodes}'>${formCodes}</td>
+                <td class='people' value='${order.people}'>${order.people}</td>
+                <td class='hour' value='${hourUpdate}'>${hourUpdate}</td>
+                <td class='description' value='${order.description}'>${order.description}</td>
+                <td class='type' value='${order.type}'>${order.type}</td>
+                <td class='totalAmount' value='${order.totalAmount}'>${order.totalAmount}</td>
+                <td class='totalPrice' value='${order.totalPrice}'>${order.totalPrice.toLocaleString('vi-VN')}₫</td>
+                <td class='status' value='${order.status}'>${order.status}</td>
             </tr>
         `);
-    }
+    
 }
 
 function showLoading() {

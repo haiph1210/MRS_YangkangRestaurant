@@ -1,39 +1,37 @@
 var KEY_ENTER = 13;
 var sort = null;
+var UrlPayment = 'http://localhost:8000/api/payment/'
 
-UrlOrder ="http://localhost:8000/api/order/"
 
 $('#btn-search').on('click',searchForm)
 
     function searchForm()   {
+
         $.ajax({
             method: 'POST',
-            url: UrlOrder+'search-form',
+            url: UrlPayment+'search-form',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
-                search: $('#form-order').val(),
+                search: $('#form-payment').val(),
                 minPrice: $('#form-minPrice').val(),
                 maxPrice: $('#form-maxPrice').val()
             }),
-            beforeSend: () => showLoading(),
             success: function (data) {
-                showOrders(data.responseData);
+                showPayments(data.responseData);
             }
-         
-
         });
 }
 $(function () {
-    $('#form-modal-container').load('/page/main/order-service/order/form-modal.html');
+    $('#form-modal-container').load('/page/main/menu-service/payment/form-modal.html');
     $('#delete-modal-container').load('/common/modal/delete-modal.html', null, function () {
         $('#delete-modal-btn-remove').on('click', function (event) {
             $.ajax({
                 method: 'DELETE',
-                url: UrlOrder+'delete',
+                url: UrlPayment+'delete',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify($('.selected .id').toArray().map(id => id.innerText)),
                 beforeSend: () => showLoading(),
-                success: data => loadOrders(),
+                success: data => loadPayments(),
                 complete: () => hideLoading()
             });
             bootstrap.Modal.getOrCreateInstance($('#delete-modal')).hide();
@@ -47,23 +45,23 @@ $(function () {
     // }
 
     addListeners();
-    loadOrders();
+    loadPayments();
 });
 
 function addListeners() {
-    $( '#btn-refresh').on('click', event => loadOrders());
+    $( '#btn-refresh').on('click', event => loadPayments());
 
     // Khi người dùng thay đổi page size
-    $('#page-size').on('change', event => loadOrders());
+    $('#page-size').on('change', event => loadPayments());
 
     // Khi người dùng thay đổi page number và nhấn ENTER
     $('#page-number').on('keypress', event => {
         if (event.which == KEY_ENTER) {
-            loadOrders();
+            loadPayments();
         }
     });
 
-    $('#order-tbody').on('click', 'tr', function (event) {
+    $('#payment-tbody').on('click', 'tr', function (event) {
         if (event.ctrlKey) {
             $(this).toggleClass('selected');
         } else {
@@ -71,48 +69,8 @@ function addListeners() {
         }
         updateStatus();
     });
-    
-    $('#order-tbody').on('click', '.approval-button', function (event) {
-        // event.stopPropagation();
-        const row = $(this).closest('tr');
-        const id = row.find('.id').attr('value');
-        console.log("Id:", id);
-        if (confirm("Bạn có chắc chắn muốn approve?")) {
-            $.ajax({
-                method: 'PUT',
-                url: UrlOrder+'updateApproved/' + id,
-                contentType: 'application/json; charset=utf-8',
-                success: function (data) {
-                    loadOrders();
-                }
-            });
-        }
-  });
 
-  $('#order-tbody').on('click', '.refuse-button', function (event) {
-    // event.stopPropagation();
-    const row = $(this).closest('tr');
-    const id = row.find('.id').attr('value');
-    console.log("Id:", id);
-    if (confirm("Bạn có chắc chắn muốn refuse?")) {
-        $.ajax({
-            method: 'PUT',
-            url: UrlOrder+'updateRefuse/' + id,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                loadOrders();
-            }
-        });
-    }
-});
-
-
-    $('#order-tbody').on('dblclick', 'tr', function () {
-        $(this).removeClass('selected');
-        updateStatus();
-    });
-
-    $('#order-thead').on('click', 'th', function (event) {
+    $('#payment-thead').on('click', 'th', function (event) {
         $(this).siblings().find('i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
 
         const i = $(this).find('i');
@@ -124,19 +82,22 @@ function addListeners() {
 
         let type = i.hasClass('fa-sort-up') ? 'asc' : 'desc';
         sort = `${$(this).attr('key')},${type}`
-        loadOrder();
+        loadPayments();
     });
 
     $('#btn-add').on('click', event => {
-        $('#order-form').trigger('reset');
+        $('#payment-form').trigger('reset');
         $('#form-id-container').hide();
         $('#form-modal-btn-update').hide();
         $('#form-modal-btn-create').show();
-        $('#form-modal-title').text('Thêm danh mục sản phẩm');
+        $('#form-modal-title').text('Tính Tiền');
+
+        const row = $('.selected');
+        $('#form-personCode').val(row.find('.personCode').attr('value'));
     });
 
     $('#btn-edit').on('click', event => {
-        $('#order-form').trigger('reset');
+        $('#payment-form').trigger('reset');
         $('#form-modal-btn-create').hide();
         $('#form-modal-btn-update').show();
         $('#form-id-container').show();
@@ -168,7 +129,7 @@ function updateStatus() {
     }
 }
 
-function loadOrders() {
+function loadPayments() {
     const searchParams = new URLSearchParams();
 
     const params = {
@@ -184,17 +145,23 @@ function loadOrders() {
 
     $.ajax({
         method: 'GET',
-        url: UrlOrder+'findAll?' + searchParams,
+        url: UrlPayment+'findAll?' + searchParams,
         beforeSend: () => showLoading(),
         success: function (data) {
-            showPageInfo(data.responseData);
-            showOrders(data.responseData.content);
+            var showPage = data.responseData;
+            var contents = data.responseData.content;
+            showPageInfo(showPage);
+            showPayments(contents);
             updateStatus();
         },
         error: () => location.replace('/common/error/404-not-found.html'),
         complete: () => hideLoading()
     });
 }
+$('#payment-tbody').on('dblclick', 'tr', function () {
+    $(this).removeClass('selected');
+    updateStatus();
+});
 
 function showPageInfo(data) {
     const start = data.pageable.offset;
@@ -214,50 +181,29 @@ function showPageInfo(data) {
 
 
 
-function showOrders(content) {
-    const tbody = $('#order-tbody');
-    console.log(content);
+function showPayments(content) {
+    const tbody = $('#payment-tbody');
     tbody.empty();
     var number = 1;
-    for (const order of content) {
-        const menus = order.menus;
-        const combos = order.combos;
-        const forms = order.forms;
-        const menuNames = menus.map(menu => menu.name); 
-        const comboNames = combos.map(combo => combo.name);
-        const formCodes = forms.map(form => form.formCode);
-
-        const hourUpdate = new Date(order.hour).toLocaleTimeString();
+    for (const payment of content) {
         tbody.append(`
             <tr>
                 <th class='stt' value='${number}' scope="row">${number++}</th>
-                <td class='id' value='${order.id}'>${order.id}</td>
-                <td class='orderCode' value='${order.orderCode}'>${order.orderCode}</td>
-                <td class='personCode' value='${order.personResponses.personCode}'>${order.personResponses.personCode}</td>
-                <td class='menus' value='${menuNames}'>${menuNames}</td>
-                <td class='combos' value='${comboNames}'>${comboNames}</td>
-                <td class='forms' value='${formCodes}'>${formCodes}</td>
-                <td class='people' value='${order.people}'>${order.people}</td>
-                <td class='hour' value='${hourUpdate}'>${hourUpdate}</td>
-                <td class='description' value='${order.description}'>${order.description}</td>
-                <td class='type' value='${order.type}'>${order.type}</td>
-                <td class='totalAmount' value='${order.totalAmount}'>${order.totalAmount}</td>
-                <td class='totalPrice' value='${order.totalPrice}'>${order.totalPrice.toLocaleString('vi-VN')}₫</td>
-                <td class='status' value='${order.status}'>${order.status}</td>
-                <td class='isApproved ${order.status === "PENDING" ? "can-approve" : ""}'>
-  <button class="approval-button" ${order.status !== "PENDING" ? "disabled" : ""}>
-    <i class="fas fa-check approve-icon" title="APPROVED"></i>
-  </button>
-  <button class="refuse-button" ${order.status !== "PENDING" ? "disabled" : ""}>
-    <i class="fas fa-times refuse-icon" title="Refuse"></i>
-  </button>
-</td>
-
-            </tr>
+                <td class='id' value='${payment.id}'>${payment.id}</td>
+                <td class='personCode' value='${payment.orderResponse.personResponses.personCode}'>${payment.orderResponse.personResponses.personCode}</td>
+                <td class='orderCode' value='${payment.orderResponse.orderCode}'>${payment.orderResponse.orderCode}</td>
+                <td class='paymentCode' value='${payment.paymentCode}'>${payment.paymentCode}</td>
+                <td class='discountCode' value='${payment.discountResponse.discountCode}'>${payment.discountResponse.discountCode}</td>
+                <td class='initPrice' value='${payment.totalPrice}'>${payment.totalPrice.toLocaleString('vi-VN')}đ</td>
+                <td class='customsPay' value='${payment.customerPay}'>${payment.customerPay.toLocaleString('vi-VN')}đ</td>
+                <td class='remain' value='${payment.remain}'>${payment.remain.toLocaleString('vi-VN')}đ</td>
+                <td class='status' value='${payment.status}'>${payment.status}</td>
+                <td class='score' value='${payment.score}'>${payment.score}</td>
+                <td class='createDate' value='${payment.createDate}'>${payment.createDate}</td>
+                </tr>
         `);
     }
 }
-
 
 function showLoading() {
     $('#loading').show();
@@ -270,7 +216,7 @@ function hideLoading() {
 function changePageNumberBy(value) {
     const page = $('#page-number');
     page.val(+page.val() + value);
-    loadOrders();
+    loadPayments();
 }
 
 

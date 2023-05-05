@@ -28,14 +28,25 @@ $(function () {
                 
             }),
             success: function (data) {
-                // loadMenus();
-                confirm(data)
-                // $('#menu-form').trigger("reset");
+                confirm(data.responseData+", bạn hãy check mail để nhận thông tin đơn hàng nhé <3")
+                bootstrap.Modal.getOrCreateInstance($('#form-modal')).hide();
             }
         });
     });
 
     $('#form-modal-btn-update').on('click', function (event) {
+        const menuIds = $('input[name="menu-lists[]"]:checked').map(function () {
+            return $(this).val();
+        }).get();
+
+        const comboIds = $('input[name="combo-lists[]"]:checked').map(function () {
+            return $(this).val();
+        }).get();
+
+        const formIds = $('input[name="form-lists[]"]:checked').map(function () {
+            return $(this).val();
+        }).get();
+        const datetime = $('#datetime-input').val();
         const id = $('#form-id').val();
         $.ajax({
             method: 'PUT',
@@ -43,15 +54,18 @@ $(function () {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
                 id: id,
-                name: $('#form-name').val(),
-                price: $('#form-price').val(),
-                imgUrl: $('#form-imgUrl').val(),
+                type: $('#form-type').val(),
+                personCode: $('#form-personCode').val(),
+                idMenus: menuIds,
+                idCombos: comboIds,
+                idForms: formIds,
+                people: $('#form-people').val(),
+                hour: datetime,
                 description: $('#form-description').val(),
-                comboId: $('#form-comboId').val()
             }),
             success: function (data) {
-                loadMenus();
-                $('#menu-form').trigger("reset");
+                confirm(data.responseData)
+                $('#order-form').trigger("reset");
                 bootstrap.Modal.getOrCreateInstance($('#form-modal')).hide();
             }
         });

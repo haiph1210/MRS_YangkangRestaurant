@@ -15,8 +15,9 @@
             <button class="nav-link active" id="home-tab" data-bs-toggle="pill" type="button">Trang chủ</button>
             <button class="nav-link" id="menu-tab" data-bs-toggle="pill" type="button">Menu</button>
             <button class="nav-link" id="combo-tab" data-bs-toggle="pill" type="button">Combo</button>
-            <button class="nav-link" id="order-manager-tab" data-bs-toggle="pill" type="button">Order-Manager</button>
-            <button class="nav-link" id="order-tab" data-bs-toggle="pill" type="button">Order</button>
+            <button class="nav-link" id="order-manager-tab" data-bs-toggle="pill" type="button">Quản Lí Đơn Hàng</button>
+            <button class="nav-link" id="order-tab" data-bs-toggle="pill" type="button">Lên Đơn</button>
+            <button class="nav-link" id="payment-tab" data-bs-toggle="pill" type="button">Tính Tiền</button>
         </div>
         <div class="tab-content mx-5" id="v-pills-tab-content">
             <div class="tab-pane fade show active" id="v-pills-content"></div>
@@ -49,6 +50,11 @@
             $('#order-tab').on('click', function (event) {
                 mainContent.load('page/main/menu-service/order-user/index.html');
             });
+
+            $('#payment-tab').on('click', function (event) {
+                mainContent.load('page/main/menu-service/payment/index.html');
+            });
+
 
             // const role = storage.getItem('key_role');
             // if (role == 'ADMIN') {
