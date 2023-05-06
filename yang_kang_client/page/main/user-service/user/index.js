@@ -1,6 +1,6 @@
 var KEY_ENTER = 13;
 var sort = null;
-var UrlMenu = 'http://localhost:8000/api/menu/'
+var UrlUser = 'http://localhost:8001/api/person/'
 
 
 $('#btn-search').on('click',searchForm)
@@ -9,29 +9,29 @@ $('#btn-search').on('click',searchForm)
 
         $.ajax({
             method: 'POST',
-            url: UrlMenu+'search-form',
+            url: UrlUser+'search-form',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
-                search: $('#form-menu').val(),
+                search: $('#form-user').val(),
                 minPrice: $('#form-minPrice').val(),
                 maxPrice: $('#form-maxPrice').val()
             }),
             success: function (data) {
-                showMenus(data.responseData);
+                showUsers(data.responseData);
             }
         });
 }
 $(function () {
-    $('#form-modal-container').load('/page/main/menu-service/menu/form-modal.html');
+    $('#form-modal-container').load('/page/main/user-service/user/form-modal.html');
     $('#delete-modal-container').load('/common/modal/delete-modal.html', null, function () {
         $('#delete-modal-btn-remove').on('click', function (event) {
             $.ajax({
                 method: 'DELETE',
-                url: UrlMenu+'delete',
+                url: UrlUser+'delete',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify($('.selected .id').toArray().map(id => id.innerText)),
                 beforeSend: () => showLoading(),
-                success: data => loadMenus(),
+                success: data => loadUsers(),
                 complete: () => hideLoading()
             });
             bootstrap.Modal.getOrCreateInstance($('#delete-modal')).hide();
@@ -45,23 +45,23 @@ $(function () {
     // }
 
     addListeners();
-    loadMenus();
+    loadUsers();
 });
 
 function addListeners() {
-    $( '#btn-refresh').on('click', event => loadMenus());
+    $( '#btn-refresh').on('click', event => loadUsers());
 
     // Khi người dùng thay đổi page size
-    $('#page-size').on('change', event => loadMenus());
+    $('#page-size').on('change', event => loadUsers());
 
     // Khi người dùng thay đổi page number và nhấn ENTER
     $('#page-number').on('keypress', event => {
         if (event.which == KEY_ENTER) {
-            loadMenus();
+            loadUsers();
         }
     });
 
-    $('#menu-tbody').on('click', 'tr', function (event) {
+    $('#user-tbody').on('click', 'tr', function (event) {
         if (event.ctrlKey) {
             $(this).toggleClass('selected');
         } else {
@@ -70,7 +70,7 @@ function addListeners() {
         updateStatus();
     });
 
-    $('#menu-thead').on('click', 'th', function (event) {
+    $('#user-thead').on('click', 'th', function (event) {
         $(this).siblings().find('i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
 
         const i = $(this).find('i');
@@ -82,11 +82,11 @@ function addListeners() {
 
         let type = i.hasClass('fa-sort-up') ? 'asc' : 'desc';
         sort = `${$(this).attr('key')},${type}`
-        loadMenus();
+        loadUsers();
     });
 
     $('#btn-add').on('click', event => {
-        $('#menu-form').trigger('reset');
+        $('#user-form').trigger('reset');
         $('#form-id-container').hide();
         $('#form-modal-btn-update').hide();
         $('#form-modal-btn-create').show();
@@ -94,7 +94,7 @@ function addListeners() {
     });
 
     $('#btn-edit').on('click', event => {
-        $('#menu-form').trigger('reset');
+        $('#user-form').trigger('reset');
         $('#form-modal-btn-create').hide();
         $('#form-modal-btn-update').show();
         $('#form-id-container').show();
@@ -126,7 +126,7 @@ function updateStatus() {
     }
 }
 
-function loadMenus() {
+function loadUsers() {
     const searchParams = new URLSearchParams();
 
     const params = {
@@ -142,13 +142,13 @@ function loadMenus() {
 
     $.ajax({
         method: 'GET',
-        url: UrlMenu+'findPage?' + searchParams,
+        url: UrlUser+'findPageUser?' + searchParams,
         beforeSend: () => showLoading(),
         success: function (data) {
             var showPage = data.responseData;
             var contents = data.responseData.content;
             showPageInfo(showPage);
-            showMenus(contents);
+            showUsers(contents);
             updateStatus();
         },
         error: () => location.replace('/common/error/404-not-found.html'),
@@ -174,19 +174,25 @@ function showPageInfo(data) {
 
 
 
-function showMenus(content) {
-    const tbody = $('#menu-tbody');
+function showUsers(content) {
+    const tbody = $('#user-tbody');
     tbody.empty();
     var number = 1;
-    for (const menu of content) {
+    for (const user of content) {
         tbody.append(`
             <tr>
                 <th class='stt' value='${number}' scope="row">${number++}</th>
-                <td class='id' value='${menu.id}'>${menu.id}</td>
-                <td class='name' value='${menu.name}'>${menu.name}</td>
-                <td class='price' value='${menu.price}'>${menu.price.toLocaleString('vi-VN')}₫</td>
-                <td class='imgUrl' value='${menu.imgUrl}'><img src="${menu.imgUrl}" width="96"> </td>
-                <td class='description' value='${menu.description}'>${menu.description}</td>
+                <td class='personCode' value='${user.personCode}'>${user.personCode}</td>
+                <td class='imgUrl' value='${user.imgUrl}'><img src="${user.imgUrl}" width="96"> </td>
+                <td class='email' value='${user.email}'>${user.email}</td>
+                <td class='phoneNumber' value='${user.phoneNumber}'>${user.phoneNumber}</td>
+                <td class='address' value='${user.address}'>${user.address}</td>
+                <td class='gender' value='${user.gender}'>${user.gender}</td>
+                <td class='status' value='${user.status}'>${user.status}</td>
+                <td class='role' value='${user.role}'>${user.role}</td>
+                <td class='createDate' value='${user.createDate}'>${user.createDate}</td>
+                <td class='userType' value='${user.userType}'>${user.userType}</td>
+                <td class='countLogin' value='${user.countLogin}'>${user.countLogin}</td>
             </tr>
         `);
     }
@@ -203,7 +209,7 @@ function hideLoading() {
 function changePageNumberBy(value) {
     const page = $('#page-number');
     page.val(+page.val() + value);
-    loadMenus();
+    loadUsers();
 }
 
 

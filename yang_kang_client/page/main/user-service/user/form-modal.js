@@ -2,18 +2,22 @@ $(function () {
     $('#form-modal-btn-create').on('click', function (event) {
         $.ajax({
             method: 'POST',
-            url: UrlMenu+'create',
+            url: UrlUser+'create-user',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
-                name: $('#form-name').val(),
-                price: $('#form-price').val(),
-                imgUrl: $('#form-imgUrl').val(),
-                description: $('#form-description').val(),
-                comboId: $('#form-comboId').val(),
+                username: $('#form-username').val(),
+             password: $('#form-password').val(),
+        email: $('#form-email').val(),
+        phoneNumber:$('#form-phoneNumber').val(),
+        address: $('#form-address').val(),
+        gender: $('#form-gender').val(),
+        firstName:$('#form-firstName').val(),
+        lastName:$('#form-lastName').val(),
+        imgUrl:$('#form-imgUrl').val(),
             }),
             success: function (data) {
-                loadMenus();
-                $('#menu-form').trigger("reset");
+                loadUsers();
+                $('#user-form').trigger("reset");
             }
         });
     });
@@ -22,7 +26,7 @@ $(function () {
         const id = $('#form-id').val();
         $.ajax({
             method: 'PUT',
-            url: UrlMenu+'update/' + id,
+            url: UrlUser+'update/' + id,
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
                 id: id,
@@ -33,8 +37,8 @@ $(function () {
                 comboId: $('#form-comboId').val()
             }),
             success: function (data) {
-                loadMenus();
-                $('#menu-form').trigger("reset");
+                loadUsers();
+                $('#user-form').trigger("reset");
                 bootstrap.Modal.getOrCreateInstance($('#form-modal')).hide();
             }
         });

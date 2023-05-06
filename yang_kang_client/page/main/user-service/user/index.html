@@ -3,25 +3,25 @@
 
 <head>
     <style>
-        #menu-table {
+        #user-table {
             cursor: pointer;
         }
 
-        #menu-table tr {
+        #user-table tr {
             transition: 0.25s;
             vertical-align: middle;
             text-align: center;
         }
 
-        #menu-table td {
+        #user-table td {
             text-align: center;
         }
 
-        #menu-table th {
+        #user-table th {
             white-space: nowrap;
         }
 
-        #menu-table-wrapper {
+        #user-table-wrapper {
             min-height: 128px;
             max-width: 1000px;
             max-height: 500px;
@@ -34,7 +34,7 @@
         }
     </style>
 
-    <script src="/page/main/menu-service/menu/index.js "></script>
+    <script src="/page/main/user-service/user/index.js "></script>
 </head>
 
 <body>
@@ -53,8 +53,8 @@
         </div>
         <div class="row mt-3">
             <div class="col-6 d-flex">
-                <input id="form-menu" class="form-control form-control-sm me-2" type="search"
-                    placeholder="Tìm kiếm theo tên Menu" aria-label="Search">
+                <input id="form-user" class="form-control form-control-sm me-2" type="search"
+                    placeholder="Tìm kiếm theo tên User" aria-label="Search">
                 <button id="btn-search" class="col-auto btn btn-sm btn-outline-success" type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     Tìm kiếm
@@ -83,42 +83,72 @@
             </div>
         </div>
         <div class="position-relative">
-            <div id="menu-table-wrapper" class="row my-4">
-                <table id="menu-table" class="table">
-                    <thead id="menu-thead">
+            <div id="user-table-wrapper" class="row my-4">
+                <table id="user-table" class="table">
+                    <thead id="user-thead">
                         <tr class="text-primary sticky-top bg-light">
                             <th scope="col" class="px-3" key="stt">
                                 STT <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
                             <th scope="col" class="px-4" key="id">
-                                Menu ID
+                                Mã Người Dùng
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
                             <th scope="col" class="px-4" key="name">
-                                Tên
+                                Họ Và Tên
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
-
 
                             <th scope="col" class="px-3" key="price">
-                                Giá Bán
-                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-
-                            <th scope="col" class="px-3" key="imgUrl">
                                 Ảnh
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="description">
-                                Mô Tả
+                            <th scope="col" class="px-3" key="imgUrl">
+                                Số ĐT
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
+                            <th scope="col" class="px-3" key="description">
+                                Địa Chỉ
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+                            <th scope="col" class="px-3" key="description">
+                                Giới Tính
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+                            <th scope="col" class="px-3" key="description">
+                                Kích Hoạt
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+                            <th scope="col" class="px-3" key="description">
+                                Vai Trò
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+                            <th scope="col" class="px-3" key="description">
+                                Ngày tạo
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+                            <th scope="col" class="px-3" key="description">
+                                Người Dùng Kiểu
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+                            <th scope="col" class="px-3" key="description">
+                                Số Lần Login
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+
                         </tr>
                     </thead>
-                    <tbody id="menu-tbody"></tbody>
+                    <tbody id="user-tbody"></tbody>
                 </table>
                 <div id="loading" class="position-absolute top-50 start-50 spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
