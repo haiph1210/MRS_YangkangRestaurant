@@ -1,6 +1,7 @@
 package com.haiph.employeeservice.service.impl;
 
 import com.haiph.common.dto.response.Response;
+import com.haiph.common.enums.status.emplService.empl.empl.Source;
 import com.haiph.common.exception.CommonException;
 import com.haiph.employeeservice.dto.request.TimeSheetingDayRequest;
 import com.haiph.employeeservice.dto.response.PositionRessponse;
@@ -28,9 +29,10 @@ public class TimeSheetingDayServiceImpl implements com.haiph.employeeservice.ser
     private PositionRessponse findPositionById(Integer id) {
         return positionService.findById(id);
     }
+
     @Override
     public List<TimeSheetingDayResponse> findAll() {
-        List<TimeSheetingDay> sheetingDays =  dayRepository.findAll();
+        List<TimeSheetingDay> sheetingDays = dayRepository.findAll();
         List<TimeSheetingDayResponse> ressponses = new ArrayList<>();
         for (TimeSheetingDay sheetingDay : sheetingDays) {
             TimeSheetingDayResponse sheetingDayResponse = TimeSheetingDayResponse
@@ -47,8 +49,8 @@ public class TimeSheetingDayServiceImpl implements com.haiph.employeeservice.ser
 
     @Override
     public Page<TimeSheetingDayResponse> findAll(Pageable pageable) {
-        Page<TimeSheetingDay> page =  dayRepository.findAll(pageable);
-        List<TimeSheetingDay> sheetingDays =  page.getContent();
+        Page<TimeSheetingDay> page = dayRepository.findAll(pageable);
+        List<TimeSheetingDay> sheetingDays = page.getContent();
         List<TimeSheetingDayResponse> ressponses = new ArrayList<>();
         for (TimeSheetingDay sheetingDay : sheetingDays) {
             TimeSheetingDayResponse sheetingDayResponse = TimeSheetingDayResponse
@@ -60,12 +62,13 @@ public class TimeSheetingDayServiceImpl implements com.haiph.employeeservice.ser
                             sheetingDay.getNote());
             ressponses.add(sheetingDayResponse);
         }
-        return new PageImpl<>(ressponses,pageable,page.getTotalElements());
+        return new PageImpl<>(ressponses, pageable, page.getTotalElements());
     }
 
     @Override
     public TimeSheetingDayResponse findById(EmployeeId id) {
-        TimeSheetingDay sheetingDay = dayRepository.findById(id).orElseThrow(() -> {throw new CommonException(Response.NOT_FOUND,"Cannot find Id: " +id);
+        TimeSheetingDay sheetingDay = dayRepository.findById(id).orElseThrow(() -> {
+            throw new CommonException(Response.NOT_FOUND, "Cannot find Id: " + id);
         });
         TimeSheetingDayResponse sheetingDayResponse = TimeSheetingDayResponse
                 .build(sheetingDay.getPersonCode(),
@@ -84,29 +87,29 @@ public class TimeSheetingDayServiceImpl implements com.haiph.employeeservice.ser
                         request.getDateCheck(),
                         request.getPositionId(),
                         request.getDay(),
-                        request.getSource(),
+                        (request.getSource()),
                         request.getNote()
                 );
         dayRepository.save(day);
-        return "Create Success" ;
+        return "Create Success";
     }
 
     @Override
-    public String update( TimeSheetingDayRequest request) {
-        TimeSheetingDayResponse ressponse = findById(EmployeeId.buid(request.getPersonCode(),request.getDateCheck()));
+    public String update(TimeSheetingDayRequest request) {
+        TimeSheetingDayResponse ressponse = findById(EmployeeId.buid(request.getPersonCode(), request.getDateCheck()));
         if (ressponse != null) {
             TimeSheetingDay day = TimeSheetingDay.
                     build(request.getPersonCode(),
                             request.getDateCheck(),
                             request.getPositionId(),
                             request.getDay(),
-                            request.getSource(),
+                            (request.getSource()),
                             request.getNote()
                     );
             dayRepository.save(day);
-            return "update Success" ;
+            return "update Success";
         }
-        return "update fail" ;
+        return "update fail";
     }
 
     @Override
@@ -114,8 +117,8 @@ public class TimeSheetingDayServiceImpl implements com.haiph.employeeservice.ser
         TimeSheetingDayResponse ressponse = findById(id);
         if (ressponse != null) {
             dayRepository.deleteById(id);
-            return "delete Success" ;
+            return "delete Success";
         }
-        return "delete fail" ;
+        return "delete fail";
     }
-    }
+}

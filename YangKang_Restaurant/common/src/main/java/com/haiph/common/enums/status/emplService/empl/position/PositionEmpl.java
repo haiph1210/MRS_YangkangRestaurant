@@ -1,8 +1,11 @@
 package com.haiph.common.enums.status.emplService.empl.position;
 
+import lombok.Getter;
+
+@Getter
 public enum PositionEmpl {
 
-    SERVE("phục vụ"),
+    SERVE("Phục Vụ"),
     CHEF("Đầu Bếp"),
     MANAGER("Quản Lí"),
     SERVICE("Tạp vụ");

@@ -19,4 +19,6 @@ public class TimeSheetingDayRequest {
     private WorkingDay day;
     private Source source;
     private String note;
+
+
 }

@@ -56,6 +56,8 @@ public class PositionServiceImpl implements com.haiph.employeeservice.service.Po
         return ressponse;
     }
 
+
+
     @Override
     public String create(PositionRequest request) {
         Position position = new Position(request.getPositionEmpl(),findSalary(request.getPositionEmpl()));

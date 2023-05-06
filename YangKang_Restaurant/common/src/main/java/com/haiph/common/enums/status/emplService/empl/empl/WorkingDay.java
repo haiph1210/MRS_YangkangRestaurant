@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum WorkingDay {
     FULL("8h"),
-    HALF_DAY("4h");
+    HALF_DAY("4h"),
+    OFF("Nghỉ");
     private String description;
 
     WorkingDay(String description) {
