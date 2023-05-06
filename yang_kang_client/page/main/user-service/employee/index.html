@@ -3,25 +3,25 @@
 
 <head>
     <style>
-        #payment-table {
+        #employee-table {
             cursor: pointer;
         }
 
-        #payment-table tr {
+        #employee-table tr {
             transition: 0.25s;
             vertical-align: middle;
             text-align: center;
         }
 
-        #payment-table td {
+        #employee-table td {
             text-align: center;
         }
 
-        #payment-table th {
+        #employee-table th {
             white-space: nowrap;
         }
 
-        #payment-table-wrapper {
+        #employee-table-wrapper {
             min-height: 128px;
             max-width: 1000px;
             max-height: 500px;
@@ -34,7 +34,7 @@
         }
     </style>
 
-    <script src="/page/main/menu-service/payment/index.js "></script>
+    <script src="/page/main/user-service/employee/index.js "></script>
 </head>
 
 <body>
@@ -53,8 +53,8 @@
         </div>
         <div class="row mt-3">
             <div class="col-6 d-flex">
-                <input id="form-payment" class="form-control form-control-sm me-2" type="search"
-                    placeholder="Tìm kiếm theo tên payment" aria-label="Search">
+                <input id="form-employee" class="form-control form-control-sm me-2" type="search"
+                    placeholder="Tìm kiếm theo tên Employee" aria-label="Search">
                 <button id="btn-search" class="col-auto btn btn-sm btn-outline-success" type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     Tìm kiếm
@@ -83,69 +83,68 @@
             </div>
         </div>
         <div class="position-relative">
-            <div id="payment-table-wrapper" class="row my-4">
-                <table id="payment-table" class="table">
-                    <thead id="payment-thead">
+            <div id="employee-table-wrapper" class="row my-4">
+                <table id="employee-table" class="table">
+                    <thead id="employee-thead">
                         <tr class="text-primary sticky-top bg-light">
                             <th scope="col" class="px-3" key="stt">
                                 STT <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
                             <th scope="col" class="px-4" key="id">
-                                ID
-                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-                            <th scope="col" class="px-4" key="personCode">
                                 Mã Người Dùng
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
-
-                            <th scope="col" class="px-3" key="orderCode">
-                                Mã Hóa Đơn
+                            <th scope="col" class="px-4" key="name">
+                                Họ Và Tên
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="paymentCode">
-                                Mã Thanh Toán
+                            <th scope="col" class="px-3" key="price">
+                                Ảnh
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="discountCode">
-                                Mã Giảm Giá
+                            <th scope="col" class="px-3" key="price">
+                                Email
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="totalPrice">
-                                Tổng Số Tiền
+                            <th scope="col" class="px-3" key="imgUrl">
+                                Số ĐT
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="customerPay">
-                                Khách Trả
+                            <th scope="col" class="px-3" key="description">
+                                Địa Chỉ
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="remain">
-                                Tiền Thừa
+                            <th scope="col" class="px-3" key="description">
+                                Giới Tính
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="status">
-                                Loại Tiền Nhận
-                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
-                            </th>
-                            <th scope="col" class="px-3" key="scrore">
-                                Điểm
+                            <th scope="col" class="px-3" key="description">
+                                Kích Hoạt
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
 
-                            <th scope="col" class="px-3" key="createdDate">
-                                Ngày Tạo
+                            <th scope="col" class="px-3" key="description">
+                                Vai Trò
                                 <i class="fa-solid fa-sort fa-xs ms-2"></i>
                             </th>
+
+                            <th scope="col" class="px-3" key="description">
+                                Ngày tạo
+                                <i class="fa-solid fa-sort fa-xs ms-2"></i>
+                            </th>
+
+
+
                         </tr>
                     </thead>
-                    <tbody id="payment-tbody"></tbody>
+                    <tbody id="employee-tbody"></tbody>
                 </table>
                 <div id="loading" class="position-absolute top-50 start-50 spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>

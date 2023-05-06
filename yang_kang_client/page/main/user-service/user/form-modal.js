@@ -30,11 +30,15 @@ $(function () {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
                 id: id,
-                name: $('#form-name').val(),
-                price: $('#form-price').val(),
-                imgUrl: $('#form-imgUrl').val(),
-                description: $('#form-description').val(),
-                comboId: $('#form-comboId').val()
+                username: $('#form-username').val(),
+                password: $('#form-password').val(),
+           email: $('#form-email').val(),
+           phoneNumber:$('#form-phoneNumber').val(),
+           address: $('#form-address').val(),
+           gender: $('#form-gender').val(),
+           firstName:$('#form-firstName').val(),
+           lastName:$('#form-lastName').val(),
+           imgUrl:$('#form-imgUrl').val(),
             }),
             success: function (data) {
                 loadUsers();

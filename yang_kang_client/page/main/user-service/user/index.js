@@ -183,6 +183,7 @@ function showUsers(content) {
             <tr>
                 <th class='stt' value='${number}' scope="row">${number++}</th>
                 <td class='personCode' value='${user.personCode}'>${user.personCode}</td>
+                <td class='personCode' value='${user.fullName}'>${user.fullName}</td>
                 <td class='imgUrl' value='${user.imgUrl}'><img src="${user.imgUrl}" width="96"> </td>
                 <td class='email' value='${user.email}'>${user.email}</td>
                 <td class='phoneNumber' value='${user.phoneNumber}'>${user.phoneNumber}</td>

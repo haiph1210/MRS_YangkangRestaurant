@@ -1,6 +1,6 @@
 var KEY_ENTER = 13;
 var sort = null;
-var UrlPayment = 'http://localhost:8000/api/payment/'
+var UrlPerson = 'http://localhost:8001/api/person/'
 
 
 $('#btn-search').on('click',searchForm)
@@ -9,29 +9,29 @@ $('#btn-search').on('click',searchForm)
 
         $.ajax({
             method: 'POST',
-            url: UrlPayment+'search-form',
+            url: UrlPerson+'search-form',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({
-                search: $('#form-payment').val(),
+                search: $('#form-employee').val(),
                 minPrice: $('#form-minPrice').val(),
                 maxPrice: $('#form-maxPrice').val()
             }),
             success: function (data) {
-                showPayments(data.responseData);
+                showEmployees(data.responseData);
             }
         });
 }
 $(function () {
-    $('#form-modal-container').load('/page/main/menu-service/payment/form-modal.html');
+    $('#form-modal-container').load('/page/main/user-service/employee/form-modal.html');
     $('#delete-modal-container').load('/common/modal/delete-modal.html', null, function () {
         $('#delete-modal-btn-remove').on('click', function (event) {
             $.ajax({
                 method: 'DELETE',
-                url: UrlPayment+'delete',
+                url: UrlPerson+'delete',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify($('.selected .id').toArray().map(id => id.innerText)),
                 beforeSend: () => showLoading(),
-                success: data => loadPayments(),
+                success: data => loadEmployees(),
                 complete: () => hideLoading()
             });
             bootstrap.Modal.getOrCreateInstance($('#delete-modal')).hide();
@@ -45,23 +45,23 @@ $(function () {
     // }
 
     addListeners();
-    loadPayments();
+    loadEmployees();
 });
 
 function addListeners() {
-    $( '#btn-refresh').on('click', event => loadPayments());
+    $( '#btn-refresh').on('click', event => loadEmployees());
 
     // Khi người dùng thay đổi page size
-    $('#page-size').on('change', event => loadPayments());
+    $('#page-size').on('change', event => loadEmployees());
 
     // Khi người dùng thay đổi page number và nhấn ENTER
     $('#page-number').on('keypress', event => {
         if (event.which == KEY_ENTER) {
-            loadPayments();
+            loadEmployees();
         }
     });
 
-    $('#payment-tbody').on('click', 'tr', function (event) {
+    $('#employee-tbody').on('click', 'tr', function (event) {
         if (event.ctrlKey) {
             $(this).toggleClass('selected');
         } else {
@@ -70,7 +70,7 @@ function addListeners() {
         updateStatus();
     });
 
-    $('#payment-thead').on('click', 'th', function (event) {
+    $('#employee-thead').on('click', 'th', function (event) {
         $(this).siblings().find('i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
 
         const i = $(this).find('i');
@@ -82,22 +82,19 @@ function addListeners() {
 
         let type = i.hasClass('fa-sort-up') ? 'asc' : 'desc';
         sort = `${$(this).attr('key')},${type}`
-        loadPayments();
+        loadEmployees();
     });
 
     $('#btn-add').on('click', event => {
-        $('#payment-form').trigger('reset');
+        $('#employee-form').trigger('reset');
         $('#form-id-container').hide();
         $('#form-modal-btn-update').hide();
         $('#form-modal-btn-create').show();
-        $('#form-modal-title').text('Tính Tiền');
-
-        const row = $('.selected');
-        $('#form-personCode').val(row.find('.personCode').attr('value'));
+        $('#form-modal-title').text('Thêm danh mục sản phẩm');
     });
 
     $('#btn-edit').on('click', event => {
-        $('#payment-form').trigger('reset');
+        $('#employee-form').trigger('reset');
         $('#form-modal-btn-create').hide();
         $('#form-modal-btn-update').show();
         $('#form-id-container').show();
@@ -129,7 +126,7 @@ function updateStatus() {
     }
 }
 
-function loadPayments() {
+function loadEmployees() {
     const searchParams = new URLSearchParams();
 
     const params = {
@@ -145,23 +142,19 @@ function loadPayments() {
 
     $.ajax({
         method: 'GET',
-        url: UrlPayment+'findAll?' + searchParams,
+        url: UrlPerson+'findPageEmpl?' + searchParams,
         beforeSend: () => showLoading(),
         success: function (data) {
             var showPage = data.responseData;
             var contents = data.responseData.content;
             showPageInfo(showPage);
-            showPayments(contents);
+            showEmployees(contents);
             updateStatus();
         },
         error: () => location.replace('/common/error/404-not-found.html'),
         complete: () => hideLoading()
     });
 }
-$('#payment-tbody').on('dblclick', 'tr', function () {
-    $(this).removeClass('selected');
-    updateStatus();
-});
 
 function showPageInfo(data) {
     const start = data.pageable.offset;
@@ -181,26 +174,26 @@ function showPageInfo(data) {
 
 
 
-function showPayments(content) {
-    const tbody = $('#payment-tbody');
+function showEmployees(content) {
+    const tbody = $('#employee-tbody');
     tbody.empty();
     var number = 1;
-    for (const payment of content) {
+    for (const employee of content) {
         tbody.append(`
             <tr>
                 <th class='stt' value='${number}' scope="row">${number++}</th>
-                <td class='id' value='${payment.id}'>${payment.id}</td>
-                <td class='personCode' value='${payment.orderResponse.personResponses.personCode}'>${payment.orderResponse.personResponses.personCode}</td>
-                <td class='orderCode' value='${payment.orderResponse.orderCode}'>${payment.orderResponse.orderCode}</td>
-                <td class='paymentCode' value='${payment.paymentCode}'>${payment.paymentCode}</td>
-                <td class='discountCode' value='${payment.discountResponse.discountCode}'>${payment.discountResponse.discountCode}</td>
-                <td class='initPrice' value='${payment.totalPrice}'>${payment.totalPrice.toLocaleString('vi-VN')}đ</td>
-                <td class='customsPay' value='${payment.customerPay}'>${payment.customerPay.toLocaleString('vi-VN')}đ</td>
-                <td class='remain' value='${payment.remain}'>${payment.remain.toLocaleString('vi-VN')}đ</td>
-                <td class='status' value='${payment.status}'>${payment.status}</td>
-                <td class='score' value='${payment.score}'>${payment.score}</td>
-                <td class='createDate' value='${payment.createDate}'>${payment.createDate}</td>
-                </tr>
+                <td class='personCode' value='${employee.personCode}'>${employee.personCode}</td>
+                <td class='personCode' value='${employee.fullName}'>${employee.fullName}</td>
+                <td class='imgUrl' value='${employee.imgUrl}'><img src="${employee.imgUrl}" width="96"> </td>
+                <td class='email' value='${employee.email}'>${employee.email}</td>
+                <td class='phoneNumber' value='${employee.phoneNumber}'>${employee.phoneNumber}</td>
+                <td class='address' value='${employee.address}'>${employee.address}</td>
+                <td class='gender' value='${employee.gender}'>${employee.gender}</td>
+                <td class='status' value='${employee.status}'>${employee.status}</td>
+                <td class='role' value='${employee.role}'>${employee.role}</td>
+                <td class='createdDate' value='${employee.createdDate}'>${employee.createdDate}</td>
+          
+            </tr>
         `);
     }
 }
@@ -216,7 +209,7 @@ function hideLoading() {
 function changePageNumberBy(value) {
     const page = $('#page-number');
     page.val(+page.val() + value);
-    loadPayments();
+    loadEmployees();
 }
 
 
