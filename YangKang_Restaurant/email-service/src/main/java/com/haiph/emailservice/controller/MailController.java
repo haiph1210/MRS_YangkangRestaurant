@@ -19,10 +19,6 @@ public class MailController {
     @Autowired
     private MailService service;
 
-    @GetMapping("/api")
-    public String getResponseCode() {
-        return "Xin đấy API";
-    }
     @PostMapping("/sendSimpleMail")
     public ResponseEntity<ResponseBody> sendMail(@RequestBody SendMail sendMail) {
         try {

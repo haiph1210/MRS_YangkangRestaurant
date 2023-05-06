@@ -1,4 +1,4 @@
-package com.haiph.common.enums.status.personService.empl;
+package com.haiph.common.enums.status.emplService.empl.position;
 
 public enum PositionEmpl {
 

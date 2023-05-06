@@ -58,7 +58,6 @@ public class EmployeeServiceImpl implements com.haiph.userservice.service.Employ
                 dto.setFullName(employee.getFullName());
                 dto.setRole(employee.getRole());
                 dto.setCreatedDate(employee.getCreatedDate());
-                dto.setPosition(employee.getPosition());
                 dto.setSalary(employee.getSalary());
                 dtos.add(dto);
             }
@@ -80,7 +79,6 @@ public class EmployeeServiceImpl implements com.haiph.userservice.service.Employ
             dto.setFullName(employee.getFullName());
             dto.setRole(employee.getRole());
             dto.setCreatedDate(employee.getCreatedDate());
-            dto.setPosition(employee.getPosition());
             dto.setSalary(employee.getSalary());
             dto.setStatus(employee.getStatus());
             dto.setCmnd(employee.getCmnd());
@@ -101,7 +99,6 @@ public class EmployeeServiceImpl implements com.haiph.userservice.service.Employ
             dto.setFullName(employee.getFullName());
             dto.setRole(employee.getRole());
             dto.setCreatedDate(employee.getCreatedDate());
-            dto.setPosition(employee.getPosition());
             dto.setStatus(employee.getStatus());
             dto.setCmnd(employee.getCmnd());
             dto.setSalary(employee.getSalary());

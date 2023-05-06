@@ -1,6 +1,6 @@
 package com.haiph.userservice.model.response;
 
-import com.haiph.common.enums.status.personService.empl.PositionEmpl;
+import com.haiph.common.enums.status.emplService.empl.position.PositionEmpl;
 import com.haiph.common.enums.status.personService.person.Active;
 import com.haiph.common.enums.status.personService.person.Gender;
 import com.haiph.common.enums.status.personService.person.Role;

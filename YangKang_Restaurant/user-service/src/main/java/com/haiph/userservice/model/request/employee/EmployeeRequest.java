@@ -1,13 +1,12 @@
 package com.haiph.userservice.model.request.employee;
 
-import com.haiph.common.enums.status.personService.empl.PositionEmpl;
+import com.haiph.common.enums.status.emplService.empl.position.PositionEmpl;
 import com.haiph.common.enums.status.personService.person.Gender;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import jakarta.validation.constraints.*;
-import java.time.LocalDate;
 
 @Getter
 @Setter
