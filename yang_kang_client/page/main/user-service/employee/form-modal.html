@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        small {
+            color: red;
+        }
+    </style>
+
+    <script src="/page/main/menu-service/payment/form-modal.js"></script>
+</head>
+
+<body>
+    <div class="modal fade" id="form-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="form-modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="menu-form">
+                        <div id="form-id-container" class="mb-3">
+                            <label for="form-id" class="form-label">ID</label>
+                            <input type="text" class="form-control form-control-sm" name="form-id" id="form-id"
+                                disabled>
+                        </div>
+
+                        <div id="form-id-container" class="mb-3">
+                            <label for="form-personCode" class="form-label">Mã Người Dùng</label>
+                            <input type="text" class="form-control form-control-sm" name="form-personCode"
+                                id="form-personCode" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="form-orderId" class="form-label">Mã ORDER</label>
+                            <select class="form-control form-control-sm" name="form-orderId" id="form-orderId">
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <table class="table table-bordered">
+                                Mã Giảm Giá
+                                <tbody id="discountTableBody"></tbody>
+                            </table>
+                        </div>
+
+                        <div id="form-id-container" class="mb-3">
+                            <label for="form-totalPrice" class="form-label">Tổng Số Tiền</label>
+                            <input type="text" class="form-control form-control-sm" name="form-totalPrice"
+                                id="form-totalPrice" disabled>
+                        </div>
+
+                        <div id="form-id-container" class="mb-3">
+                            <label for="form-customerPay" class="form-label">Số Tiền Khách Trả</label>
+                            <input type="text" class="form-control form-control-sm" name="form-customerPay"
+                                id="form-customerPay">
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-status">
+                                <label for="form-status">Loại Tiền Nhận</label>
+                                <select class="form-control" id="form-status">
+                                    <option value="">-------------------------------Chọn----------------------------
+                                    </option>
+                                    <option value="QR">Quét Mã QR</option>
+                                    <option value="CASH">Trả Tiền Mặt</option>
+                                    <option value="BANK">Chuyển Khoản</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button id="form-modal-btn-create" type="button" class="btn btn-success">Tạo mới</button>
+                    <button id="form-modal-btn-update" type="button" class="btn btn-warning">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

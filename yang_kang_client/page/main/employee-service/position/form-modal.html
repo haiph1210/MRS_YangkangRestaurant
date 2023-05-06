@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        small {
+            color: red;
+        }
+    </style>
+
+    <script src="/page/main/employee-service/position/form-modal.js"></script>
+</head>
+
+<body>
+    <div class="modal fade" id="form-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="form-modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="position-form">
+                        <div id="form-id-container" class="mb-3">
+                            <label for="form-id" class="form-label">ID</label>
+                            <input type="text" class="form-control form-control-sm" name="form-id" id="form-id"
+                                disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="form-positionEmpl" class="form-label">Combo</label>
+                            <select class="form-control form-control-sm" name="form-positionEmpl"
+                                id="form-positionEmpl">
+                                <option value="">----Chọn----</option>
+                                <option value="SERVE">Phục vụ</option>
+                                <option value="SERVICE">Tạp Vụ</option>
+                                <option value="CHEF">Đầu Bếp</option>
+                                <option value="MANAGER">Quản Lý</option>
+                            </select>
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button id="form-modal-btn-create" type="button" class="btn btn-success">Tạo mới</button>
+                    <button id="form-modal-btn-update" type="button" class="btn btn-warning">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
