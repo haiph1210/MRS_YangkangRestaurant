@@ -20,7 +20,7 @@ public class PageResponse<T> {
   private long totalElements;
   private List<T> data;
 
-  public PageResponse(PageImpl<T> page) {
+  public PageResponse(org.springframework.data.domain.PageImpl<T> page) {
     this.pageNumber = page.getNumber();
     this.pageSize = page.getSize();
     this.totalPages = page.getTotalPages();
