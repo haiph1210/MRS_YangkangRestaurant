@@ -15,6 +15,7 @@ public class UserInfo {
     private String username;
     private String userCode;
     private String email;
+    private String role;
 
     public UserInfo(String username, String userCode, String email) {
         this.username = username;

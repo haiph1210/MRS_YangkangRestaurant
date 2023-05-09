@@ -31,8 +31,4 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/test")
-    public UserInfo getMessage() {
-        return authService.getUserInfo();
-    }
 }
