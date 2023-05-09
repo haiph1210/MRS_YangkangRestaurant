@@ -10,7 +10,6 @@ import com.haiph.common.sercurity.TokenResponse;
 import com.haiph.common.sercurity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -33,6 +32,7 @@ public class AuthServiceImpl {
                             tokenResponse.getUser().getEmail(),
                             tokenResponse.getToken());
 //            save token to Redis
+            redisTemplate.opsForValue().set("token",tokenResponse.getToken());
             redisTemplate.opsForValue().set(tokenResponse.getToken(), userInfo);
 //            SecurityContextHolder.getContext().setAuthentication(userInfo);
             return tokenResponse;

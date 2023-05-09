@@ -6,17 +6,19 @@ eureka:
     hostname: localhost
 
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: api-gateway
   cloud:
     gateway:
       routes:
-#        EMAIL-SERVICE
+        #        EMAIL-SERVICE
         - id: email
           uri: lb://mail-service
           predicates:
             - Path=/api/email/**
-#        MENU-SERVICE
+        #        MENU-SERVICE
         - id: menu
           uri: lb://menu-service
           predicates:
@@ -41,7 +43,7 @@ spring:
           uri: lb://menu-service
           predicates:
             - Path=/api/discount/**
-#        Restaurant-Serivce
+        #        Restaurant-Serivce
         - id: info
           uri: lb://restaurant-service
           predicates:
@@ -62,17 +64,22 @@ spring:
           predicates:
             - Path=/api/restaurant/form/**
 
-#        USER-SERVICE
+        #        USER-SERVICE
         - id: user
           uri: lb://user-service
           predicates:
             - Path=/api/user/**
+          filters:
+            - AuthenticationFillter
 
         - id: authentication
           uri: lb://user-service
           predicates:
             - Path=/api/auth/**
-#          AUTH-SERVICE
+          filters:
+            - AuthenticationFillter
+
+        #          AUTH-SERVICE
         - id: auth
           uri: lb://auth-service
           predicates:
