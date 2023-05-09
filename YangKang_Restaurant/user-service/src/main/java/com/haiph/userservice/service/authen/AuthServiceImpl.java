@@ -5,18 +5,17 @@ import com.haiph.common.enums.status.personService.person.Active;
 import com.haiph.common.exception.CommonException;
 import com.haiph.userservice.dto.request.UserRequest;
 import com.haiph.userservice.dto.request.sercurity.LoginRequest;
-import com.haiph.userservice.dto.response.UserResponse;
 import com.haiph.userservice.dto.response.sercurity.TokenRespone;
 import com.haiph.userservice.entity.User;
 import com.haiph.userservice.repository.UserRepository;
-
 import com.haiph.userservice.service.UserService;
 import com.haiph.userservice.service.impl.UserPrinciple;
-import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,8 +41,9 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
     @Override
     public TokenRespone login(LoginRequest request) {
         Optional<User> user = userRepository.findByUsername(request.getUsername());
+        System.out.println("alo alo");
         if (!user.isPresent()) {
-            throw new UsernameNotFoundException("User not valid: " + request.getUsername());
+            throw new CommonException(Response.PARAM_NOT_VALID, "username: " + request.getUsername() + " isn't exists");
         }
         String token = "";
         try {
@@ -52,7 +52,7 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
             );
             if (authentication.isAuthenticated()) {
                 token = generateToken(request.getUsername());
-            } else throw new AuthenticationException("Invalid Access");
+            } else throw new CommonException(Response.ACCESS_DENIED, "Invalid Access");
             if (checkActive(request.getUsername()) == false) {
                 throw new CommonException(Response.ACCESS_DENIED, "USER NOT ACTIVE");
             }
@@ -60,7 +60,7 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
             String jwtToken = token;
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             UserPrinciple genpesoncode = (UserPrinciple) authentication.getPrincipal();
-            String userCode =genpesoncode.getUserCode();
+            String userCode = genpesoncode.getUserCode();
             User user1 = genpesoncode.getUser();
             return TokenRespone.build(
                     jwtToken,
@@ -69,21 +69,22 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
                     userDetails.getAuthorities().toString(),
                     user1
             );
+        }catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Username Password Is Valid");
+
         } catch (UsernameNotFoundException exception) {
             System.out.println("exception = " + exception);
-            throw new UsernameNotFoundException("User not valid : " + request.getUsername());
-        } catch (AuthenticationException e) {
-            throw new RuntimeException(e);
-
+            throw new CommonException(Response.ACCESS_DENIED , exception.getMessage());
         }
     }
+
     @Override
     public String register(UserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new CommonException(Response.PARAM_INVALID,"Username Exists");
+            throw new CommonException(Response.PARAM_INVALID, "Username Exists");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new CommonException(Response.PARAM_INVALID,"Email Exists");
+            throw new CommonException(Response.PARAM_INVALID, "Email Exists");
         }
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         userService.create(request);

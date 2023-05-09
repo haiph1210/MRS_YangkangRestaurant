@@ -1,5 +1,6 @@
 package com.haiph.common.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableCaching
@@ -24,12 +26,13 @@ public class RedisConfig {
 
     }
     @Bean
-    public RedisTemplate<String,Object> redisTemplate() {
-        RedisTemplate<String,Object> template  = new RedisTemplate<>();
-        template.setDefaultSerializer(new CustomRedisSerializer());
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory());
-        template.setKeySerializer(new JdkSerializationRedisSerializer());
-        template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new CustomRedisSerializer(new ObjectMapper()));
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new CustomRedisSerializer(new ObjectMapper()));
         return template;
     }
 

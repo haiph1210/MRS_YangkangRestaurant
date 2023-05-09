@@ -117,7 +117,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         User user = userRepository.findByEmail(email).orElseThrow(() -> {
             throw new CommonException(Response.NOT_FOUND, "Cannot find email: " + email);
         });
-        UserResponse response = UserResponse.build( user.getId(),
+        UserResponse response = UserResponse.build(user.getId(),
                 user.getUsername(),
                 user.getUserCode(),
                 user.getFullName(),
@@ -136,7 +136,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         User user = userRepository.findByUserCode(userCode).orElseThrow(() -> {
             throw new CommonException(Response.NOT_FOUND, "Cannot find userCode: " + userCode);
         });
-        UserResponse response = UserResponse.build( user.getId(),
+        UserResponse response = UserResponse.build(user.getId(),
                 user.getUsername(),
                 user.getUserCode(),
                 user.getFullName(),
@@ -175,10 +175,10 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                     id,
                     response.getUsername(),
                     request.getPassword(),
-                    checkAndGen(request.getFirstName()+ " " +request.getLastName()),
+                    checkAndGen(request.getFirstName() + " " + request.getLastName()),
                     request.getFirstName(),
                     request.getLastName(),
-                    request.getFirstName() + " " +request.getLastName(),
+                    request.getFirstName() + " " + request.getLastName(),
                     response.getEmail(),
                     request.getAddress(),
                     request.getBirthDay(),
@@ -228,24 +228,8 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
-        System.out.println("FIRST SIGN IN");
-        System.out.println(user);
-        if (!user.isPresent()) throw new UsernameNotFoundException(username);
-
-            return new UserPrinciple(user.get());
-//        if (user.get().getRole()!= null) {
-//            return new org.springframework.security.core.userdetails.User(
-//                    user.get().getUsername(),
-//                    user.get().getPassword(),
-//                    AuthorityUtils.createAuthorityList(user.get().getRole().toString())
-//            );
-//        }else {
-//            return new org.springframework.security.core.userdetails.User(
-//                    user.get().getUsername(),
-//                    user.get().getPassword(),
-//                    AuthorityUtils.createAuthorityList("USER")
-//            );
-//        }
+        if (!user.isPresent()) throw new CommonException(Response.ACCESS_DENIED, "Username: " + username + " isn't exists");
+        return new UserPrinciple(user.get());
     }
 
     private String checkAndGen(String fullName) {
@@ -253,13 +237,13 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         String userCode = genUserCode(fullName);
         String userCodeEnd = userCode;
         User user = userRepository.findByUserCode(userCode).orElse(null);
-        while ( user!= null) {
+        while (user != null) {
             userCodeEnd = userCode + "-" + number;
             User user2 = userRepository.findByUserCode(userCodeEnd).orElse(null);
-           if (user2 == null) {
-               return userCodeEnd;
-           }
-           number++;
+            if (user2 == null) {
+                return userCodeEnd;
+            }
+            number++;
 
         }
 
