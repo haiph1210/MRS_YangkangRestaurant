@@ -90,7 +90,7 @@ function addListeners() {
         $('#form-id-container').hide();
         $('#form-modal-btn-update').hide();
         $('#form-modal-btn-create').show();
-        $('#form-modal-title').text('Thêm danh mục sản phẩm');
+        $('#form-modal-title').text('Thêm Người Dùng');
     });
 
     $('#btn-edit').on('click', event => {
@@ -98,7 +98,7 @@ function addListeners() {
         $('#form-modal-btn-create').hide();
         $('#form-modal-btn-update').show();
         $('#form-id-container').show();
-        $('#form-modal-title').text('Cập nhật danh mục sản phẩm');
+        $('#form-modal-title').text('Cập nhật Người Dùng');
 
         const row = $('.selected');
         $('#form-id').val(row.find('.id').attr('value'));
@@ -106,8 +106,8 @@ function addListeners() {
     });
 
     $('#btn-delete').on('click', function (event) {
-        $('#delete-modal-title').text('Xóa danh mục sản phẩm');
-        const message = `Bạn chắc chắn muốn xóa ${$('.selected').length} danh mục sản phẩm?`;
+        $('#delete-modal-title').text('Xóa Người Dùng');
+        const message = `Bạn chắc chắn muốn xóa ${$('.selected').length} Người Dùng?`;
         $('#delete-modal-body').text(message);
     });
 }

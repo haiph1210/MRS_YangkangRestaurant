@@ -148,7 +148,7 @@ function loadCombos() {
             showCombos(contents);
             updateStatus();
         },
-        error: () => location.replace('/common/error/404-not-found.html'),
+        // error: () => location.replace('/common/error/404-not-found.html'),
         complete: () => hideLoading()
     });
 }
