@@ -29,15 +29,12 @@ public class AuthConfig {
     public UserDetailsService userDetailsService () {
         return new UserServiceImpl();
     }
-    RequestMatcher[] auth = {
-            new AntPathRequestMatcher("api/auth/*"),
-    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(auth).permitAll()
-                .requestMatchers(HttpMethod.POST).permitAll()
+                .requestMatchers("api/auth/*").permitAll()
+                .requestMatchers(HttpMethod.GET).permitAll()
                 .and()
                 .build();
     }

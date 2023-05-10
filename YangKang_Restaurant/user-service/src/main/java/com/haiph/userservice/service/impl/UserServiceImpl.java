@@ -1,6 +1,7 @@
 package com.haiph.userservice.service.impl;
 
 import com.haiph.common.dto.response.Response;
+import com.haiph.common.enums.status.personService.person.Active;
 import com.haiph.common.exception.CommonException;
 import com.haiph.userservice.dto.request.UserRequest;
 import com.haiph.userservice.dto.response.UserResponse;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -228,7 +228,8 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
-        if (!user.isPresent()) throw new CommonException(Response.ACCESS_DENIED, "Username: " + username + " isn't exists");
+        if (!user.isPresent())
+            throw new CommonException(Response.ACCESS_DENIED, "Username: " + username + " isn't exists");
         return new UserPrinciple(user.get());
     }
 
@@ -246,9 +247,17 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
             number++;
 
         }
-
         return userCodeEnd;
+    }
 
-
+    @Override
+    public String activeUserByUserCode(String userCode) {
+        User response = userRepository.findByUserCode(userCode).
+                orElseThrow(() -> {
+                    throw new CommonException(Response.DATA_NOT_FOUND, "ACTIVE FAIL,USER CODE: " + userCode + " NOT EXISTS");
+                });
+        response.setStatus(Active.ACTIVE);
+        userRepository.save(response);
+        return "ACTIVE USERCODE: " + userCode + " SUCCESSFULLY";
     }
 }

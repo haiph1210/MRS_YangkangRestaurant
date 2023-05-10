@@ -96,8 +96,12 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         List<MenuResponse> responses = new ArrayList<>();
         List<Menu> menus = menuRepository.findByListId(ids);
         for (Menu menu : menus) {
-            MenuResponse response = MenuResponse.build(menu.getId(),menu.getName(),menu.getPrice(),menu.getImgUrl()
-                    ,menu.getDescription());
+            MenuResponse response = MenuResponse.
+                    build(menu.getId(),
+                            menu.getName(),
+                            menu.getPrice(),
+                            menu.getImgUrl(),
+                            menu.getDescription());
             responses.add(response);
         }
         return responses;

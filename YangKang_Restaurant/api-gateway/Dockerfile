@@ -8,6 +8,6 @@ COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
 #Run this inside the image
 RUN ./mvnw dependency:go-offline
-COPY src ./src
+#COPY ./src ./src
 #run inside container
 CMD ["./mvnw", "spring-boot:run"]

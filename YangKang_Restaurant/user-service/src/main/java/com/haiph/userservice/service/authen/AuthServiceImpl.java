@@ -3,6 +3,7 @@ package com.haiph.userservice.service.authen;
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.enums.status.personService.person.Active;
 import com.haiph.common.exception.CommonException;
+import com.haiph.userservice.config.sendMail.SendMailUtils;
 import com.haiph.userservice.dto.request.UserRequest;
 import com.haiph.userservice.dto.request.sercurity.LoginRequest;
 import com.haiph.userservice.dto.response.sercurity.TokenRespone;
@@ -36,6 +37,8 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private SendMailUtils sendMail;
 
 
     @Override
@@ -69,12 +72,12 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
                     userDetails.getAuthorities().toString(),
                     user1
             );
-        }catch (BadCredentialsException e) {
+        } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Username Password Is Valid");
 
         } catch (UsernameNotFoundException exception) {
             System.out.println("exception = " + exception);
-            throw new CommonException(Response.ACCESS_DENIED , exception.getMessage());
+            throw new CommonException(Response.ACCESS_DENIED, exception.getMessage());
         }
     }
 
@@ -88,6 +91,7 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
         }
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         userService.create(request);
+        sendMail.sendMailActive(request.getEmail());
         return "Create Success";
     }
 

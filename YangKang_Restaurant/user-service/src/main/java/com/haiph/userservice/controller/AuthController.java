@@ -6,6 +6,7 @@ import com.haiph.common.exception.CommonException;
 import com.haiph.userservice.dto.request.UserRequest;
 import com.haiph.userservice.dto.request.sercurity.LoginRequest;
 import com.haiph.userservice.service.AuthService;
+import com.haiph.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     private AuthService authService;
+    @Autowired
+    private UserService userService;
     @PostMapping("/login")
     public ResponseEntity<ResponseBody> login(@RequestBody LoginRequest request) {
         try {
@@ -63,4 +66,20 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
         }
     }
+
+    @GetMapping("/active")
+    public ResponseEntity<ResponseBody> activeUser (@RequestParam String userCode) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            userService.activeUserByUserCode(userCode)
+                    )
+            );
+        }catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
+
 }

@@ -30,4 +30,5 @@ public interface UserService extends UserDetailsService {
 
     String delete(UUID id);
 
+    String activeUserByUserCode(String userCode);
 }

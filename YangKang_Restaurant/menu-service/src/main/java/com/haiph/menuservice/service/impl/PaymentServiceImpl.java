@@ -42,7 +42,6 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
     private OrderFeignClient orderFeignClient;
 
 
-
     private OrderResponse findListIdOrder(Integer id) {
         OrderResponse responses = orderService.findById(id);
         if (responses == null ) {
@@ -56,7 +55,7 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
         if (responses == null) {
             throw new CommonException(Response.NOT_FOUND, "Cannot find order");
         }
-        return responses.getPersonResponses().getPersonCode();
+        return responses.getPersonResponses().getUserCode();
     }
 
     private Double findTotalPrice(Integer ids) {

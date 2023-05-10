@@ -23,6 +23,5 @@ public interface MenuRepository extends JpaRepository<Menu,Integer> {
     )
     List<Menu> findWithForm(String menuNameOrId,Double minPrice,Double maxPrice,String imgUrl,String description);
     @Query(nativeQuery = true, value = ("SELECT * FROM menu WHERE id IN ?1"))
-
     List<Menu> findByListId(List<Integer> ids);
 }

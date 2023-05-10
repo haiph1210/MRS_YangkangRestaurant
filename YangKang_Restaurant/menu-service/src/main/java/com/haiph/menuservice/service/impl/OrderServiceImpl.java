@@ -276,7 +276,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
     public String refuseOrder(Integer id) {
         OrderResponse response = findById(id);
         if (orderRepository.refuseOrder(id) > 0) {
-            sendMailRefuse(response.getPersonResponses().getPersonCode());
+            sendMailRefuse(response.getPersonResponses().getUserCode());
             return "update refuse success";
         }
         return "update refuse fails";
@@ -460,9 +460,9 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                     "</html>";
             SendMail sendMail = SendMail.build(person.getResponseData().getEmail(), ApprovedOrder.SUBJECT, html);
             mailController.sendMail(sendMail);
-            return "Send mail to person: " + person.getResponseData().getPersonCode() + " success";
+            return "Send mail to person: " + person.getResponseData().getUserCode() + " success";
         } else
-            return "Send mail to person: " + person.getResponseData().getPersonCode() + " fail";
+            return "Send mail to person: " + person.getResponseData().getUserCode() + " fail";
     }
 
     private String sendMailApproved(OrderResponse response) {
@@ -485,7 +485,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
             listForm.add(formName);
         }
 
-        APIResponse2<PersonResponse> person = personController.findByPersonCode(response.getPersonResponses().getPersonCode());
+        APIResponse2<PersonResponse> person = personController.findByPersonCode(response.getPersonResponses().getUserCode());
 
         if (person.getResponseData() != null) {
             String html = "<!DOCTYPE html>\n" +
@@ -543,9 +543,9 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                     "</html>";
             SendMail sendMail = SendMail.build(person.getResponseData().getEmail(), ApprovedOrder.SUBJECT, html);
             mailController.sendMail(sendMail);
-            return "Send mail to person: " + person.getResponseData().getPersonCode() + " success";
+            return "Send mail to person: " + person.getResponseData().getUserCode() + " success";
         } else
-            return "Send mail to person: " + person.getResponseData().getPersonCode() + " fail";
+            return "Send mail to person: " + person.getResponseData().getUserCode() + " fail";
     }
 
     private String sendMailRefuse(String personCode) {
@@ -602,9 +602,9 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                     "</html>";
             SendMail sendMail = SendMail.build(person.getResponseData().getEmail(), RefuseOrder.SUBJECT, html);
             mailController.sendMail(sendMail);
-            return "Send mail to person: " + person.getResponseData().getPersonCode() + " success";
+            return "Send mail to person: " + person.getResponseData().getUserCode() + " success";
         } else
-            return "Send mail to person: " + person.getResponseData().getPersonCode() + " fail";
+            return "Send mail to person: " + person.getResponseData().getUserCode() + " fail";
     }
 
     private String sendMailAuto(Order order) {
@@ -664,9 +664,9 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                     "</html>";
             SendMail sendMail = SendMail.build(person.getResponseData().getEmail(), AutoOrder.SUBJECT, html);
             mailController.sendMail(sendMail);
-            return "Send mail to person: " + person.getResponseData().getPersonCode() + " success";
+            return "Send mail to person: " + person.getResponseData().getUserCode() + " success";
         } else
-            return "Send mail to person: " + person.getResponseData().getPersonCode() + " fail";
+            return "Send mail to person: " + person.getResponseData().getUserCode() + " fail";
     }
 
 }

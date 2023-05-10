@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "user-service")
 public interface PersonController {
-    @GetMapping("/api/person/findPerCode/{personCode}")
+    @GetMapping("/api/user/userCode/{personCode}")
     APIResponse<PersonResponse> findByPersonCode(@PathVariable("personCode") String personCode);
 }

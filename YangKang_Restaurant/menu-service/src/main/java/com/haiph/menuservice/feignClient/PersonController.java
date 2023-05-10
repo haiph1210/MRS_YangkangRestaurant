@@ -7,9 +7,10 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "user-service")
 public interface PersonController {
-    @GetMapping("/api/person/findPerCode/{personCode}")
-    APIResponse2<PersonResponse> findByPersonCode(@PathVariable("personCode") String personCode);
+    @GetMapping("/api/user/userCode/{personCode}")
+    APIResponse2<PersonResponse> findByPersonCode(@PathVariable String personCode);
 }
