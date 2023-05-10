@@ -33,15 +33,15 @@ services:
     networks:
       - yk-network
 #API-GATEWAY
-#  gateway-service:
-#    container_name: api-gateway
-#    build:
-#      context: .
-#      dockerfile: api-gateway/Dockerfile
-#    ports:
-#      - "8080:8080"
-#    networks:
-#      - yk-network
+  gateway-service:
+    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - yk-network
 
 # User-service
 #  user-service-container:
