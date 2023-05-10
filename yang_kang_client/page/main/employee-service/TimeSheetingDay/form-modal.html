@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        small {
+            color: red;
+        }
+    </style>
+
+    <script src="/page/main/employee-service/TimeSheetingDay/form-modal.js"></script>
+</head>
+
+<body>
+    <div class="modal fade" id="form-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="form-modal-title">Thêm TimeSheetingDay</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="timesheetingday-form">
+
+                        <div class="mb-3">
+                            <label for="form-personCode" class="form-label">Mã Nhân Viên</label>
+                            <input type="text" class="form-control form-control-sm" name="form-personCode"
+                                id="form-personCode" aria-describedby="form-personCode-help" placeholder="VD:HAIPH-1">
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-hour">
+                                <label for="date-input">Ngày</label>
+                                <input type="date" class="form-control" id="date-input">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <table class="table table-bordered">
+                                Vị Trí
+                                <tbody id="positionTableBody"></tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <div class="form-day">
+                                <label for="form-day">Ngày Làm Việc</label>
+                                <select class="form-control" id="form-day">
+                                    <option value="">-------------------------------Chọn----------------------------
+                                    </option>
+                                    <option value="FULL">Cả Ngày</option>
+                                    <option value="HALF_DAY">Nửa Ngày</option>
+                                    <option value="OFF">Nghỉ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-source">
+                                <label for="form-source">Nguồn</label>
+                                <select class="form-control" id="form-source">
+                                    <option value="">-------------------------------Chọn----------------------------
+                                    </option>
+                                    <option value="QUAN_LI_CHAM_CONG">Quản Lí Chấm Công</option>
+                                    <option value="CHAM_CONG_BU">Chấm Công Bù</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="form-note" class="form-label">Ghi Chú</label>
+                            <input type="text" class="form-control form-control-sm" name="form-note" id="form-note"
+                                aria-describedby="form-note-help" placeholder="VD: NOTE">
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button id="form-modal-btn-create" type="button" class="btn btn-success">Tạo mới</button>
+                    <button id="form-modal-btn-update" type="button" class="btn btn-warning">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        small {
+            color: red;
+        }
+    </style>
+    <link rel="stylesheet" href="form-modal.css">
+    <script src="/page/main/menu-service/combo/form-modal.js"></script>
+</head>
+
+<body>
+    <div class="modal fade" id="form-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="form-modal-title">Thêm Combo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="combo-form">
+                        <div id="form-id-container" class="mb-3">
+                            <label for="form-id" class="form-label">ID</label>
+                            <input type="text" class="form-control form-control-sm" name="form-id" id="form-id"
+                                disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="form-name" class="form-label">Tên Combo</label>
+                            <input type="text" class="form-control form-control-sm" name="form-name" id="form-name"
+                                aria-describedby="form-name-help" placeholder="VD: Thịt dê cơm cháy">
+                            <!-- <small id="form-name-help" class="form-text text-muted">Tên món có tối đa 50
+                                ký
+                                tự.</small> -->
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="form-description" class="form-label">Mô tả</label>
+                            <input type="text" class="form-control form-control-sm" name="form-description"
+                                id="form-description" aria-describedby="form-description-help" placeholder="">
+                            <!-- <small id="form-amount-help" class="form-text text-muted">Nhập số lượng.</small> -->
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="form-imgUrl" class="form-label">Hình Ảnh</label>
+                            <input type="text" class="form-control form-control-sm" name="form-imgUrl" id="form-imgUrl"
+                                aria-describedby="form-imgUrl-help" placeholder="VD: 1">
+                            <!-- <small id="form-amount-help" class="form-text text-muted">Nhập số lượng.</small> -->
+                        </div>
+
+
+                        <div class="mb-3">
+                            <table class="table table-bordered">
+                                Menu
+                                <tbody id="menuTableBody"></tbody>
+                            </table>
+                        </div>
+
+
+                        <!-- <div class="mb-3">
+                            <label for="form-comboId" class="form-label">Combo</label>
+                            <select  class="form-control form-control-sm" name="form-description" id ="form-comboId">
+                                <option value="">----Chọn----</option>
+                            </select>
+                        </div> -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button id="form-modal-btn-create" type="button" class="btn btn-success">Tạo mới</button>
+                    <button id="form-modal-btn-update" type="button" class="btn btn-warning">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

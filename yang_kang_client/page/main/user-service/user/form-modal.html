@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        small {
+            color: red;
+        }
+    </style>
+
+    <script src="/page/main/user-service/user/form-modal.js"></script>
+</head>
+
+<body>
+    <div class="modal fade" id="form-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="form-modal-title">Thêm User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="user-form">
+                        <div id="form-id-container" class="mb-3">
+                            <label for="form-id" class="form-label">ID</label>
+                            <input type="text" class="form-control form-control-sm" name="form-id" id="form-id"
+                                disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="form-username" class="form-label">Tên Đăng Nhập</label>
+                            <input type="text" class="form-control form-control-sm" name="form-username"
+                                id="form-username" aria-describedby="form-username-help"
+                                placeholder="VD: Nhập UserName">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="form-password" class="form-label">Mật Khẩu</label>
+                            <input type="text" class="form-control form-control-sm" name="form-password"
+                                id="form-password" aria-describedby="form-password-help"
+                                placeholder="VD: Nhập Password">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="form-email" class="form-label">Email</label>
+                            <input type="text" class="form-control form-control-sm" name="form-email" id="form-email"
+                                aria-describedby="form-email-help" placeholder="VD: Nhập email">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="form-phoneNumber" class="form-label">Số Điện Thoại</label>
+                            <input type="text" class="form-control form-control-sm" name="form-phoneNumber"
+                                id="form-phoneNumber" aria-describedby="form-phoneNumber-help"
+                                placeholder="VD: Nhập phoneNumber">
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="form-address" class="form-label">Địa chỉ</label>
+                            <input type="text" class="form-control form-control-sm" name="form-address"
+                                id="form-address" aria-describedby="form-address-help" placeholder="VD: Nhập address">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="form-firstName" class="form-label">Nhập Họ</label>
+                            <input type="text" class="form-control form-control-sm" name="form-firstName"
+                                id="form-firstName" aria-describedby="form-firstName-help"
+                                placeholder="VD: Nhập firstName">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="form-imgUrl" class="form-label">Nhập Ảnh</label>
+                            <input type="text" class="form-control form-control-sm" name="form-imgUrl" id="form-imgUrl"
+                                aria-describedby="form-imgUrl-help" placeholder="VD: Nhập imgUform-imgUrl">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="form-lastName" class="form-label">Nhập Tên</label>
+                            <input type="text" class="form-control form-control-sm" name="form-lastName"
+                                id="form-lastName" aria-describedby="form-lastName-help"
+                                placeholder="VD: Nhập lastName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="form-gender" class="form-label">Giới Tính</label>
+                            <select class="form-control form-control-sm" name="form-gender" id="form-gender">
+                                <option value="">----Chọn----</option>
+                                <option value="MALE">Nam</option>
+                                <option value="FEMALE">Nữ</option>
+                            </select>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button id="form-modal-btn-create" type="button" class="btn btn-success">Tạo mới</button>
+                    <button id="form-modal-btn-update" type="button" class="btn btn-warning">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

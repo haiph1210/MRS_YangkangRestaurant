@@ -1,5 +1,6 @@
 package com.haiph.menuservice.repository;
 
+import com.haiph.menuservice.entity.Combo;
 import com.haiph.menuservice.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,6 @@ public interface MenuRepository extends JpaRepository<Menu,Integer> {
                     "AND (?5 IS NULL OR description like ?5 ) "
     )
     List<Menu> findWithForm(String menuNameOrId,Double minPrice,Double maxPrice,String imgUrl,String description);
+    @Query(nativeQuery = true, value = ("SELECT * FROM menu WHERE id IN ?1"))
+    List<Menu> findByListId(List<Integer> ids);
 }

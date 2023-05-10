@@ -4,7 +4,6 @@ import com.haiph.common.dto.response.Response;
 import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.common.exception.CommonException;
 import com.haiph.menuservice.dto.form.SearchFormCombo;
-import com.haiph.menuservice.dto.form.SearchFormMenu;
 import com.haiph.menuservice.dto.request.ComboRequest;
 import com.haiph.menuservice.service.ComboService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/combo")
+@RequestMapping("/api/combo")
 public class ComboController {
     @Autowired
     private ComboService comboService;
@@ -27,6 +28,21 @@ public class ComboController {
                             Response.SUCCESS.getResponseCode(),
                             Response.SUCCESS.getResponseMessage(),
                             comboService.findAll()
+                    )
+            );
+        }catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
+
+    @GetMapping("/findList/{ids}")
+    public ResponseEntity<ResponseBody> findAll(@PathVariable List<Integer> ids) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            comboService.findByListId(ids)
                     )
             );
         }catch (CommonException exception) {
@@ -59,7 +75,7 @@ public class ComboController {
         }
     }
 
-    @GetMapping("/search-form")
+    @PostMapping("/search-form")
     public ResponseEntity<ResponseBody> searchForm(@RequestBody SearchFormCombo request) {
         try {
             return ResponseEntity.ok(
@@ -143,6 +159,21 @@ public class ComboController {
                             Response.SUCCESS.getResponseCode(),
                             Response.SUCCESS.getResponseMessage(),
                             comboService.deleteById(id)
+                    )
+            );
+        }catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseBody> deleteAllById(@RequestBody List<Integer> ids) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            comboService.deleteListById(ids)
                     )
             );
         }catch (CommonException exception) {

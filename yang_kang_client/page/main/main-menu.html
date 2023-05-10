@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        #v-pills-tab-content {
+            width: 75%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="d-flex align-items-start">
+        <div class="nav flex-column nav-pills me-3" id="v-pills-tab">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="pill" type="button">Trang chủ</button>
+            <button class="nav-link " id="comback-tab" data-bs-toggle="pill" type="button"><a
+                    href="/first-index/index-input.html" class="text-decoration-none"> Quay Lại</a></button>
+            <button class="nav-link" id="menu-tab" data-bs-toggle="pill" type="button">Menu</button>
+            <button class="nav-link" id="combo-tab" data-bs-toggle="pill" type="button">Combo</button>
+            <button class="nav-link" id="order-manager-tab" data-bs-toggle="pill" type="button">Quản Lí Đơn
+                Hàng</button>
+            <button class="nav-link" id="order-tab" data-bs-toggle="pill" type="button">Lên Đơn</button>
+            <button class="nav-link" id="payment-tab" data-bs-toggle="pill" type="button">Tính Tiền</button>
+        </div>
+        <div class="tab-content mx-5" id="v-pills-tab-content">
+            <div class="tab-pane fade show active" id="v-pills-content"></div>
+        </div>
+    </div>
+    <div id="toast-container"></div>
+
+    <script>
+        $(function () {
+            $('#toast-container').load('/common/toast/toast.html');
+
+            const mainContent = $('#v-pills-content');
+            mainContent.load('/page/main/home/index.html');
+
+            $('#home-tab').on('click', function (event) {
+                mainContent.load('/page/main/home/index.html');
+            });
+
+            $('#menu-tab').on('click', function (event) {
+                mainContent.load('page/main/menu-service/menu/index.html');
+            });
+
+            $('#combo-tab').on('click', function (event) {
+                mainContent.load('page/main/menu-service/combo/index.html');
+            });
+            $('#order-manager-tab').on('click', function (event) {
+                mainContent.load('page/main/menu-service/order/index.html');
+            });
+
+            $('#order-tab').on('click', function (event) {
+                mainContent.load('page/main/menu-service/order-user/index.html');
+            });
+
+            $('#payment-tab').on('click', function (event) {
+                mainContent.load('page/main/menu-service/payment/index.html');
+            });
+
+
+            // const role = storage.getItem('key_role');
+            // if (role == 'ADMIN') {
+            //     $('#account-tab').on('click', function (event) {
+            //         mainContent.load('/page/main/account/index.html');
+            //     });
+            // } else {
+            //     $('#account-tab').hide();
+            // }
+        });
+    </script>
+</body>
+
+</html>
