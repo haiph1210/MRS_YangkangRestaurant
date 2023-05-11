@@ -1,0 +1,2 @@
+chmod +x deploy-docker-compose.dev.sh
+./deploy-docker-compose.dev.sh

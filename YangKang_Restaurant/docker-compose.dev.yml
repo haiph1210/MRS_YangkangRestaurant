@@ -16,14 +16,8 @@ services:
       MYSQL_PASSWORD: admin123
       MYSQL_ROOT_PASSWORD: admin123
       MYSQL_DATABASE: yangkang_data
-#      COMMON
-#  common:
-#    container_name: eureka
-#    build:
-#      context: .
-#      dockerfile: common/DockerFile
 # EUREKA
-  eureka-app:
+  eureka:
     container_name: eureka
     build:
       context: .
@@ -34,12 +28,26 @@ services:
       - yk-network
 #API-GATEWAY
   gateway-service:
+    depends_on:
+      - eureka
     container_name: api-gateway
     build:
       context: .
       dockerfile: api-gateway/Dockerfile
     ports:
       - "8080:8080"
+    networks:
+      - yk-network
+#Auth-service
+  auth-service:
+    depends_on:
+      - eureka
+    container_name: auth-service
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    ports:
+      - "9001:9001"
     networks:
       - yk-network
 
