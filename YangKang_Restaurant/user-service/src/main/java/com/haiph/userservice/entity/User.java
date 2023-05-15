@@ -14,33 +14,53 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table
+@Table(name = "user")
 @Data
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
     private UUID id;
-    @Column(unique = true)
+    @Column(unique = true,name = "username",nullable = false)
     private String username;
+    @Column(name = "password",nullable = false)
     private String password;
-    @Column(unique = true)
+    @Column(unique = true,name = "user_code")
     private String userCode;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "full_name")
     private String fullName;
-    @Column(unique = true)
+    @Column(unique = true,name = "email",nullable = false)
     private String email;
+    @Column(name = "address")
     private String address;
+    @Column(name = "birth_day")
     private LocalDate birthDay;
     @Enumerated(EnumType.ORDINAL)
+    @Column(name = "gender")
     private Gender gender;
     @Enumerated(EnumType.ORDINAL)
+    @Column(name = "status")
     private Active status;
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role role;
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
+
+    public User(String username, String password, String userCode, String email, Active status, Role role) {
+        this.username = username;
+        this.password = password;
+        this.userCode = userCode;
+        this.email = email;
+        this.status = status;
+        this.role = role;
+    }
 
     public User(String username, String password, String userCode, String firstName, String lastName, String email, String address, LocalDate birthDay, Gender gender) {
         this.username = username;

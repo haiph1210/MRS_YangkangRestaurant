@@ -10,7 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDate;
 
 @Entity
-@Table
+@Table(name = "restaurant_form")
 @Data
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor

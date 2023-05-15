@@ -1,0 +1,90 @@
+server:
+  port: 8080
+
+eureka:
+  instance:
+    hostname: localhost
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        #        EMAIL-SERVICE
+        - id: email
+          uri: lb://mail-service
+          predicates:
+            - Path=/api/email/**
+        #        MENU-SERVICE
+        - id: menu
+          uri: lb://menu-service
+          predicates:
+            - Path=/api/menu/**
+
+        - id: combo
+          uri: lb://menu-service
+          predicates:
+            - Path=/api/combo/**
+
+        - id: order
+          uri: lb://menu-service
+          predicates:
+            - Path=/api/order/**
+
+        - id: payment
+          uri: lb://menu-service
+          predicates:
+            - Path=/api/payment/**
+
+        - id: discount
+          uri: lb://menu-service
+          predicates:
+            - Path=/api/discount/**
+        #        Restaurant-Serivce
+        - id: info
+          uri: lb://restaurant-service
+          predicates:
+            - Path=/api/restaurant/info/**
+
+        - id: detail
+          uri: lb://restaurant-service
+          predicates:
+            - Path=/api/restaurant/detail/**
+
+        - id: masterial
+          uri: lb://restaurant-service
+          predicates:
+            - Path=/api/restaurant/masterial/**
+
+        - id: form
+          uri: lb://restaurant-service
+          predicates:
+            - Path=/api/restaurant/form/**
+
+        #        USER-SERVICE
+        - id: user
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - AuthenticationFillter
+
+        - id: authentication
+          uri: lb://user-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - AuthenticationFillter
+
+        #          AUTH-SERVICE
+        - id: auth
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/authenticate/**
+
+
+
+

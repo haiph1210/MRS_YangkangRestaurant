@@ -8,7 +8,8 @@ import java.util.function.Predicate;
 
 @Component
 public class RouterValidator {
-    public static final List<String> openApiEndpoints = List.of(
+    public static final List<String> openApiEndpoints = List.of
+            (
             "/api/authenticate/**",
             "/eureka"
     );

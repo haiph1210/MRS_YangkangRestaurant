@@ -5,7 +5,7 @@ echo "deploy with redis"
 docker-compose -f docker-compose-tools.yml up -d
 
 echo "deploy with docker compose"
-docker-compose -f docker-compose.dev.yml up -d --force-recreate --build
+docker-compose -f docker-compose-test.yml up -d --force-recreate --build
 
 echo "clean unused images"
 sleep 20

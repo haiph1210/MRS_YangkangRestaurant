@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "info")
 @Data
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor

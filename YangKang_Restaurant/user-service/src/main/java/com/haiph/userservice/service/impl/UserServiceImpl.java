@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
@@ -26,6 +27,8 @@ import java.util.regex.Pattern;
 public class UserServiceImpl implements com.haiph.userservice.service.UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserResponse> findAll() {
@@ -259,5 +262,14 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         response.setStatus(Active.ACTIVE);
         userRepository.save(response);
         return "ACTIVE USERCODE: " + userCode + " SUCCESSFULLY";
+    }
+
+    @Override
+    public String saveAdmin(List<User> users) {
+        for (User user : users) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        userRepository.saveAll(users);
+        return "Save admin success";
     }
 }

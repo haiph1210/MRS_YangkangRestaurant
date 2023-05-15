@@ -1,0 +1,149 @@
+version: '3.8'
+#container -> service
+services:
+  yangkang_data:
+    image: mysql:8.0.33
+    container_name: yangkang_mysql
+    ports:
+      - "3310:3306"
+    volumes:
+      - mysql-springboot-data:/var/lib/mysql
+      - mysql-springboot-config-deamond:/etc/mysql/conf.d
+    networks:
+      - yk-network
+    environment:
+      MYSQL_USER: haiph1210
+      MYSQL_PASSWORD: admin123
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: yangkang_data
+  # EUREKA
+  eureka:
+    container_name: eureka
+    build:
+      context: .
+      dockerfile: eureka-service/DockerfileDev
+    ports:
+      - "8761:8761"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    networks:
+      - yk-network
+  #API-GATEWAY
+  gateway-service:
+    depends_on:
+      - eureka
+    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: api-gateway/DockerfileDev
+    ports:
+      - "8080:8080"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    networks:
+      - yk-network
+  #Auth-service
+  auth-service:
+    depends_on:
+      - eureka
+    container_name: auth-service
+    build:
+      context: .
+      dockerfile: auth-service/DockerfileDev
+    ports:
+      - "9001:9001"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    networks:
+      - yk-network
+
+  ## Email-service
+  email-service:
+    depends_on:
+      - eureka
+    container_name: email-service
+    build:
+      context: .
+      dockerfile: email-service/DockerfileDev
+    ports:
+      - "8003:8003"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    volumes:
+      - ./:/app
+    networks:
+      - yk-network
+  # Employee-service
+  employee-service:
+    depends_on:
+      - eureka
+    container_name: employee-service
+    build:
+      context: .
+      dockerfile: employee-service/DockerfileDev
+    ports:
+      - "8004:8004"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    volumes:
+      - ./:/app
+    networks:
+      - yk-network
+  #  Menu-service
+  menu-service:
+    depends_on:
+      - eureka
+    container_name: menu-service
+    build:
+      context: .
+      dockerfile: menu-service/DockerfileDev
+    ports:
+      - "8000:8000"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    volumes:
+      - ./:/app
+    networks:
+      - yk-network
+  #  Restaurant-service
+  restaurant-service:
+    depends_on:
+      - eureka
+    container_name: restaurant-service
+    build:
+      context: .
+      dockerfile: restaurant-service/DockerfileDev
+    ports:
+      - "8002:8002"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    volumes:
+      - ./:/app
+    networks:
+      - yk-network
+  # User-service
+  user-service:
+    depends_on:
+      - eureka
+    container_name: user-service
+    build:
+      context: .
+      dockerfile: user-service/DockerfileDev
+    ports:
+      - "8001:8001"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    volumes:
+      - ./:/app
+    networks:
+      - yk-network
+#Create Network
+networks:
+  yk-network:
+    name: yangkang-data-app
+volumes:
+  mysql-springboot-data:
+  mysql-springboot-config-deamond:
+
+
+

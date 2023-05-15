@@ -6,7 +6,6 @@
         <groupId>com.haiph</groupId>
         <artifactId>YangKang_Restaurant</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.haiph</groupId>
     <artifactId>user-service</artifactId>
@@ -98,6 +97,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
