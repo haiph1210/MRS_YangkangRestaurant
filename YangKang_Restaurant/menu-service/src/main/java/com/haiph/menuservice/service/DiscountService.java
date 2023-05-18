@@ -17,4 +17,6 @@ public interface DiscountService {
     String update(Integer id, DiscountRequest request);
 
     String delete(Integer id);
+
+    String gennaterateQrService(Integer id);
 }

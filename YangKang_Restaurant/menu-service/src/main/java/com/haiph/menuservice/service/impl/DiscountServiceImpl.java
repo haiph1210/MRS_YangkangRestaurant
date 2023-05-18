@@ -3,6 +3,7 @@ package com.haiph.menuservice.service.impl;
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.enums.status.menuService.discount.DiscountStatus;
 import com.haiph.common.exception.CommonException;
+import com.haiph.common.qr_code_util.QRService;
 import com.haiph.menuservice.dto.request.DiscountRequest;
 import com.haiph.menuservice.dto.response.DiscountResponse;
 import com.haiph.menuservice.dto.response.restApi.APIResponse2;
@@ -27,6 +28,8 @@ public class DiscountServiceImpl implements com.haiph.menuservice.service.Discou
     @Autowired
     private RestaurantController restaurantController;
 
+    @Autowired
+    private QRService qrService;
     @Override
     public Page<DiscountResponse> findAll(Pageable pageable) {
         Page<Discount> page = discountRepository.findAll(pageable);
@@ -172,6 +175,12 @@ public class DiscountServiceImpl implements com.haiph.menuservice.service.Discou
         int dayEnd = endDate.getDayOfMonth();
         builder.append(discountCode).append(mounthEnd).append(dayEnd);
         return builder.toString();
+    }
+
+    @Override
+    public String gennaterateQrService(Integer id) {
+        DiscountResponse response = findById(id);
+        return qrService.gennateQrCode(response);
     }
 
 }
