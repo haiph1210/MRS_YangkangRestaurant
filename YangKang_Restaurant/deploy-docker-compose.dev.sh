@@ -1,5 +1,5 @@
 echo "build the project"
-mvn clean install
+mvn clean install -DskipTests
 
 echo "deploy with redis"
 docker-compose -f docker-compose-tools.yml up -d

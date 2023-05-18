@@ -14,7 +14,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface ComboService {
-//    @Cacheable(cacheNames = "combo")
+    byte[] readFileImg(String fileName);
+
+    byte[] readListFileImg(String fileName);
+
+    //    @Cacheable(cacheNames = "combo")
     Map<Integer, List<ComboResponse>> findAll();
 
 //    @Cacheable(cacheNames = "Combo")

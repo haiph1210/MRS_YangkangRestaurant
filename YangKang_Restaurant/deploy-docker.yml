@@ -1,4 +1,4 @@
-chmod +x deploy-docker-compose-test.sh
-./deploy-docker-compose-test.sh
+chmod +x deploy-docker-compose.dev.sh
+./deploy-docker-compose.dev.sh
 đăng nhập vào sql
 winpty docker exec -it yangkang_mysql mysql -u root -p

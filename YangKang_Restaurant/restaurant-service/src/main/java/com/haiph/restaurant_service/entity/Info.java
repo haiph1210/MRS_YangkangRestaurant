@@ -67,4 +67,16 @@ public class Info {
         this.createdAt = createdAt;
         this.imgUrl = imgUrl;
     }
+
+    public Info( String name, String hostline, String phoneNumber, String email, String address, String description, RestaurantStar star, LocalDate createdAt, String imgUrl) {
+        this.name = name;
+        this.hostline = hostline;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.address = address;
+        this.description = description;
+        this.star = star;
+        this.createdAt = createdAt;
+        this.imgUrl = imgUrl;
+    }
 }

@@ -16,7 +16,7 @@ public class ComboResponse {
     private String name;
     private Double price;
     private String description;
-    private List<String> imgUrl;
+    private String imgUrl;
     private List<MenuResponse> menus;
 
 }

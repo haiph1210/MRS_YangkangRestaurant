@@ -35,6 +35,8 @@ public class AuthConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("api/auth/*").permitAll()
                 .requestMatchers(HttpMethod.GET).permitAll()
+                .requestMatchers(HttpMethod.POST).permitAll()
+                .requestMatchers(HttpMethod.PUT).permitAll()
                 .and()
                 .build();
     }

@@ -9,6 +9,7 @@ import com.haiph.menuservice.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -123,7 +124,7 @@ public class MenuController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseBody> create(@RequestBody MenuRequest request) {
+    public ResponseEntity<ResponseBody> create(@ModelAttribute MenuRequest request) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
@@ -138,7 +139,7 @@ public class MenuController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseBody> update(@PathVariable Integer id,@RequestBody MenuRequest request) {
+    public ResponseEntity<ResponseBody> update(@PathVariable Integer id,@ModelAttribute MenuRequest request) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
@@ -181,5 +182,30 @@ public class MenuController {
         }
     }
 
+    @GetMapping("/file")
+    public ResponseEntity<byte[]> readFileName(@RequestParam String fileName) {
+        byte[] bytes = menuService.readListFileImg(fileName);
+        try {
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(bytes);
+        }catch (CommonException exception) {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+//    @GetMapping("/file")
+//    public ResponseEntity<byte[]> readFileName(@RequestParam String fileName) {
+//        byte[] bytes = userService.readFileImg(fileName);
+//        try {
+//            return ResponseEntity
+//                    .ok()
+//                    .contentType(MediaType.IMAGE_JPEG)
+//                    .body(bytes);
+//        }catch (CommonException exception) {
+//            return ResponseEntity.noContent().build();
+//        }
+//    }
 
 }

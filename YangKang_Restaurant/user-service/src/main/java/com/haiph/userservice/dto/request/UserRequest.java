@@ -4,6 +4,7 @@ import com.haiph.common.enums.status.personService.person.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 @Data
@@ -18,4 +19,5 @@ public class UserRequest {
     private String address;
     private LocalDate birthDay;
     private Gender gender;
+    private MultipartFile imgUrl;
 }

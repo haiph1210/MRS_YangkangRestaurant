@@ -26,4 +26,5 @@ public class UserResponse {
     private Active status;
     private Role role;
     private LocalDateTime createdDate;
+    private String imgUrl;
 }

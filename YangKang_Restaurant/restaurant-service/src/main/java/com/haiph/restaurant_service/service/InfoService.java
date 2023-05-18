@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface InfoService {
+    byte[] readFileImg(String fileName);
+
     Page<InfoResponse> findAllPage(Pageable pageable);
 
     InfoResponse findById(Integer id);

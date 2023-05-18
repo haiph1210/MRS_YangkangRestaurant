@@ -52,6 +52,8 @@ public class User {
     private Role role;
     @Column(name = "created_date")
     private LocalDateTime createdDate;
+    @Column(name = "img_url")
+    private String imgUrl;
 
     public User(String username, String password, String userCode, String email, Active status, Role role) {
         this.username = username;
@@ -62,7 +64,7 @@ public class User {
         this.role = role;
     }
 
-    public User(String username, String password, String userCode, String firstName, String lastName, String email, String address, LocalDate birthDay, Gender gender) {
+    public User(String username, String password, String userCode, String firstName, String lastName, String email, String address, LocalDate birthDay, Gender gender,String imgUrl) {
         this.username = username;
         this.password = password;
         this.userCode = userCode;
@@ -72,6 +74,7 @@ public class User {
         this.address = address;
         this.birthDay = birthDay;
         this.gender = gender;
+        this.imgUrl = imgUrl;
     }
 
     public User(String username, String password, String userCode, String firstName, String lastName, String address, LocalDate birthDay,Gender gender) {
@@ -84,6 +87,9 @@ public class User {
         this.birthDay = birthDay;
         this.gender = gender;
     }
+
+
+
 
     @PrePersist()
     public void perPersitst() {

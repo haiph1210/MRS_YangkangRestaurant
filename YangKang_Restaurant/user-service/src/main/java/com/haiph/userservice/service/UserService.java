@@ -34,4 +34,6 @@ public interface UserService extends UserDetailsService {
     String activeUserByUserCode(String userCode);
 
     String saveAdmin(List<User> users);
+
+    byte[] readFileImg(String fileName);
 }

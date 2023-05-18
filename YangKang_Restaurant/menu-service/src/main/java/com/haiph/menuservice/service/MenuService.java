@@ -14,6 +14,10 @@ import java.util.Map;
 
 public interface MenuService {
 
+    byte[] readFileImg(String fileName);
+
+    byte[] readListFileImg(String fileName);
+
     //     @Cacheable(cacheNames = "Menu")
     Map<Integer, List<MenuResponse>> findAll();
 

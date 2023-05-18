@@ -9,6 +9,7 @@ import com.haiph.menuservice.service.ComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +52,7 @@ public class ComboController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseBody> create(@RequestBody ComboRequest request) {
+    public ResponseEntity<ResponseBody> create(@ModelAttribute ComboRequest request) {
         return ResponseEntity.ok(
                 new ResponseBody(
                         Response.SUCCESS,
@@ -137,7 +138,7 @@ public class ComboController {
 
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseBody> update(@PathVariable Integer id, @RequestBody ComboRequest request) {
+    public ResponseEntity<ResponseBody> update(@PathVariable Integer id, @ModelAttribute ComboRequest request) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
@@ -178,6 +179,18 @@ public class ComboController {
             );
         }catch (CommonException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
+    @GetMapping("/file")
+    public ResponseEntity<byte[]> readFileName(@RequestParam String fileName) {
+        byte[] bytes = comboService.readListFileImg(fileName);
+        try {
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(bytes);
+        }catch (CommonException exception) {
+            return ResponseEntity.noContent().build();
         }
     }
 }

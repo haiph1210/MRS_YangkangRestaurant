@@ -20,16 +20,14 @@ public class Combo implements Serializable {
     private String name;
     private Double price;
     private String description;
-    @ElementCollection
-    @CollectionTable(name = "combo_img_urls", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "img_url")
-    private List<String> imgUrl;
+    @Column(length = 10000)
+    private String imgUrl;
     @ElementCollection
     @CollectionTable(name = "combo_menu_ids", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "menu_id")
     private List<Integer> menuIds;
 
-    public Combo(String name, Double price, String description, List<String> imgUrl, List<Integer> menuIds) {
+    public Combo(String name, Double price, String description, String imgUrl, List<Integer> menuIds) {
         this.name = name;
         this.price = price;
         this.description = description;

@@ -21,6 +21,7 @@ public class Menu implements Serializable {
     private Integer id;
     private String name;
     private Double price;
+    @Column(name = "img_url",length = 10000)
     private String imgUrl;
     private String description;
 

@@ -2,6 +2,7 @@ package com.haiph.menuservice.service.impl;
 
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.exception.CommonException;
+import com.haiph.common.uploadfile.UploadFile;
 import com.haiph.menuservice.dto.form.SearchFormCombo;
 import com.haiph.menuservice.dto.request.ComboRequest;
 import com.haiph.menuservice.dto.response.ComboResponse;
@@ -16,7 +17,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +38,33 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     private ComboRepository comboRepository;
     @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private UploadFile genfile;
+    private Path path;
 
+    public ComboServiceImpl() {
+        path = Paths.get("menu-service/upload/img/combo");
+    }
+
+    private List<String> genUrlImage(List<MultipartFile> files, String name, Path path) {
+        return genfile.saveListFile(files, name, path);
+    }
+
+    @Override
+    public byte[] readFileImg(String fileName) {
+        return genfile.readFileContent(fileName, path);
+    }
+
+    @Override
+    public byte[] readListFileImg(String fileName) {
+        String[] fileNameList = fileName.trim().split(",");
+        if (fileNameList != null) {
+            for (int i = 0; i < fileNameList.length; i++) {
+                return readFileImg(fileNameList[i]);
+            }
+        }
+        return null;
+    }
     private List<MenuResponse> findMenuDTO(List<Integer> ids) {
             List<MenuResponse> menu = menuService.findByListId(ids);
         return menu;
@@ -176,11 +208,13 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     @Override
 //    @CachePut(cacheNames = "Combo")
     public String create(ComboRequest request) {
+        List<String> urlImages = genUrlImage(request.getImgUrl(),request.getName(),path);
+        String url = String.join(",",urlImages);
             Combo combo = new Combo
                     (request.getName(),
                             totalPriceMenu(request.getMenuIds()),
                             request.getDescription(),
-                            request.getImgUrl(),
+                            url,
                             request.getMenuIds());
             comboRepository.save(combo);
             return "Create Success";
@@ -197,14 +231,26 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     @Override
 //    @CachePut(cacheNames = "Combo")
     public String update(Integer id, ComboRequest request) {
+        List<String> urlImages = genUrlImage(request.getImgUrl(),request.getName(),path);
+        String url = String.join(",",urlImages);
         try {
             Combo combo = comboRepository.findById(id).orElseThrow(() ->
                     new CommonException(Response.PARAM_INVALID, "Id NOT Exists,Cannot Update"));
+            String oldFilePath = combo.getImgUrl();
+            String[] urls = oldFilePath.split(",");
+            try {
+                for (int i = 0; i < urls.length; i++) {
+                    Path oldFile = Paths.get(urls[i]);
+                    Files.delete(oldFile);
+                }
+            } catch (IOException e) {
+                throw new CommonException(Response.PARAM_INVALID, "Cannot delete old image file: " + oldFilePath);
+            }
             Combo comboUpdate = combo;
             comboUpdate.setName(request.getName());
             comboUpdate.setPrice(totalPriceMenu(request.getMenuIds()));
             comboUpdate.setDescription(request.getDescription());
-            comboUpdate.setImgUrl(request.getImgUrl());
+            comboUpdate.setImgUrl(url);
             comboUpdate.setMenuIds(request.getMenuIds());
             comboRepository.save(comboUpdate);
             return "Update Success";

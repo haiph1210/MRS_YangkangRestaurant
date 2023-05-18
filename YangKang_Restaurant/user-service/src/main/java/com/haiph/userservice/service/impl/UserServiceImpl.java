@@ -3,6 +3,7 @@ package com.haiph.userservice.service.impl;
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.enums.status.personService.person.Active;
 import com.haiph.common.exception.CommonException;
+import com.haiph.common.uploadfile.UploadFile;
 import com.haiph.userservice.dto.request.UserRequest;
 import com.haiph.userservice.dto.response.UserResponse;
 import com.haiph.userservice.entity.User;
@@ -15,13 +16,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements com.haiph.userservice.service.UserService {
@@ -29,6 +37,18 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UploadFile genfile;
+
+    private Path path;
+
+    public UserServiceImpl() {
+        path = Paths.get("user-service/upload/img");
+    }
+
+    private String genUrlImage(MultipartFile file, String username, Path path) {
+        return genfile.saveFile(file, username, path);
+    }
 
     @Override
     public List<UserResponse> findAll() {
@@ -46,7 +66,8 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                     user.getGender(),
                     user.getStatus(),
                     user.getRole(),
-                    user.getCreatedDate());
+                    user.getCreatedDate(),
+                    user.getImgUrl());
             userResponses.add(response);
         }
         return userResponses;
@@ -69,7 +90,8 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                     user.getGender(),
                     user.getStatus(),
                     user.getRole(),
-                    user.getCreatedDate());
+                    user.getCreatedDate(),
+                    user.getImgUrl());
             userResponses.add(response);
         }
         return new PageImpl<>(userResponses, pageable, page.getTotalElements());
@@ -91,7 +113,8 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 user.getGender(),
                 user.getStatus(),
                 user.getRole(),
-                user.getCreatedDate());
+                user.getCreatedDate(),
+                user.getImgUrl());
         return response;
     }
 
@@ -111,7 +134,8 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 user.getGender(),
                 user.getStatus(),
                 user.getRole(),
-                user.getCreatedDate());
+                user.getCreatedDate(),
+                user.getImgUrl());
         return response;
     }
 
@@ -130,7 +154,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 user.getGender(),
                 user.getStatus(),
                 user.getRole(),
-                user.getCreatedDate());
+                user.getCreatedDate(), user.getImgUrl());
         return response;
     }
 
@@ -149,12 +173,20 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 user.getGender(),
                 user.getStatus(),
                 user.getRole(),
-                user.getCreatedDate());
+                user.getCreatedDate(), user.getImgUrl());
         return response;
     }
 
-    @Override
     public String create(UserRequest request) {
+//        Path path = Paths.get("user-service/upload/img");
+        boolean existUsername = userRepository.existsByUsername(request.getUsername());
+        boolean existEmail = userRepository.existsByEmail(request.getEmail());
+        if (existUsername) {
+            throw new CommonException(Response.PARAM_INVALID, "Username exists");
+        }
+        if (existEmail) {
+            throw new CommonException(Response.PARAM_INVALID, "Email exists");
+        }
         User user = new User(
                 request.getUsername(),
                 request.getPassword(),
@@ -164,7 +196,8 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 request.getEmail(),
                 request.getAddress(),
                 request.getBirthDay(),
-                request.getGender()
+                request.getGender(),
+                genUrlImage(request.getImgUrl(), request.getUsername(), path)
         );
         userRepository.save(user);
         return "Create Success";
@@ -172,8 +205,17 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
 
     @Override
     public String Update(UUID id, UserRequest request) {
+//        Path path = Paths.get("user-service/upload/img");
         UserResponse response = findById(id);
         if (response != null) {
+            String oldFilePath = response.getImgUrl();
+            try {
+                Path oldFile = Paths.get(oldFilePath);
+                Files.delete(oldFile);
+            } catch (IOException e) {
+                throw new CommonException(Response.PARAM_INVALID, "Cannot delete old image file: " + oldFilePath);
+            }
+
             User user = User.build(
                     id,
                     response.getUsername(),
@@ -188,7 +230,8 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                     request.getGender(),
                     response.getStatus(),
                     response.getRole(),
-                    response.getCreatedDate()
+                    response.getCreatedDate(),
+                    genUrlImage(request.getImgUrl(), request.getUsername(), path)
             );
             userRepository.save(user);
             return "update success";
@@ -272,4 +315,24 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         userRepository.saveAll(users);
         return "Save admin success";
     }
+    @Override
+    public byte[] readFileImg(String fileName) {
+        return genfile.readFileContent(fileName, path);
+    }
+
+//    public Object getUploadFileAll() {
+//        try {
+//            List<String> urls = genfile.loadAll(path)
+//                    .map(path -> {
+//                        //convert fileName to url(send request "readDetailFile")
+//                        String urlPath = MvcUriComponentsBuilder.fromMethodName(UserServiceImpl.class,
+//                                "readFileImg", path.getFileName().toString()).build().toUri().toString();
+//                        return urlPath;
+//                    })
+//                    .collect(Collectors.toList());
+//        } catch (Exception e) {
+//            e.getMessage();
+//        }
+//        return null;
+//    }
 }

@@ -2,6 +2,7 @@ package com.haiph.menuservice.service.impl;
 
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.exception.CommonException;
+import com.haiph.common.uploadfile.UploadFile;
 import com.haiph.menuservice.dto.form.SearchFormMenu;
 import com.haiph.menuservice.dto.request.MenuRequest;
 import com.haiph.menuservice.dto.response.MenuResponse;
@@ -15,7 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -27,6 +33,34 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private UploadFile genfile;
+    private Path path;
+
+    public MenuServiceImpl() {
+        path = Paths.get("menu-service/upload/img/menu");
+    }
+
+    private List<String> genUrlImage(List<MultipartFile> files, String name, Path path) {
+        return genfile.saveListFile(files, name, path);
+    }
+
+    @Override
+    public byte[] readFileImg(String fileName) {
+        return genfile.readFileContent(fileName, path);
+    }
+
+    @Override
+    public byte[] readListFileImg(String fileName) {
+        String[] fileNameList = fileName.trim().split(",");
+        if (fileNameList != null) {
+            for (int i = 0; i < fileNameList.length; i++) {
+                return readFileImg(fileNameList[i]);
+            }
+        }
+        return null;
+    }
+
     private String findComboName(Integer id) {
 
         Combo combo = comboRepository.findById(id).orElse(null);
@@ -36,7 +70,6 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    //    @Cacheable(cacheNames = "Menu")
     public Map<Integer, List<MenuResponse>> findAll() {
         Map<Integer, List<MenuResponse>> findAll = new HashMap<>();
         List<Menu> menus = menuRepository.findAll();
@@ -56,7 +89,6 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    // //    @Cacheable(cacheNames = "Menu")
     public Page<MenuResponse> findAll(Pageable pageable) {
         Page<Menu> page = menuRepository.findAll(pageable);
         List<Menu> menus = page.getContent();
@@ -87,7 +119,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         return dtos;
     }
 
-    private String findMenuNameByID(Integer id)  {
+    private String findMenuNameByID(Integer id) {
         return menuRepository.findById(id).get().getName();
     }
 
@@ -157,35 +189,58 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
 
     @Override
     public String create(MenuRequest menuRequest) {
-            Menu menu = new Menu(menuRequest.getName(),menuRequest.getPrice(),menuRequest.getImgUrl(),menuRequest.getDescription());
-            menuRepository.save(menu);
+        List<String> urlImages = genUrlImage(menuRequest.getImgUrl(), menuRequest.getName(), path);
+        String url = String.join(",", urlImages);
+        Menu menu = new Menu(menuRequest.getName(),
+                menuRequest.getPrice(),
+                url,
+                menuRequest.getDescription());
+        menuRepository.save(menu);
 
-            return "create Success";
+        return "create Success";
     }
 
-    private Double updateComboPrice(Integer id,Double menuPrice) {
-        Combo combo = comboRepository.findById(id).orElseThrow(() -> {throw new CommonException(Response.NOT_FOUND,"NO DATA WITH COMBO ID: "+ id );});
+    private Double updateComboPrice(Integer id, Double menuPrice) {
+        Combo combo = comboRepository.findById(id).orElseThrow(() -> {
+            throw new CommonException(Response.NOT_FOUND, "NO DATA WITH COMBO ID: " + id);
+        });
         Double price = combo.getPrice();
         Double initPrice = 0d;
-        initPrice+= menuPrice;
+        initPrice += menuPrice;
         return initPrice;
     }
 
     @Override
-    //    @CachePut(cacheNames = "Menu")
     public String update(Integer id, MenuRequest menuRequest) {
+        List<String> urlImages = genUrlImage(menuRequest.getImgUrl(), menuRequest.getName(), path);
+        String url = String.join(",", urlImages);
         try {
             Menu menu = menuRepository.findById(id).orElseThrow(() ->
                     new CommonException(Response.PARAM_INVALID, "Id NOT Exists,Cannot Update"));
-            Menu menuUpdate = menu;
-            menuUpdate.setName(menuRequest.getName());
-            menuUpdate.setPrice(menuRequest.getPrice());
-            menuUpdate.setDescription(menuRequest.getDescription());
-            menuRepository.save(menuUpdate);
-            return "Update Success";
+            if (menu != null) {
+                String oldFilePath = menu.getImgUrl();
+                String[] urls = oldFilePath.split(",");
+                try {
+                    for (int i = 0; i < urls.length; i++) {
+                        Path oldFile = Paths.get(urls[i]);
+                        Files.delete(oldFile);
+                    }
+                } catch (IOException e) {
+                    throw new CommonException(Response.PARAM_INVALID, "Cannot delete old image file: " + oldFilePath);
+                }
+                Menu menuUpdate = menu;
+                menuUpdate.setName(menuRequest.getName());
+                menuUpdate.setPrice(menuRequest.getPrice());
+                menuUpdate.setDescription(menuRequest.getDescription());
+                menuUpdate.setImgUrl(url);
+                menuRepository.save(menuUpdate);
+                return "Update Success";
+            }
+
         } catch (CommonException exception) {
             throw new CommonException(Response.PARAM_NOT_VALID, exception.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -205,9 +260,9 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     @Override
     public String deleteByListId(List<Integer> ids) {
         try {
-                menuRepository.deleteAllById(ids);
-                return "Delete " + ids +" Success ";
-            } catch (CommonException exception) {
+            menuRepository.deleteAllById(ids);
+            return "Delete " + ids + " Success ";
+        } catch (CommonException exception) {
             throw new CommonException(Response.PARAM_NOT_VALID, exception.getMessage());
         }
     }
