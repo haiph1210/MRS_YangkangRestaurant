@@ -1,10 +1,12 @@
 package com.haiph.menuservice.service;
 
+import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.menuservice.dto.request.PaymentRequest;
 import com.haiph.menuservice.dto.response.PaymentResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,4 +30,6 @@ public interface PaymentService {
     String update(Integer id, PaymentRequest request);
 
     String delete(Integer id);
+
+    ResponseBody paymenByVnPay(Integer id) throws UnsupportedEncodingException;
 }

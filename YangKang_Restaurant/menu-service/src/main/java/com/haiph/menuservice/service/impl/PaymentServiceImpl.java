@@ -1,7 +1,10 @@
 package com.haiph.menuservice.service.impl;
 
 import com.haiph.common.dto.response.Response;
+import com.haiph.common.dto.response.ResponseBody;
+import com.haiph.common.enums.status.menuService.payment.PaymentVnPay;
 import com.haiph.common.exception.CommonException;
+import com.haiph.menuservice.config.PaymentConfig;
 import com.haiph.menuservice.dto.request.PaymentRequest;
 import com.haiph.menuservice.dto.response.DiscountResponse;
 import com.haiph.menuservice.dto.response.OrderResponse;
@@ -20,11 +23,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -304,5 +310,68 @@ public class PaymentServiceImpl implements com.haiph.menuservice.service.Payment
             return "delete succes";
         }
         return "delete fail";
+    }
+
+    @Override
+    public ResponseBody paymenByVnPay(Integer id) throws UnsupportedEncodingException {
+        PaymentResponse response = findById(id);
+        String orderType = PaymentVnPay.ORDER_TYPE;
+        int amount =(int) Math.floor(response.getTotalPrice()) ;
+        int amountReal = amount *100;
+        String vnp_TxnRef = response.getPaymentCode();
+        String vnp_IpAddr = PaymentVnPay.IP_DEFAULT;
+
+        Map<String, String> vnp_Params = new HashMap<>();
+        vnp_Params.put("vnp_Version", PaymentVnPay.VERSION);
+        vnp_Params.put("vnp_Command", PaymentVnPay.COMMAND);
+        vnp_Params.put("vnp_TmnCode", PaymentVnPay.TMN_CODE);
+        vnp_Params.put("vnp_Amount", String.valueOf(amountReal));
+        vnp_Params.put("vnp_CurrCode", "VND");
+        vnp_Params.put("vnp_BankCode", "NCB");
+        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
+        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
+        vnp_Params.put("vnp_OrderType", orderType);
+        vnp_Params.put("vnp_Locale", PaymentVnPay.LOCALE_DEFAULT);
+        vnp_Params.put("vnp_ReturnUrl", PaymentVnPay.RETURN_URL);
+        vnp_Params.put("vnp_IpAddr", PaymentVnPay.IP_DEFAULT);
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String vnp_CreateDate = formatter.format(cld.getTime());
+        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+        cld.add(Calendar.MINUTE, 15);
+        String vnp_ExpireDate = formatter.format(cld.getTime());
+        vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
+        List fieldNames = new ArrayList(vnp_Params.keySet());
+        Collections.sort(fieldNames);
+        StringBuilder hashData = new StringBuilder();
+        StringBuilder query = new StringBuilder();
+        Iterator itr = fieldNames.iterator();
+        while (itr.hasNext()) {
+            String fieldName = (String) itr.next();
+            String fieldValue = (String) vnp_Params.get(fieldName);
+            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                //Build hash data
+                hashData.append(fieldName);
+                hashData.append('=');
+                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                //Build query
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
+                query.append('=');
+                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                if (itr.hasNext()) {
+                    query.append('&');
+                    hashData.append('&');
+                }
+            }
+        }
+        String queryUrl = query.toString();
+        String vnp_SecureHash = PaymentConfig.hmacSHA512(PaymentVnPay.HASH_SECREST, hashData.toString());
+        queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
+        String paymentUrl = PaymentVnPay.PAY_URL + "?" + queryUrl;
+        ResponseBody paymentDto = new ResponseBody();
+        paymentDto.setResponseCode(Response.SUCCESS.getResponseCode());
+        paymentDto.setResponseMessage(Response.SUCCESS.getResponseMessage());
+        paymentDto.setResponseData(paymentUrl);
+        return paymentDto;
     }
 }

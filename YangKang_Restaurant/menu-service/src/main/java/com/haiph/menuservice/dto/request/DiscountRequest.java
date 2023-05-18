@@ -1,5 +1,6 @@
 package com.haiph.menuservice.dto.request;
 
+import com.haiph.common.enums.status.menuService.discount.DiscountStatus;
 import com.haiph.common.enums.status.menuService.discount.PercentDiscount;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +16,5 @@ public class DiscountRequest {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Integer infoId;
-    private Integer status;
+    private DiscountStatus status;
 }
