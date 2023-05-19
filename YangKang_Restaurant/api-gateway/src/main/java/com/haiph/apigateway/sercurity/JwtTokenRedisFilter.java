@@ -1,4 +1,4 @@
-//package com.haiph.apigateway.sercurity;
+package com.haiph.apigateway.sercurity;//package com.haiph.apigateway.sercurity;
 //
 //import com.haiph.common.sercurity.UserInfo;
 //import com.haiph.common.util.JwtUtil;

@@ -18,51 +18,71 @@ spring:
           uri: lb://mail-service
           predicates:
             - Path=/api/email/**
+
         #        MENU-SERVICE
         - id: menu
           uri: lb://menu-service
           predicates:
             - Path=/api/menu/**
+          filters:
+            - AuthenticationFillter
 
         - id: combo
           uri: lb://menu-service
           predicates:
             - Path=/api/combo/**
+          filters:
+            - AuthenticationFillter
+
 
         - id: order
           uri: lb://menu-service
           predicates:
             - Path=/api/order/**
+          filters:
+            - AuthenticationFillter
 
         - id: payment
           uri: lb://menu-service
           predicates:
             - Path=/api/payment/**
+          filters:
+            - AuthenticationFillter
 
         - id: discount
           uri: lb://menu-service
           predicates:
             - Path=/api/discount/**
+          filters:
+            - AuthenticationFillter
+
         #        Restaurant-Serivce
         - id: info
           uri: lb://restaurant-service
           predicates:
             - Path=/api/restaurant/info/**
+          filters:
+            - AuthenticationFillter
 
         - id: detail
           uri: lb://restaurant-service
           predicates:
             - Path=/api/restaurant/detail/**
+          filters:
+            - AuthenticationFillter
 
         - id: masterial
           uri: lb://restaurant-service
           predicates:
             - Path=/api/restaurant/masterial/**
-
+          filters:
+            - AuthenticationFillter
         - id: form
           uri: lb://restaurant-service
           predicates:
             - Path=/api/restaurant/form/**
+          filters:
+            - AuthenticationFillter
 
         #        USER-SERVICE
         - id: user

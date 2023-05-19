@@ -1,7 +1,7 @@
 package com.haiph.apigateway.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haiph.apigateway.util.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haiph.common.sercurity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
