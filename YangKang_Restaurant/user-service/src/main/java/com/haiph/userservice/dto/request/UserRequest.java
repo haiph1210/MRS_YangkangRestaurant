@@ -20,4 +20,15 @@ public class UserRequest {
     private LocalDate birthDay;
     private Gender gender;
     private MultipartFile imgUrl;
+
+    public UserRequest(String username, String password, String firstName, String lastName, String email, String address, LocalDate birthDay, Gender gender) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.birthDay = birthDay;
+        this.gender = gender;
+    }
 }

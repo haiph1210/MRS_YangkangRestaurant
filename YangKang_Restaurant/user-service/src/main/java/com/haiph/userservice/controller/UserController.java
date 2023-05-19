@@ -138,8 +138,8 @@ public class UserController {
 //        }
 //    }
 
-    @PostMapping("/create")
-    public ResponseEntity<ResponseBody> create(@ModelAttribute UserRequest request) {
+    @PostMapping("/createImg")
+    public ResponseEntity<ResponseBody> createImage(@ModelAttribute UserRequest request) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
@@ -153,20 +153,35 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseBody> update(@PathVariable UUID id,@ModelAttribute UserRequest request) {
+    @PostMapping("/create")
+    public ResponseEntity<ResponseBody> create(@RequestBody UserRequest request) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
                             Response.SUCCESS.getResponseCode(),
                             Response.SUCCESS.getResponseMessage(),
-                            userService.Update(id,request)
+                            userService.createToLogin(request)
                     )
             );
         }catch (CommonException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
         }
     }
+
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<ResponseBody> update(@PathVariable UUID id,@ModelAttribute UserRequest request) {
+//        try {
+//            return ResponseEntity.ok(
+//                    new ResponseBody(
+//                            Response.SUCCESS.getResponseCode(),
+//                            Response.SUCCESS.getResponseMessage(),
+//                            userService.Update(id,request)
+//                    )
+//            );
+//        }catch (CommonException exception) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+//        }
+//    }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseBody> delete(@PathVariable UUID id) {
         try {

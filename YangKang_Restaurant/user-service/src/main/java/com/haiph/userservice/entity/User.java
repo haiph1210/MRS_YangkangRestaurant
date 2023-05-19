@@ -54,16 +54,7 @@ public class User {
     private LocalDateTime createdDate;
     @Column(name = "img_url")
     private String imgUrl;
-
-    public User(String username, String password, String userCode, String email, Active status, Role role) {
-        this.username = username;
-        this.password = password;
-        this.userCode = userCode;
-        this.email = email;
-        this.status = status;
-        this.role = role;
-    }
-
+// tạo mới thêm ảnh -> đang gặp lỗi với form-data
     public User(String username, String password, String userCode, String firstName, String lastName, String email, String address, LocalDate birthDay, Gender gender,String imgUrl) {
         this.username = username;
         this.password = password;
@@ -76,20 +67,33 @@ public class User {
         this.gender = gender;
         this.imgUrl = imgUrl;
     }
-
-    public User(String username, String password, String userCode, String firstName, String lastName, String address, LocalDate birthDay,Gender gender) {
+//    tạm thời update -> raw
+    public User(String username, String password, String userCode, String firstName, String lastName, String email, String address, LocalDate birthDay, Gender gender) {
         this.username = username;
         this.password = password;
         this.userCode = userCode;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.email = email;
         this.address = address;
         this.birthDay = birthDay;
         this.gender = gender;
     }
-
-
-
+// tạo admin
+    public User(String username, String password, String userCode, String firstName, String lastName, String fullName, String email, String address, LocalDate birthDay, Gender gender, Active status, Role role) {
+        this.username = username;
+        this.password = password;
+        this.userCode = userCode;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fullName = fullName;
+        this.email = email;
+        this.address = address;
+        this.birthDay = birthDay;
+        this.gender = gender;
+        this.status = status;
+        this.role = role;
+    }
 
     @PrePersist()
     public void perPersitst() {

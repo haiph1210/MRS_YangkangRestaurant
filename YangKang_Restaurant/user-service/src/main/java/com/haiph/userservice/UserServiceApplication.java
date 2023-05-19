@@ -1,6 +1,7 @@
 package com.haiph.userservice;
 
 import com.haiph.common.enums.status.personService.person.Active;
+import com.haiph.common.enums.status.personService.person.Gender;
 import com.haiph.common.enums.status.personService.person.Role;
 import com.haiph.common.enums.status.restaurantService.RestaurantFormStatus;
 import com.haiph.userservice.dto.response.UserResponse;
@@ -54,23 +55,38 @@ public class UserServiceApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Optional<User> userResponse1 = userRepository.findByUserCode("ADMIN");
         Optional<User> userResponse2 = userRepository.findByUserCode("ADMIN+1");
-        if (userResponse1 == null && userResponse2 == null) {
+        boolean isTrue = userResponse1.isPresent() && userResponse2.isPresent();
+        if (isTrue) {
+            System.out.println("Tạo mới admin");
             User admin1 = new User(
                     "admin",
-                    "admin123",
+                    "admin",
                     "ADMIN",
+                    "Phạm",
+                    "Hải",
+                    "Phạm Hải",
                     "haiph12102001@gmail.com",
+                    "Ninh Bình",
+                    LocalDate.of(2001,10,12),
+                    Gender.MALE,
                     Active.ACTIVE,
                     Role.ADMIN);
             User admin2 = new User(
-                    "haiph1210",
-                    "admin123",
-                    "ADMIN+1",
+                    "haiph",
+                    "admin",
+                    "ADMIN-1",
+                    "Phạm",
+                    "Hải",
+                    "Phạm Hải",
                     "haiph2001@gmail.com",
+                    "Ninh Bình",
+                    LocalDate.of(2001,10,12),
+                    Gender.MALE,
                     Active.ACTIVE,
                     Role.ADMIN);
             List<User> listAdmin = Arrays.asList(admin1,admin2);
             userService.saveAdmin(listAdmin);
+            System.out.println("Đã tạo admin");
         }
         System.out.println("Đã có thông tin admin");
 

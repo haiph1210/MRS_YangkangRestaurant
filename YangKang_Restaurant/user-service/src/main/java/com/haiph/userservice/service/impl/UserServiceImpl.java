@@ -17,7 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements com.haiph.userservice.service.UserService {
@@ -178,7 +176,6 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
     }
 
     public String create(UserRequest request) {
-//        Path path = Paths.get("user-service/upload/img");
         boolean existUsername = userRepository.existsByUsername(request.getUsername());
         boolean existEmail = userRepository.existsByEmail(request.getEmail());
         if (existUsername) {
@@ -189,7 +186,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         }
         User user = new User(
                 request.getUsername(),
-                request.getPassword(),
+                passwordEncoder.encode(request.getPassword()),
                 checkAndGen(request.getFirstName() + " " + request.getLastName()),
                 request.getFirstName(),
                 request.getLastName(),
@@ -198,6 +195,32 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 request.getBirthDay(),
                 request.getGender(),
                 genUrlImage(request.getImgUrl(), request.getUsername(), path)
+        );
+        userRepository.save(user);
+        return "Create Success";
+    }
+
+// create - to login
+    @Override
+    public String createToLogin(UserRequest request) {
+        boolean existUsername = userRepository.existsByUsername(request.getUsername());
+        boolean existEmail = userRepository.existsByEmail(request.getEmail());
+        if (existUsername) {
+            throw new CommonException(Response.PARAM_INVALID, "Username exists");
+        }
+        if (existEmail) {
+            throw new CommonException(Response.PARAM_INVALID, "Email exists");
+        }
+        User user = new User(
+                request.getUsername(),
+                passwordEncoder.encode(request.getPassword()),
+                checkAndGen(request.getFirstName() + " " + request.getLastName()),
+                request.getFirstName(),
+                request.getLastName(),
+                request.getEmail(),
+                request.getAddress(),
+                request.getBirthDay(),
+                request.getGender()
         );
         userRepository.save(user);
         return "Create Success";
@@ -218,8 +241,8 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
 
             User user = User.build(
                     id,
-                    response.getUsername(),
-                    request.getPassword(),
+                    request.getUsername(),
+                    passwordEncoder.encode(request.getPassword()),
                     checkAndGen(request.getFirstName() + " " + request.getLastName()),
                     request.getFirstName(),
                     request.getLastName(),
@@ -315,6 +338,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         userRepository.saveAll(users);
         return "Save admin success";
     }
+
     @Override
     public byte[] readFileImg(String fileName) {
         return genfile.readFileContent(fileName, path);

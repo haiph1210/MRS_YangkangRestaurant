@@ -27,6 +27,9 @@ public interface UserService extends UserDetailsService {
 
     String create(UserRequest request);
 
+    // create - to login
+    String createToLogin(UserRequest request);
+
     String Update(UUID id, UserRequest request);
 
     String delete(UUID id);

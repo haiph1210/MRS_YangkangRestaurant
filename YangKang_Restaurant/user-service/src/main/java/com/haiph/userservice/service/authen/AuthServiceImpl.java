@@ -44,7 +44,6 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
     @Override
     public TokenRespone login(LoginRequest request) {
         Optional<User> user = userRepository.findByUsername(request.getUsername());
-        System.out.println("alo alo");
         if (!user.isPresent()) {
             throw new CommonException(Response.PARAM_NOT_VALID, "username: " + request.getUsername() + " isn't exists");
         }
@@ -89,8 +88,8 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new CommonException(Response.PARAM_INVALID, "Email Exists");
         }
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-        userService.create(request);
+//        request.setPassword(passwordEncoder.encode(request.getPassword()));
+        userService.createToLogin(request);
         sendMail.sendMailActive(request.getEmail());
         return "Create Success";
     }

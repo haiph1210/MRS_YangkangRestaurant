@@ -2,3 +2,13 @@ chmod +x deploy-docker-compose.dev.sh
 ./deploy-docker-compose.dev.sh
 đăng nhập vào sql
 winpty docker exec -it yangkang_mysql mysql -u root -p
+
+Nếu 1 container nào đó bị lỗi update lại
+(1- chạy lại spring boot)
+(2- xóa container kể cả khi đang chạy)
+(3- build lại)
+(4- chạy container bị lỗi ko lq tới container khác)
+mvn clean install
+docker rm -f user-service
+docker-compose -f docker-compose-test.yml build user-service
+docker-compose -f docker-compose-test.yml up -d user-service
