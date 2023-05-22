@@ -13,5 +13,7 @@ public interface UploadFile {
 
     byte[] readFileContent(String fileName, Path path);
 
+    List<byte[]> readFileContent2(String fileName, Path path);
+
     Stream<Path> loadAll(Path newPath);
 }

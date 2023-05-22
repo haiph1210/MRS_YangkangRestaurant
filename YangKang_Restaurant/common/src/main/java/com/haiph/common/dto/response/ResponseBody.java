@@ -1,6 +1,7 @@
 package com.haiph.common.dto.response;
 
 import com.haiph.common.exception.CommonException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

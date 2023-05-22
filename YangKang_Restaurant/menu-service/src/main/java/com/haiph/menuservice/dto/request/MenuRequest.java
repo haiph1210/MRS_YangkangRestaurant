@@ -11,6 +11,7 @@ import java.util.List;
 public class MenuRequest {
     private String name;
     private Double price;
+    private Integer amount;
     private List<MultipartFile> imgUrl;
     private String description;
     private Integer comboId;

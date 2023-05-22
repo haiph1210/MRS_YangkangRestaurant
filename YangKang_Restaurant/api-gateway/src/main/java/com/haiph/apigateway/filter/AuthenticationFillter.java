@@ -41,7 +41,6 @@ public class AuthenticationFillter extends AbstractGatewayFilterFactory<Authenti
                 if (userInfo != null) {
                     try {
                         jwtUtil.validateToken(token);
-
                     } catch (Exception e) {
                         System.out.println("invalid access...!");
                         throw new RuntimeException("un authorized access to application");

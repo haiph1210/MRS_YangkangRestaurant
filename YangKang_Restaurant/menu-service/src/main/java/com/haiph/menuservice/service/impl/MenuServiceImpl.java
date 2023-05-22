@@ -1,6 +1,7 @@
 package com.haiph.menuservice.service.impl;
 
 import com.haiph.common.dto.response.Response;
+import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.common.exception.CommonException;
 import com.haiph.common.uploadfile.UploadFile;
 import com.haiph.menuservice.dto.form.SearchFormMenu;
@@ -15,14 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuServiceImpl implements com.haiph.menuservice.service.MenuService {
@@ -44,22 +49,42 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     private List<String> genUrlImage(List<MultipartFile> files, String name, Path path) {
         return genfile.saveListFile(files, name, path);
     }
-
+    private List<String> findAllImage(String fileName) {
+        String[] listFileName = fileName.split(",");
+        return Arrays.stream(listFileName).toList();
+    }
+    @Override
+    public List<byte[]> readFileImg2(Integer id) {
+        MenuResponse response = findById(id);
+        return genfile.readFileContent2(response.getImgUrl(), path);
+    }
     @Override
     public byte[] readFileImg(String fileName) {
+        List<String> allImages = findAllImage(fileName);
+        if (allImages.isEmpty() && allImages.size()>1){
+            System.out.println("are you okey");
+            for (String allImage : allImages) {
+
+            }
+        }
         return genfile.readFileContent(fileName, path);
     }
 
-    @Override
-    public byte[] readListFileImg(String fileName) {
-        String[] fileNameList = fileName.trim().split(",");
-        if (fileNameList != null) {
-            for (int i = 0; i < fileNameList.length; i++) {
-                return readFileImg(fileNameList[i]);
-            }
-        }
-        return null;
-    }
+//    @Override
+//    public List<byte[]> readFileImg2(String fileName) {
+//        List<byte[]> newImage = new ArrayList<>();
+//        List<String> allImages = findAllImage(fileName);
+//        if (allImages.isEmpty() && allImages.size()>1){
+//            System.out.println("are you okey");
+//            for (String allImage : allImages) {
+//                System.out.println("add");
+//                byte[] newFileName = genfile.readFileContent(fileName, path);
+//                newImage.add(newFileName);
+//            }
+//        }
+//        return newImage;
+//    }
+
 
     private String findComboName(Integer id) {
 
@@ -77,7 +102,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         Integer number = 0;
         for (Menu menu : menus) {
 
-            MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+            MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
             menuResponses.add(response);
             if (menu != null) {
                 number++;
@@ -95,7 +120,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         List<MenuResponse> dtos = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription()
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription()
                 );
                 dtos.add(response);
             } else
@@ -111,7 +136,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         List<MenuResponse> dtos = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 dtos.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Search With Form Haven't Data");
@@ -130,8 +155,8 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         for (Menu menu : menus) {
             MenuResponse response = MenuResponse.
                     build(menu.getId(),
-                            menu.getName(),
-                            menu.getPrice(),
+                            menu.getName(),menu.getPrice(),
+
                             menu.getImgUrl(),
                             menu.getDescription());
             responses.add(response);
@@ -145,7 +170,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         try {
             Menu menu = menuRepository.findById(id).orElse(null);
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 return response;
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Menu cannot having Id: " + id);
@@ -163,7 +188,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         List<MenuResponse> menuResponses = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 menuResponses.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Menu haven't name: " + name);
@@ -178,7 +203,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         List<MenuResponse> menuResponses = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 menuResponses.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Menu haven't price: " + price);

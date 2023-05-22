@@ -15,7 +15,7 @@ services:
       MYSQL_USER: haiph1210
       MYSQL_PASSWORD: admin123
       MYSQL_ROOT_PASSWORD: admin123
-      MYSQL_DATABASE: yangkang_data
+      MYSQL_DATABASE: yangkang_data,yangkang_admin_data
   # EUREKA
   eureka:
     container_name: eureka

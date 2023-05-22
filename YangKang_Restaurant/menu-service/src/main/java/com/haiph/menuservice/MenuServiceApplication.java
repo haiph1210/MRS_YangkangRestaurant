@@ -22,7 +22,7 @@ public class MenuServiceApplication {
                 @Override
                 public void addCorsMappings(CorsRegistry registry) {
                     registry.addMapping("/**")
-                            .allowedOrigins("http://127.0.0.1:5502") // Nguồn gốc của frontend
+                            .allowedOrigins("http://localhost:3000") // Nguồn gốc của frontend "http://127.0.0.1:3000" Reactjs
                             .allowedMethods("HEAD","GET", "POST", "PUT", "DELETE") // Phương thức được phép
                             .allowedHeaders("*") // Các header được phép
                             .allowCredentials(true); // Cho phép gửi cookie

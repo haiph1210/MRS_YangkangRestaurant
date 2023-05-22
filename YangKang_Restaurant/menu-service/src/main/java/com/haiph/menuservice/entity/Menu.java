@@ -21,7 +21,9 @@ public class Menu implements Serializable {
     private Integer id;
     private String name;
     private Double price;
-    @Column(name = "img_url",length = 10000)
+//    private Integer amount;
+//    private Double initPrice;
+    @Column(name = "img_url", length = 10000)
     private String imgUrl;
     private String description;
 
@@ -30,6 +32,15 @@ public class Menu implements Serializable {
         this.price = price;
         this.imgUrl = imgUrl;
         this.description = description;
-
     }
+
+//    @PrePersist
+//    public void prePersit() {
+//        if (this.amount == null) {
+//            this.amount = 1;
+//        }
+//        if (this.initPrice == null) {
+//            this.initPrice = this.amount * this.price;
+//        }
+//    }
 }

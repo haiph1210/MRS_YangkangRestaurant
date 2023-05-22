@@ -1,5 +1,6 @@
 package com.haiph.menuservice.service;
 
+import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.menuservice.dto.form.SearchFormMenu;
 import com.haiph.menuservice.dto.request.MenuRequest;
 import com.haiph.menuservice.dto.response.MenuResponse;
@@ -8,6 +9,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -15,8 +17,11 @@ import java.util.Map;
 public interface MenuService {
 
     byte[] readFileImg(String fileName);
+    List<byte[]> readFileImg2(Integer id);
 
-    byte[] readListFileImg(String fileName);
+//    List<byte[]> readListFileImg(String fileName);
+
+//    ResponseBody getAllUploadImage();
 
     //     @Cacheable(cacheNames = "Menu")
     Map<Integer, List<MenuResponse>> findAll();

@@ -51,4 +51,8 @@ public class QRUtils {
         return "";
     }
 
+    public static void main(String[] args) {
+        System.out.println(gennaterateQrCode("HaiPham", 300, 300));
+    }
+
 }

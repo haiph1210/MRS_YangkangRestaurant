@@ -11,12 +11,4 @@ public class MenuResponse {
     private Double price;
     private String imgUrl;
     private String description;
-
-    public MenuResponse(Integer id, String name, Double price) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-    }
-
-
 }

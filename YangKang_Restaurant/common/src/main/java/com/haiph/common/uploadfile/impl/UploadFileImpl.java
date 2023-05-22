@@ -30,7 +30,7 @@ public class UploadFileImpl implements com.haiph.common.uploadfile.UploadFile {
 
     public boolean isImageFile(MultipartFile file) {
         String fileName = FilenameUtils.getExtension(file.getOriginalFilename());
-        return Arrays.asList(new String[]{"png", "jpg", "jpeg", "bmp"}).contains(fileName.trim().toLowerCase());
+        return Arrays.asList(new String[]{"png", "jpg", "jpeg", "bmp", "jfif"}).contains(fileName.trim().toLowerCase());
     }
 
     @Override
@@ -86,7 +86,7 @@ public class UploadFileImpl implements com.haiph.common.uploadfile.UploadFile {
     public List<String> saveListFile(List<MultipartFile> files, String name, Path path) {
         List<String> listPaths = new ArrayList<>();
         for (int i = 0; i < files.size(); i++) {
-            String newName = name + "-" + (i+1);
+            String newName = name + "-" + (i + 1);
             String newPath = saveFile(files.get(i), newName, path);
             listPaths.add(newPath);
         }
@@ -114,6 +114,56 @@ public class UploadFileImpl implements com.haiph.common.uploadfile.UploadFile {
             throw new CommonException(Response.DATA_NOT_FOUND,
                     "Could not read file: " + fileName);
         }
+    }
+
+    @Override
+    public List<byte[]> readFileContent2(String fileName, Path path) {
+        StringBuilder config = new StringBuilder();
+        List<byte[]> readFiles = new ArrayList<>();
+        String newPath = path.toUri().getPath().replace("/E:/MRS_YangkangRestaurant/YangKang_Restaurant/", "");
+        String newFileName = "";
+        if (fileName.contains(newPath)) {
+            newFileName = fileName.trim().replace(newPath.toString(), "");
+        }
+        String[] sliceFileName = newFileName.split(",");
+        if (sliceFileName.length > 1) {
+            System.out.println("oke");
+            for (String newF : sliceFileName) {
+                try {
+                    Path file = path.resolve(newF);
+                    Resource resource = new UrlResource(file.toUri());
+                    if (resource.exists() || resource.isReadable()) {
+                        byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
+                        config.append("data:image/jpeg;base64,").append(bytes);
+                        readFiles.add(bytes);
+                    } else {
+                        throw new CommonException(Response.DATA_NOT_FOUND,
+                                "Could not read file: " + fileName);
+                    }
+                } catch (IOException exception) {
+                    throw new CommonException(Response.DATA_NOT_FOUND,
+                            "Could not read file: " + fileName);
+                }
+            }
+        }else {
+            try {
+                Path file = path.resolve(newFileName);
+                Resource resource = new UrlResource(file.toUri());
+                if (resource.exists() || resource.isReadable()) {
+                    byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
+                    config.append("data:image/jpeg;base64,").append(bytes);
+                    readFiles.add(bytes);
+//                        return readFiles;
+                } else {
+                    throw new CommonException(Response.DATA_NOT_FOUND,
+                            "Could not read file: " + fileName);
+                }
+            } catch (IOException exception) {
+                throw new CommonException(Response.DATA_NOT_FOUND,
+                        "Could not read file: " + fileName);
+            }
+        }
+        return readFiles;
     }
 
     // htai ko dùng
