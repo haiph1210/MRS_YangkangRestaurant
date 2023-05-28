@@ -19,7 +19,7 @@ public class JwtUtil {
 
     private static String JWT_SECRET = "phamquanghai12102001x6khanhnhacyenkhanhninhbinh037201001131312312313123";
     //    @Value("${haiph.app.jwtExpirationMs}")
-    private static Integer JWT_EXPIRATION_MS = 10000000;
+    private static Integer JWT_EXPIRATION_MS = 60000; //1 phút test
 
     public static boolean validateToken(final String token) {
         try {
@@ -29,6 +29,10 @@ public class JwtUtil {
             System.out.println(e.getMessage());
             return false;
         }
+    }
+
+    public static void validateToken2(final String token) {
+        Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
     }
 
     public static String generateToken(String username) {

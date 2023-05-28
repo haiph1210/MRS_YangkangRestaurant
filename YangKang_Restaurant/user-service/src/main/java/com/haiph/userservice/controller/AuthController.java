@@ -67,6 +67,21 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/token/{token}")
+    public ResponseEntity<ResponseBody> validateToken(@PathVariable String token) {
+        authService.validateToken(token);
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage()
+                    )
+            );
+        }catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
+
     @GetMapping("/active")
     public ResponseEntity<ResponseBody> activeUser (@RequestParam String userCode) {
         try {

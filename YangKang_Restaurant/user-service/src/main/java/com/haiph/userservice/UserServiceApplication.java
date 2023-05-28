@@ -3,8 +3,6 @@ package com.haiph.userservice;
 import com.haiph.common.enums.status.personService.person.Active;
 import com.haiph.common.enums.status.personService.person.Gender;
 import com.haiph.common.enums.status.personService.person.Role;
-import com.haiph.common.enums.status.restaurantService.RestaurantFormStatus;
-import com.haiph.userservice.dto.response.UserResponse;
 import com.haiph.userservice.entity.User;
 import com.haiph.userservice.repository.UserRepository;
 import com.haiph.userservice.service.UserService;
@@ -43,7 +41,7 @@ public class UserServiceApplication implements CommandLineRunner {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://127.0.0.1:5502") // Nguồn gốc của frontend
+                        .allowedOrigins("http://localhost:3000") // Nguồn gốc của frontend
                         .allowedMethods("HEAD","GET", "POST", "PUT", "DELETE") // Phương thức được phép
                         .allowedHeaders("*") // Các header được phép
                         .allowCredentials(true); // Cho phép gửi cookie

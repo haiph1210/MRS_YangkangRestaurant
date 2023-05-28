@@ -11,6 +11,7 @@ import com.haiph.menuservice.entity.Combo;
 import com.haiph.menuservice.entity.Menu;
 import com.haiph.menuservice.repository.ComboRepository;
 import com.haiph.menuservice.repository.MenuRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -49,19 +50,22 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     private List<String> genUrlImage(List<MultipartFile> files, String name, Path path) {
         return genfile.saveListFile(files, name, path);
     }
+
     private List<String> findAllImage(String fileName) {
         String[] listFileName = fileName.split(",");
         return Arrays.stream(listFileName).toList();
     }
+
     @Override
     public List<byte[]> readFileImg2(Integer id) {
         MenuResponse response = findById(id);
         return genfile.readFileContent2(response.getImgUrl(), path);
     }
+
     @Override
     public byte[] readFileImg(String fileName) {
         List<String> allImages = findAllImage(fileName);
-        if (allImages.isEmpty() && allImages.size()>1){
+        if (allImages.isEmpty() && allImages.size() > 1) {
             System.out.println("are you okey");
             for (String allImage : allImages) {
 
@@ -102,7 +106,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         Integer number = 0;
         for (Menu menu : menus) {
 
-            MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+            MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
             menuResponses.add(response);
             if (menu != null) {
                 number++;
@@ -120,7 +124,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         List<MenuResponse> dtos = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription()
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription()
                 );
                 dtos.add(response);
             } else
@@ -136,7 +140,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         List<MenuResponse> dtos = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 dtos.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Search With Form Haven't Data");
@@ -155,7 +159,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         for (Menu menu : menus) {
             MenuResponse response = MenuResponse.
                     build(menu.getId(),
-                            menu.getName(),menu.getPrice(),
+                            menu.getName(), menu.getPrice(),
 
                             menu.getImgUrl(),
                             menu.getDescription());
@@ -170,7 +174,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         try {
             Menu menu = menuRepository.findById(id).orElse(null);
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 return response;
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Menu cannot having Id: " + id);
@@ -188,7 +192,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         List<MenuResponse> menuResponses = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 menuResponses.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Menu haven't name: " + name);
@@ -203,7 +207,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         List<MenuResponse> menuResponses = new ArrayList<>();
         for (Menu menu : menus) {
             if (menu != null) {
-                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(),menu.getPrice(), menu.getImgUrl(), menu.getDescription());
+                MenuResponse response = MenuResponse.build(menu.getId(), menu.getName(), menu.getPrice(), menu.getImgUrl(), menu.getDescription());
                 menuResponses.add(response);
             } else
                 throw new CommonException(Response.DATA_NOT_FOUND, "Menu haven't price: " + price);
@@ -236,30 +240,29 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
+    @Transactional
     public String update(Integer id, MenuRequest menuRequest) {
-        List<String> urlImages = genUrlImage(menuRequest.getImgUrl(), menuRequest.getName(), path);
-        String url = String.join(",", urlImages);
         try {
             Menu menu = menuRepository.findById(id).orElseThrow(() ->
                     new CommonException(Response.PARAM_INVALID, "Id NOT Exists,Cannot Update"));
             if (menu != null) {
                 String oldFilePath = menu.getImgUrl();
                 String[] urls = oldFilePath.split(",");
-                try {
                     for (int i = 0; i < urls.length; i++) {
                         Path oldFile = Paths.get(urls[i]);
-                        Files.delete(oldFile);
+                        genfile.delete(oldFile);
                     }
-                } catch (IOException e) {
-                    throw new CommonException(Response.PARAM_INVALID, "Cannot delete old image file: " + oldFilePath);
-                }
-                Menu menuUpdate = menu;
-                menuUpdate.setName(menuRequest.getName());
-                menuUpdate.setPrice(menuRequest.getPrice());
-                menuUpdate.setDescription(menuRequest.getDescription());
-                menuUpdate.setImgUrl(url);
-                menuRepository.save(menuUpdate);
-                return "Update Success";
+                    List<String> urlImages = genUrlImage(menuRequest.getImgUrl(), menuRequest.getName(), path);
+                    String url = String.join(",", urlImages);
+                    Menu menuUpdate = menu;
+                    menuUpdate.setName(menuRequest.getName());
+                    menuUpdate.setPrice(menuRequest.getPrice());
+                    menuUpdate.setDescription(menuRequest.getDescription());
+                    menuUpdate.setImgUrl(url);
+                    menuRepository.save(menuUpdate);
+                    return "Update Success";
+
+
             }
 
         } catch (CommonException exception) {
@@ -269,11 +272,16 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    //   @CacheEvict(cacheNames = "Menu")
     public String deleteById(Integer id) {
         try {
             Menu menu = menuRepository.findById(id).orElse(null);
             if (menu != null) {
+                String oldFilePath = menu.getImgUrl();
+                String[] urls = oldFilePath.split(",");
+                for (int i = 0; i < urls.length; i++) {
+                    Path oldFile = Paths.get(urls[i]);
+                    genfile.delete(oldFile);
+                }
                 menuRepository.deleteById(id);
                 return "Delete Success";
             } else throw new CommonException(Response.PARAM_INVALID, "Id NOT Exists,Cannot Delete");
@@ -281,6 +289,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
             throw new CommonException(Response.PARAM_NOT_VALID, exception.getMessage());
         }
     }
+
 
     @Override
     public String deleteByListId(List<Integer> ids) {

@@ -12,16 +12,16 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SercutiryAuthenService {
-    RequestMatcher[] auth = {
-            new AntPathRequestMatcher("api/authenticate/*"),
-    };
+//    RequestMatcher[] auth = {
+//           new AntPathRequestMatcher("api/authenticate/*"),
+//    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(auth).permitAll()
+//                .requestMatchers(auth).permitAll()
                 .requestMatchers(HttpMethod.POST).permitAll()
-                .requestMatchers(HttpMethod.GET).permitAll()
+//                .requestMatchers(HttpMethod.GET).permitAll()
                 .and()
                 .build();
     }

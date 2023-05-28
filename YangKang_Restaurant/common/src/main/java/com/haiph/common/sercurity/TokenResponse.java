@@ -9,7 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "build")
 public class TokenResponse {
     private String token;
-    private String username;
-    private String userCode;
     private UserReponse user;
 }

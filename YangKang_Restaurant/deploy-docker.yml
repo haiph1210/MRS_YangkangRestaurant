@@ -12,3 +12,6 @@ mvn clean install
 docker rm -f user-service
 docker-compose -f docker-compose-test.yml build user-service
 docker-compose -f docker-compose-test.yml up -d user-service
+
+// build image với dockerfileDev
+docker build -t user-service-images -f DockerfileDev .

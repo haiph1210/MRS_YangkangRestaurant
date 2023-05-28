@@ -15,5 +15,7 @@ public interface UploadFile {
 
     List<byte[]> readFileContent2(String fileName, Path path);
 
+    void delete(Path path);
+
     Stream<Path> loadAll(Path newPath);
 }

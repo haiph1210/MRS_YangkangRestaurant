@@ -18,7 +18,7 @@ public class JwtService {
 //    @Value("${haiph.app.jwtSecret}")
     private String JWT_SECRET = "phamquanghai12102001x6khanhnhacyenkhanhninhbinh037201001131312312313123";
 //    @Value("${haiph.app.jwtExpirationMs}")
-    private Integer JWT_EXPIRATION_MS = 10000000;
+    private Integer JWT_EXPIRATION_MS = 60000; // 1 phút test
 
     public void validateToken(final String token) {
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);

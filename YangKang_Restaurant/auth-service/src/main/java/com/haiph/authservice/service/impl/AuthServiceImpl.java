@@ -27,12 +27,8 @@ public class AuthServiceImpl {
             TokenResponse tokenResponse = response.getResponseData();
             UserInfo userInfo = UserInfo.
                     build(tokenResponse.getToken(),
-                            tokenResponse.getUsername(),
-                            tokenResponse.getUserCode(),
-                            tokenResponse.getUser().getEmail(),
-                            tokenResponse.getToken());
+                            tokenResponse.getUser());
 //            save token to Redis
-            redisTemplate.opsForValue().set("token",tokenResponse.getToken());
             redisTemplate.opsForValue().set(tokenResponse.getToken(), userInfo);
 //            SecurityContextHolder.getContext().setAuthentication(userInfo);
             return tokenResponse;
@@ -52,10 +48,4 @@ public class AuthServiceImpl {
         return null;
     }
 
-//    public UserInfo getUserInfo() {
-//        UserInfo userInfo  = userInfo();
-//        if (userInfo != null) {
-//            return userInfo;
-//        }return null;
-//    }
 }

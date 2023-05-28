@@ -12,14 +12,5 @@ import java.util.UUID;
 @Builder
 public class UserInfo {
     private String token;
-    private String username;
-    private String userCode;
-    private String email;
-    private String role;
-
-    public UserInfo(String username, String userCode, String email) {
-        this.username = username;
-        this.userCode = userCode;
-        this.email = email;
-    }
+    private UserReponse userReponse;
 }

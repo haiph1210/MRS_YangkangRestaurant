@@ -2,6 +2,8 @@ package com.haiph.apigateway.filter;
 
 import com.haiph.apigateway.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.haiph.common.dto.response.Response;
+import com.haiph.common.exception.CommonException;
 import com.haiph.common.sercurity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -31,24 +33,24 @@ public class AuthenticationFillter extends AbstractGatewayFilterFactory<Authenti
         return ((exchange, chain) -> {
             if (validator.isSecured.test(exchange.getRequest())) {
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    throw new RuntimeException("missing authorization header");
+                    throw new CommonException(Response.NOT_FOUND,"Cannot Find Header: Bearer Token");
                 }
                 String token = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (token != null && token.startsWith("Bearer ")) {
                     token = token.substring(7);
                 }
                 UserInfo userInfo = genUserInfoToTokenWithRedis(token);
-                if (userInfo != null) {
                     try {
-                        jwtUtil.validateToken(token);
-                    } catch (Exception e) {
-                        System.out.println("invalid access...!");
-                        throw new RuntimeException("un authorized access to application");
+                    if (!jwtUtil.validateToken(token)) {
+                        throw new CommonException(Response.NOT_FOUND,"Token Isn't exists");
                     }
-                }
-
+                    } catch (CommonException e) {
+                        System.out.println("invalid access...!");
+                        throw new CommonException(Response.NOT_FOUND,"Token expired");
+                    }
             }
             return chain.filter(exchange);
+
         });
 
     }

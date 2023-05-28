@@ -9,6 +9,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -145,7 +146,7 @@ public class UploadFileImpl implements com.haiph.common.uploadfile.UploadFile {
                             "Could not read file: " + fileName);
                 }
             }
-        }else {
+        } else {
             try {
                 Path file = path.resolve(newFileName);
                 Resource resource = new UrlResource(file.toUri());
@@ -164,6 +165,18 @@ public class UploadFileImpl implements com.haiph.common.uploadfile.UploadFile {
             }
         }
         return readFiles;
+    }
+
+    @Override
+    public void delete(Path path) {
+        try {
+            File file = new File(path.toUri());
+            if (file.exists()) {
+                file.delete();
+            }
+        } catch (CommonException exception) {
+            throw new CommonException(Response.PARAM_INVALID, exception.getMessage());
+        }
     }
 
     // htai ko dùng
