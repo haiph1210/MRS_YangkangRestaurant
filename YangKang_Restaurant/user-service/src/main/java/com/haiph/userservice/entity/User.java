@@ -37,6 +37,8 @@ public class User {
     private String fullName;
     @Column(unique = true,name = "email",nullable = false)
     private String email;
+    @Column(name = "phone_number")
+    private String phoneNumber;
     @Column(name = "address")
     private String address;
     @Column(name = "birth_day")
@@ -55,26 +57,28 @@ public class User {
     @Column(name = "img_url")
     private String imgUrl;
 // tạo mới thêm ảnh -> đang gặp lỗi với form-data
-    public User(String username, String password, String userCode, String firstName, String lastName, String email, String address, LocalDate birthDay, Gender gender,String imgUrl) {
+    public User(String username, String password, String userCode, String firstName, String lastName, String email,String phoneNumber, String address, LocalDate birthDay, Gender gender,String imgUrl) {
         this.username = username;
         this.password = password;
         this.userCode = userCode;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.address = address;
         this.birthDay = birthDay;
         this.gender = gender;
         this.imgUrl = imgUrl;
     }
 //    tạm thời update -> raw
-    public User(String username, String password, String userCode, String firstName, String lastName, String email, String address, LocalDate birthDay, Gender gender) {
+    public User(String username, String password, String userCode, String firstName, String lastName, String email,String phoneNumber, String address, LocalDate birthDay, Gender gender) {
         this.username = username;
         this.password = password;
         this.userCode = userCode;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.address = address;
         this.birthDay = birthDay;
         this.gender = gender;

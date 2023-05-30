@@ -1,4 +1,4 @@
-package com.haiph.userservice.dto.request;
+package com.haiph.authservice.request;
 
 import com.haiph.common.enums.status.personService.person.Gender;
 import lombok.AllArgsConstructor;
@@ -16,19 +16,17 @@ public class UserRequest {
     private String firstName;
     private String lastName;
     private String email;
-    private String phoneNumber;
     private String address;
     private LocalDate birthDay;
     private Gender gender;
     private MultipartFile imgUrl;
 
-    public UserRequest(String username, String password, String firstName, String lastName, String email,String phoneNumber, String address, LocalDate birthDay, Gender gender) {
+    public UserRequest(String username, String password, String firstName, String lastName, String email, String address, LocalDate birthDay, Gender gender) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.phoneNumber = phoneNumber;
         this.address = address;
         this.birthDay = birthDay;
         this.gender = gender;

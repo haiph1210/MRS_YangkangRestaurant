@@ -12,6 +12,14 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      global cors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
       routes:
         #        EMAIL-SERVICE
         - id: email
@@ -25,14 +33,14 @@ spring:
           predicates:
             - Path=/api/menu/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
         - id: combo
           uri: lb://menu-service
           predicates:
             - Path=/api/combo/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
 
         - id: order
@@ -40,21 +48,21 @@ spring:
           predicates:
             - Path=/api/order/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
         - id: payment
           uri: lb://menu-service
           predicates:
             - Path=/api/payment/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
         - id: discount
           uri: lb://menu-service
           predicates:
             - Path=/api/discount/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
         #        Restaurant-Serivce
         - id: info
@@ -62,27 +70,27 @@ spring:
           predicates:
             - Path=/api/restaurant/info/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
         - id: detail
           uri: lb://restaurant-service
           predicates:
             - Path=/api/restaurant/detail/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
         - id: masterial
           uri: lb://restaurant-service
           predicates:
             - Path=/api/restaurant/masterial/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
         - id: form
           uri: lb://restaurant-service
           predicates:
             - Path=/api/restaurant/form/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
         #        USER-SERVICE
         - id: user
@@ -90,14 +98,14 @@ spring:
           predicates:
             - Path=/api/user/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
         - id: authentication
           uri: lb://user-service
           predicates:
             - Path=/api/auth/**
           filters:
-            - AuthenticationFillter
+            - AuthenticationFilter
 
         #          AUTH-SERVICE
         - id: auth

@@ -1,8 +1,8 @@
-package com.haiph.apigateway.sercurity;//package com.haiph.apigateway.sercurity;
+//package com.haiph.apigateway.sercurity;
 //
-//
-//import javax.servlet.Filter;
-//import javax.servlet.http.HttpServletResponse;
+//import com.haiph.apigateway.filter.AuthenticationFilter;
+//import jakarta.servlet.Filter;
+//import jakarta.servlet.http.HttpServletResponse;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.data.redis.core.RedisTemplate;
@@ -11,11 +11,9 @@ package com.haiph.apigateway.sercurity;//package com.haiph.apigateway.sercurity;
 //import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 //import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 //import org.springframework.security.config.http.SessionCreationPolicy;
-//import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 //
 //@EnableWebSecurity
 //public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
-//
 //
 //    @Autowired
 //    private RedisTemplate<String, Object> redisTemplate;
@@ -29,9 +27,9 @@ package com.haiph.apigateway.sercurity;//package com.haiph.apigateway.sercurity;
 //                .and()
 //                .exceptionHandling().authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
 //                .and()
-//                .addFilter((Filter) new JwtTokenRedisFilter(jwtConfig(),redisTemplate))
+//                .addFilter((Filter) new AuthenticationFilter())
 //                .authorizeRequests()
-//                .antMatchers(HttpMethod.POST, jwtConfig().getUri()).permitAll()
+//                .dispatcherTypeMatchers(HttpMethod.POST, jwtConfig().getUri()).permitAll()
 //                .anyRequest().authenticated();
 //    }
 //
@@ -39,6 +37,5 @@ package com.haiph.apigateway.sercurity;//package com.haiph.apigateway.sercurity;
 //    public JwtConfig jwtConfig() {
 //        return new JwtConfig();
 //    }
-//
 //
 //}

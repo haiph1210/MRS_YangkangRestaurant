@@ -20,7 +20,7 @@ public class ApiGatewayApplication {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000") // Nguồn gốc của frontend
+                        .allowedOrigins("http://localhost:3000/*") // Nguồn gốc của frontend
                         .allowedMethods("HEAD","GET", "POST", "PUT", "DELETE") // Phương thức được phép
                         .allowedHeaders("*") // Các header được phép
                         .allowCredentials(true); // Cho phép gửi cookie

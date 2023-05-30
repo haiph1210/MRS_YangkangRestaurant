@@ -3,6 +3,7 @@ package com.haiph.userservice.controller;
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.common.exception.CommonException;
+import com.haiph.userservice.dto.request.UserChangePassword;
 import com.haiph.userservice.dto.request.UserRequest;
 import com.haiph.userservice.dto.request.sercurity.LoginRequest;
 import com.haiph.userservice.service.AuthService;
@@ -20,6 +21,7 @@ public class AuthController {
     private AuthService authService;
     @Autowired
     private UserService userService;
+
     @PostMapping("/login")
     public ResponseEntity<ResponseBody> login(@RequestBody LoginRequest request) {
         try {
@@ -30,10 +32,10 @@ public class AuthController {
                             authService.login(request)
                     )
             );
-        }catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
-        }catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody("9999",e.getMessage()));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody("9999", e.getMessage()));
         }
     }
 
@@ -47,8 +49,22 @@ public class AuthController {
                             authService.register(request)
                     )
             );
-        }catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<ResponseBody> changePassword(@RequestBody UserChangePassword changePassword) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS,
+                            userService.changePassword(changePassword)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
         }
     }
 
@@ -62,8 +78,8 @@ public class AuthController {
                             authService.generateToken(username)
                     )
             );
-        }catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
         }
     }
 
@@ -77,13 +93,13 @@ public class AuthController {
                             Response.SUCCESS.getResponseMessage()
                     )
             );
-        }catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
         }
     }
 
     @GetMapping("/active")
-    public ResponseEntity<ResponseBody> activeUser (@RequestParam String userCode) {
+    public ResponseEntity<ResponseBody> activeUser(@RequestParam String userCode) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
@@ -92,8 +108,8 @@ public class AuthController {
                             userService.activeUserByUserCode(userCode)
                     )
             );
-        }catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
         }
     }
 

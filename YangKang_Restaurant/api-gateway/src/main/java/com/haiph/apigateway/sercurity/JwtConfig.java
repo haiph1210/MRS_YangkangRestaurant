@@ -1,5 +1,6 @@
 package com.haiph.apigateway.sercurity;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Value;
 
 public class JwtConfig {
@@ -18,9 +19,6 @@ public class JwtConfig {
     @Value("${security.jwt.secret:VisHR}")
     private String secret;
 
-    public String getUri() {
-        return uri;
-    }
 
     public void setUri(String uri) {
         this.uri = uri;

@@ -2,8 +2,10 @@ package com.haiph.userservice.service.impl;
 
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.enums.status.personService.person.Active;
+import com.haiph.common.enums.status.personService.person.Role;
 import com.haiph.common.exception.CommonException;
 import com.haiph.common.uploadfile.UploadFile;
+import com.haiph.userservice.dto.request.UserChangePassword;
 import com.haiph.userservice.dto.request.UserRequest;
 import com.haiph.userservice.dto.response.UserResponse;
 import com.haiph.userservice.entity.User;
@@ -59,6 +61,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                     user.getUserCode(),
                     user.getFullName(),
                     user.getEmail(),
+                    user.getPhoneNumber(),
                     user.getAddress(),
                     user.getBirthDay(),
                     user.getGender(),
@@ -83,6 +86,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                     user.getUserCode(),
                     user.getFullName(),
                     user.getEmail(),
+                    user.getPhoneNumber(),
                     user.getAddress(),
                     user.getBirthDay(),
                     user.getGender(),
@@ -106,6 +110,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 user.getUserCode(),
                 user.getFullName(),
                 user.getEmail(),
+                user.getPhoneNumber(),
                 user.getAddress(),
                 user.getBirthDay(),
                 user.getGender(),
@@ -127,6 +132,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 user.getUserCode(),
                 user.getFullName(),
                 user.getEmail(),
+                user.getPhoneNumber(),
                 user.getAddress(),
                 user.getBirthDay(),
                 user.getGender(),
@@ -147,6 +153,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 user.getUserCode(),
                 user.getFullName(),
                 user.getEmail(),
+                user.getPhoneNumber(),
                 user.getAddress(),
                 user.getBirthDay(),
                 user.getGender(),
@@ -166,6 +173,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 user.getUserCode(),
                 user.getFullName(),
                 user.getEmail(),
+                user.getPhoneNumber(),
                 user.getAddress(),
                 user.getBirthDay(),
                 user.getGender(),
@@ -191,6 +199,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
+                request.getPhoneNumber(),
                 request.getAddress(),
                 request.getBirthDay(),
                 request.getGender(),
@@ -200,7 +209,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         return "Create Success";
     }
 
-// create - to login
+    // create - to login
     @Override
     public String createToLogin(UserRequest request) {
         boolean existUsername = userRepository.existsByUsername(request.getUsername());
@@ -218,6 +227,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                 request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
+                request.getPhoneNumber(),
                 request.getAddress(),
                 request.getBirthDay(),
                 request.getGender()
@@ -225,7 +235,6 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         userRepository.save(user);
         return "Create Success";
     }
-
     @Override
     public String Update(UUID id, UserRequest request) {
 //        Path path = Paths.get("user-service/upload/img");
@@ -248,6 +257,7 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
                     request.getLastName(),
                     request.getFirstName() + " " + request.getLastName(),
                     response.getEmail(),
+                    response.getPhoneNumber(),
                     request.getAddress(),
                     request.getBirthDay(),
                     request.getGender(),
@@ -266,11 +276,26 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
     public String delete(UUID id) {
         UserResponse response = findById(id);
         if (response != null) {
+            if (response.getRole().equals(Role.ADMIN)) {
+                System.out.println("Account ADMIN Cannot REMOVE");
+            }
             userRepository.deleteById(id);
             return "delete success";
         }
         return "delete fail";
     }
+
+    @Override
+    public String changePassword(UserChangePassword changePassword) {
+        UserResponse response = findByUsername(changePassword.getUsername());
+        if (response != null) {
+            userRepository.changePassword(passwordEncoder.encode(changePassword.getPassword()),changePassword.getUsername());
+            return "Change Password Success";
+        } else {
+            return "Username Not Exist";
+        }
+    }
+
 
 
     public String genUserCode(String fullName) {

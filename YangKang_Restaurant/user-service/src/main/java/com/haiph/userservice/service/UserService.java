@@ -1,5 +1,6 @@
 package com.haiph.userservice.service;
 
+import com.haiph.userservice.dto.request.UserChangePassword;
 import com.haiph.userservice.dto.request.UserRequest;
 import com.haiph.userservice.dto.response.UserResponse;
 import com.haiph.userservice.entity.User;
@@ -33,6 +34,8 @@ public interface UserService extends UserDetailsService {
     String Update(UUID id, UserRequest request);
 
     String delete(UUID id);
+
+    String changePassword(UserChangePassword changePassword);
 
     String activeUserByUserCode(String userCode);
 

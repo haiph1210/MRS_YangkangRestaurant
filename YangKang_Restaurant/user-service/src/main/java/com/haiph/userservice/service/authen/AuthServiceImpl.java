@@ -4,6 +4,7 @@ import com.haiph.common.dto.response.Response;
 import com.haiph.common.enums.status.personService.person.Active;
 import com.haiph.common.exception.CommonException;
 import com.haiph.userservice.config.sendMail.SendMailUtils;
+import com.haiph.userservice.dto.request.UserChangePassword;
 import com.haiph.userservice.dto.request.UserRequest;
 import com.haiph.userservice.dto.request.sercurity.LoginRequest;
 import com.haiph.userservice.dto.response.sercurity.TokenRespone;
@@ -93,6 +94,7 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
         sendMail.sendMailActive(request.getEmail());
         return "Create Success";
     }
+
 
     @Override
     public String generateToken(String username) {
