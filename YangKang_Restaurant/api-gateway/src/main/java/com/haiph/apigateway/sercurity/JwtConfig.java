@@ -1,6 +1,5 @@
 package com.haiph.apigateway.sercurity;
 
-import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Value;
 
 public class JwtConfig {
@@ -38,6 +37,10 @@ public class JwtConfig {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    public String getUri() {
+        return uri;
     }
 
     public int getExpiration() {

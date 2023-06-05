@@ -4,17 +4,16 @@ import com.haiph.authservice.request.AuthRequest;
 import com.haiph.authservice.request.UserChangePassword;
 import com.haiph.authservice.request.UserRequest;
 import com.haiph.authservice.service.AuthService;
-import com.haiph.authservice.service.impl.AuthServiceImpl;
 import com.haiph.common.dto.response.Response;
 import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.common.exception.CommonException;
-import com.haiph.common.sercurity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 @RequestMapping(value = "api/authenticate")
 public class AuthController {
   @Autowired

@@ -29,20 +29,42 @@ public class AuthServiceImpl implements com.haiph.authservice.service.AuthServic
 
     @Override
     public TokenResponse login(AuthRequest request) {
-        APIResponse<TokenResponse> response = userController.RESPONSE(AuthRequest.build(request.getUsername(), request.getPassword()));
-        if (response != null) {
-            TokenResponse tokenResponse = response.getResponseData();
-            UserInfo userInfo = UserInfo.
-                    build(tokenResponse.getToken(),
-                            tokenResponse.getUser());
+        APIResponse<TokenResponse> response;
+        try{
+            response = userController.RESPONSE(AuthRequest.build(request.getUsername(), request.getPassword()));
+            if (response != null) {
+                TokenResponse tokenResponse = response.getResponseData();
+                UserInfo userInfo = UserInfo.
+                        build(tokenResponse.getToken(),
+                                tokenResponse.getUser());
 //            save token to Redis
-            redisTemplate.opsForValue().set(tokenResponse.getToken(), userInfo);
+                redisTemplate.opsForValue().set(tokenResponse.getToken(), userInfo);
 //            SecurityContextHolder.getContext().setAuthentication(userInfo);
-            return tokenResponse;
-        } else if (response.getResponseData() == null) {
-            throw new CommonException(Response.ACCESS_DENIED, "Login Fail");
+                return tokenResponse;
+            } else if (response.getResponseData() == null) {
+                throw new CommonException(Response.ACCESS_DENIED, "Login Fail");
+
+            }
+        }catch (FeignException.InternalServerError e) {
+            String responseBody = e.contentUTF8();
+            ObjectMapper mapper = new ObjectMapper();
+            Object responseMessage = "";
+            try {
+                ResponseBody errorResponse = mapper.readValue(responseBody, ResponseBody.class);
+                String responseCode = errorResponse.getResponseCode();
+                 responseMessage = errorResponse.getResponseMessage();
+                Object responseData =  errorResponse.getResponseData();
+                // Sử dụng thông tin từ phản hồi
+                System.out.println("responseCode = " + responseCode);
+                System.out.println("responseMessage = " + responseMessage);
+                System.out.println("responseData = " + responseData);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            throw new CommonException(Response.NOT_FOUND, (String) responseMessage);
         }
-        return null;
+        throw new CommonException(Response.PARAM_INVALID, "Login False");
+
     }
 
     @Override
@@ -74,7 +96,7 @@ public class AuthServiceImpl implements com.haiph.authservice.service.AuthServic
             }
             throw new CommonException(Response.NOT_FOUND, (String) responseData);
         }
-        throw new CommonException(Response.PARAM_INVALID, "Đăng ký thất bại");
+        throw new CommonException(Response.PARAM_INVALID, "Register False");
 
     }
 
@@ -85,7 +107,7 @@ public class AuthServiceImpl implements com.haiph.authservice.service.AuthServic
             String responseToClient = response.getResponseData();
             return responseToClient;
         } else if (response.getResponseData() == null) {
-            throw new CommonException(Response.PARAM_INVALID, "Register Fail");
+            throw new CommonException(Response.PARAM_INVALID, "Change Password Fail");
         }
         return null;
     }

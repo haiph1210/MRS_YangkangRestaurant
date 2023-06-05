@@ -1,5 +1,6 @@
 package com.haiph.menuservice.entity;
 
+import com.haiph.common.enums.status.restaurantService.RestaurantStar;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,27 +21,33 @@ public class Menu implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    private String code;
     private Double price;
-//    private Integer amount;
-//    private Double initPrice;
     @Column(name = "img_url", length = 10000)
     private String imgUrl;
     private String description;
+    private Double initStar;
+    private String totalStarInTotalUser;
+    @OneToMany(mappedBy = "menu", cascade = {CascadeType.ALL})
+    private List<Votting> vottings;
 
-    public Menu(String name, Double price, String imgUrl, String description) {
+    public Menu(String name,String code, Double price, String imgUrl, String description) {
         this.name = name;
+        this.code = code;
         this.price = price;
         this.imgUrl = imgUrl;
         this.description = description;
     }
 
-//    @PrePersist
-//    public void prePersit() {
-//        if (this.amount == null) {
-//            this.amount = 1;
-//        }
-//        if (this.initPrice == null) {
-//            this.initPrice = this.amount * this.price;
-//        }
-//    }
+    @PrePersist
+    public void prePersit() {
+        if (this.initStar == null) {
+            this.initStar = 5.0d;
+        }
+        if (this.totalStarInTotalUser == null) {
+            this.totalStarInTotalUser = initStar + "/0";
+        }
+    }
+
+
 }

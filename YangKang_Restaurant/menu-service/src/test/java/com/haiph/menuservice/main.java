@@ -14,6 +14,28 @@ public class main {
         genPaymentCode(LocalDate.now(), "HAIPQ");
     }
 
+//    private String checkCode(String menuName) {
+//        String code = gennareateCode(menuName);
+//        String codeBefore = code;
+//        Integer number = 0;
+//        while (!menuRepository.findByCode(code).isPresent()) {
+//            number++;
+//            code = codeBefore+"-"+number;
+//        }
+//        return code;
+//    }
+    private String gennareateCode(String menuName) {
+        String[] arrMenuName = menuName.split(" ");
+        String newCode= "";
+        for (int i = 0; i < arrMenuName.length; i++) {
+            newCode+=arrMenuName[i].substring(0,1).toUpperCase();
+        }
+        StringBuilder result = new StringBuilder();
+        result.append("MENU").append("-").append(newCode);
+        return result.toString();
+
+    }
+
     public static String genPaymentCode(LocalDate createDate, String personCode) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String createDateStr = createDate.format(formatter).replace("-", "");

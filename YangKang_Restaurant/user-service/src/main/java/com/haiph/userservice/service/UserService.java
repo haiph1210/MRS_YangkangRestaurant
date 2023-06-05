@@ -2,6 +2,7 @@ package com.haiph.userservice.service;
 
 import com.haiph.userservice.dto.request.UserChangePassword;
 import com.haiph.userservice.dto.request.UserRequest;
+import com.haiph.userservice.dto.request.UserUpdateAvartar;
 import com.haiph.userservice.dto.response.UserResponse;
 import com.haiph.userservice.entity.User;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,8 @@ public interface UserService extends UserDetailsService {
     String delete(UUID id);
 
     String changePassword(UserChangePassword changePassword);
+
+    String updateAvatar(UserUpdateAvartar avartar);
 
     String activeUserByUserCode(String userCode);
 

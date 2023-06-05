@@ -7,6 +7,7 @@ import com.haiph.common.exception.CommonException;
 import com.haiph.common.uploadfile.UploadFile;
 import com.haiph.userservice.dto.request.UserChangePassword;
 import com.haiph.userservice.dto.request.UserRequest;
+import com.haiph.userservice.dto.request.UserUpdateAvartar;
 import com.haiph.userservice.dto.response.UserResponse;
 import com.haiph.userservice.entity.User;
 import com.haiph.userservice.repository.UserRepository;
@@ -294,6 +295,18 @@ public class UserServiceImpl implements com.haiph.userservice.service.UserServic
         } else {
             return "Username Not Exist";
         }
+    }
+
+    @Override
+    public String updateAvatar(UserUpdateAvartar avartar){
+        UserResponse response = findByUsername(avartar.getUsername());
+        if (response!= null) {
+            genfile.delete(path);
+            String newImgUrl =  genUrlImage(avartar.getImgUrl(), avartar.getUsername(), path);
+            userRepository.updateAvatar(newImgUrl,avartar.getUsername());
+            return "Update avatar sucess";
+        }
+        return "Update avatar false";
     }
 
 

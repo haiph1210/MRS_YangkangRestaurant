@@ -1,24 +1,34 @@
-package com.haiph.authservice.config;
+package com.haiph.apigateway.sercurity;
 
+import com.haiph.apigateway.filter.RouterValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-public class SercutiryAuthenService {
+public class SercurityTokenConfig {
+    @Bean
+    public CookieCsrfTokenRepository csrfTokenRepository() {
+        CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        tokenRepository.setCookiePath("/");
+        return tokenRepository;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .cors()
+                .cors().and()
+                .csrf()
+                .csrfTokenRepository(csrfTokenRepository())
                 .and()
-                .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/authenticate/**").permitAll()
+                .requestMatchers(RouterValidator.openApiEndpoints.toArray(new String[0])).permitAll()
                 .and()
                 .build();
     }

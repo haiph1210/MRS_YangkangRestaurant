@@ -4,6 +4,7 @@ import com.haiph.common.dto.response.Response;
 import com.haiph.common.dto.response.ResponseBody;
 import com.haiph.common.exception.CommonException;
 import com.haiph.userservice.dto.request.UserRequest;
+import com.haiph.userservice.dto.request.UserUpdateAvartar;
 import com.haiph.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -146,6 +147,21 @@ public class UserController {
                             Response.SUCCESS.getResponseCode(),
                             Response.SUCCESS.getResponseMessage(),
                             userService.create(request)
+                    )
+            );
+        }catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
+
+    @PostMapping("/updateAvartar")
+    public ResponseEntity<ResponseBody> updateAvarta(@ModelAttribute UserUpdateAvartar request) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            userService.updateAvatar(request)
                     )
             );
         }catch (CommonException exception) {

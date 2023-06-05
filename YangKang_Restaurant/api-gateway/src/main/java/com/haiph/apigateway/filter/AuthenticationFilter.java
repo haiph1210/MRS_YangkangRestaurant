@@ -13,6 +13,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
 import java.util.LinkedHashMap;
 
@@ -79,6 +83,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         }
         return null;
     }
+
+
 
     public static class Config {
         private CorsConfiguration corsConfiguration;

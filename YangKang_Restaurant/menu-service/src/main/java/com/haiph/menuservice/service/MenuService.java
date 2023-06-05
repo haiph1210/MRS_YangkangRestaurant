@@ -24,7 +24,7 @@ public interface MenuService {
 //    ResponseBody getAllUploadImage();
 
     //     @Cacheable(cacheNames = "Menu")
-    Map<Integer, List<MenuResponse>> findAll();
+//    Map<Integer, List<MenuResponse>> findAll();
 
     //    @Cacheable(cacheNames = "Menu")
     Page<MenuResponse> findAll(Pageable pageable);

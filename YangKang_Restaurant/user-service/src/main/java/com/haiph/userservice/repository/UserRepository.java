@@ -27,4 +27,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             "where u.username = ?2")
     void changePassword(String password,String username);
 
+
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true,value = "" +
+            "update yangkang_admin_data.user u\n" +
+            "set u.`img_url` = ?1 \n" +
+            "where u.username = ?2")
+    void updateAvatar(String imgUrl,String username);
 }

@@ -26,20 +26,20 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
-    @GetMapping("/findAll")
-    public ResponseEntity<ResponseBody> findAll() {
-        try {
-            return ResponseEntity.ok(
-                    new ResponseBody(
-                            Response.SUCCESS.getResponseCode(),
-                            Response.SUCCESS.getResponseMessage(),
-                            menuService.findAll()
-                    )
-            );
-        } catch (CommonException exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
-        }
-    }
+//    @GetMapping("/findAll")
+//    public ResponseEntity<ResponseBody> findAll() {
+//        try {
+//            return ResponseEntity.ok(
+//                    new ResponseBody(
+//                            Response.SUCCESS.getResponseCode(),
+//                            Response.SUCCESS.getResponseMessage(),
+//                            menuService.findAll()
+//                    )
+//            );
+//        } catch (CommonException exception) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+//        }
+//    }
 
     @GetMapping("/findPage")
     public ResponseEntity<ResponseBody> findAll(Pageable pageable) {
