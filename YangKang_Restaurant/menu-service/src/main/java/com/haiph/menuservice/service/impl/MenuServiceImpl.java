@@ -1,11 +1,8 @@
 package com.haiph.menuservice.service.impl;
 
 import com.haiph.common.dto.response.Response;
-import com.haiph.common.dto.response.ResponseBody;
-import com.haiph.common.enums.status.restaurantService.RestaurantStar;
 import com.haiph.common.exception.CommonException;
 import com.haiph.common.uploadfile.UploadFile;
-import com.haiph.menuservice.dto.form.FormChooseStar;
 import com.haiph.menuservice.dto.form.SearchFormMenu;
 import com.haiph.menuservice.dto.request.MenuRequest;
 import com.haiph.menuservice.dto.response.MenuResponse;
@@ -31,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -96,40 +92,6 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         } else throw new CommonException(Response.DATA_NOT_FOUND, "Cannot find Combo ID: " + id);
     }
 
-
-//    @Override
-//    public List<MenuResponse> findAll() {
-//        List<Menu> menus = menuRepository.findAll();
-//        if (menus.isEmpty()) {
-//            throw new CommonException(Response.DATA_NOT_FOUND, "List Menu Has No Data");
-//        }
-//
-//        List<MenuResponse> menuResponses = new ArrayList<>();
-//        for (Menu menu : menus) {
-//            List<MenuResponse.Votting> vottings = new ArrayList<>();
-//            for (Votting votting : menu.getVottings()) {
-//                MenuResponse.Votting vottingResponse = MenuResponse.Votting.builder()
-//                        .star(votting.getStar())
-//                        .fullName(findFullnameByPersonCode(votting.getUserCode()))
-//                        .build();
-//                vottings.add(vottingResponse);
-//            }
-//
-//            MenuResponse menuResponse = MenuResponse.builder()
-//                    .id(menu.getId())
-//                    .name(menu.getName())
-//                    .price(menu.getPrice())
-//                    .imgUrl(menu.getImgUrl())
-//                    .description(menu.getDescription())
-//                    .totalStar(menu.getInitStar())
-//                    .vottings(vottings)
-//                    .build();
-//            menuResponses.add(menuResponse);
-//        }
-//        return menuResponses;
-//    }
-
-
     @Override
     public Page<MenuResponse> findAll(Pageable pageable) {
         Page<Menu> page = menuRepository.findAll(pageable);
@@ -138,7 +100,6 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         for (Menu menu : menus) {
             List<MenuResponse.Votting> vottings = new ArrayList<>();
             for (Votting votting : menu.getVottings()) {
-
                 MenuResponse.Votting vottingResponse = MenuResponse.Votting.builder()
                         .star(votting.getStar())
                         .fullName(findFullnameByPersonCode(votting.getUserCode()))
@@ -149,13 +110,13 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
             MenuResponse menuResponse = MenuResponse.builder()
                     .id(menu.getId())
                     .name(menu.getName())
+                    .code(menu.getCode())
                     .price(menu.getPrice())
                     .imgUrl(menu.getImgUrl())
                     .description(menu.getDescription())
                     .totalStar(menu.getInitStar())
                     .totalStarInTotalUser(menu.getTotalStarInTotalUser())
                     .vottings(vottings)
-
                     .build();
             menuResponses.add(menuResponse);
         }
@@ -188,6 +149,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
                 MenuResponse menuResponse = MenuResponse.builder()
                         .id(menu.getId())
                         .name(menu.getName())
+                        .code(menu.getCode())
                         .price(menu.getPrice())
                         .imgUrl(menu.getImgUrl())
                         .description(menu.getDescription())
@@ -221,6 +183,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
             MenuResponse menuResponse = MenuResponse.builder()
                     .id(menu.getId())
                     .name(menu.getName())
+                    .code(menu.getCode())
                     .price(menu.getPrice())
                     .imgUrl(menu.getImgUrl())
                     .description(menu.getDescription())
@@ -233,7 +196,6 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
-    //   @Cacheable(cacheNames = "Menu")
     public MenuResponse findById(Integer id) {
         try {
             Menu menu = menuRepository.findById(id).orElse(null);
@@ -249,6 +211,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
                 MenuResponse menuResponse = MenuResponse.builder()
                         .id(menu.getId())
                         .name(menu.getName())
+                        .code(menu.getCode())
                         .price(menu.getPrice())
                         .imgUrl(menu.getImgUrl())
                         .description(menu.getDescription())
@@ -262,11 +225,42 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         } catch (CommonException exception) {
             throw new CommonException(Response.SYSTEM_ERROR, exception.getMessage());
         }
+    }
+
+    @Override
+    public MenuResponse findByCode(String code) {
+        try {
+            Menu menu = menuRepository.findByCode(code).orElse(null);
+            if (menu != null) {
+                List<MenuResponse.Votting> vottings = new ArrayList<>();
+                for (Votting votting : menu.getVottings()) {
+                    MenuResponse.Votting vottingResponse = MenuResponse.Votting.builder()
+                            .star(votting.getStar())
+                            .fullName(findFullnameByPersonCode(votting.getUserCode()))
+                            .build();
+                    vottings.add(vottingResponse);
+                }
+                MenuResponse menuResponse = MenuResponse.builder()
+                        .id(menu.getId())
+                        .name(menu.getName())
+                        .code(menu.getCode())
+                        .price(menu.getPrice())
+                        .imgUrl(menu.getImgUrl())
+                        .description(menu.getDescription())
+                        .totalStar(menu.getInitStar())
+                        .vottings(vottings)
+                        .build();
+                return menuResponse;
+            } else
+                throw new CommonException(Response.DATA_NOT_FOUND, "Menu cannot having Code: " + code);
+
+        } catch (CommonException exception) {
+            throw new CommonException(Response.SYSTEM_ERROR, exception.getMessage());
+        }
 
     }
 
     @Override
-    //    @Cacheable(cacheNames = "Menu")
     public List<MenuResponse> findByName(String name) {
         List<Menu> menus = menuRepository.findByName(name);
         List<MenuResponse> menuResponses = new ArrayList<>();
@@ -283,6 +277,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
                 MenuResponse menuResponse = MenuResponse.builder()
                         .id(menu.getId())
                         .name(menu.getName())
+                        .code(menu.getCode())
                         .price(menu.getPrice())
                         .imgUrl(menu.getImgUrl())
                         .description(menu.getDescription())
@@ -314,6 +309,7 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
                 MenuResponse menuResponse = MenuResponse.builder()
                         .id(menu.getId())
                         .name(menu.getName())
+                        .code(menu.getCode())
                         .price(menu.getPrice())
                         .imgUrl(menu.getImgUrl())
                         .description(menu.getDescription())
@@ -433,7 +429,6 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
         StringBuilder result = new StringBuilder();
         result.append("MENU").append("-").append(newCode);
         return result.toString();
-
     }
 
 

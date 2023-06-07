@@ -11,6 +11,7 @@ import java.util.List;
 public class MenuResponse {
     private Integer id;
     private String name;
+    private String code;
     private Double price;
     private String imgUrl;
     private String description;

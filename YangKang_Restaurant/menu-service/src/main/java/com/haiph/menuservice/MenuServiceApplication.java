@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableFeignClients
 @EnableDiscoveryClient
 public class MenuServiceApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(MenuServiceApplication.class, args);
     }

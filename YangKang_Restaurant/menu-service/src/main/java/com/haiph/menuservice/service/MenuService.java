@@ -37,6 +37,8 @@ public interface MenuService {
     //   @Cacheable(cacheNames = "Menu")
     MenuResponse findById(Integer id);
 
+    MenuResponse findByCode(String code);
+
     // @Cacheable(cacheNames = "Menu")
     List<MenuResponse> findByName(String name);
 
