@@ -14,6 +14,7 @@ import java.util.List;
 public class ComboResponse {
     private Integer id;
     private String name;
+    private String code;
     private Double price;
     private String description;
     private String imgUrl;

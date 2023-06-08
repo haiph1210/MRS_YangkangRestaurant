@@ -17,6 +17,7 @@ public class OrderRequest {
     private List<Integer> idMenus;
     private List<Integer> idCombos;
     private List<Integer> idForms;
+    private List<Integer> idCarts;
     private NumberOfPeople people;
     private LocalDateTime hour;
     private String description;

@@ -22,6 +22,7 @@ public class OrderResponse {
     private PersonResponse personResponses;
     private List<MenuResponse> menus;
     private List<ComboResponse> combos;
+    private List<CartResponse> carts;
     private List<RestaurantFormResponse> forms;
     private NumberOfPeople people;
     private Integer totalAmount;

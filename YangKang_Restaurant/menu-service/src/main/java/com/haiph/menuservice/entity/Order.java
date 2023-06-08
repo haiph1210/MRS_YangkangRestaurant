@@ -33,6 +33,10 @@ public class Order {
     @JoinColumn(name = "`order_id`", referencedColumnName = "`id`")
     private List<Integer> idCombos;
     @ElementCollection
+    @CollectionTable(name = "order_cart_ids", joinColumns = @JoinColumn(name = "order_id"))
+    @JoinColumn(name = "`order_id`", referencedColumnName = "`id`")
+    private List<Integer> idCarts;
+    @ElementCollection
     @CollectionTable(name = "order_form_ids", joinColumns = @JoinColumn(name = "order_id"))
     @JoinColumn(name = "`order_id`", referencedColumnName = "`id`")
     private List<Integer> idForms;
@@ -49,11 +53,12 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private NumberOfPeople peoples;
 
-    public Order(String orderCode, String personCode, List<Integer> idMenus, List<Integer> idCombos, List<Integer> idForms, Integer totalAmount, Double totalPrice, LocalDate createDate, LocalDateTime hour, String description, OrderType type, OrderStatus status, NumberOfPeople peoples) {
+    public Order(String orderCode, String personCode, List<Integer> idMenus, List<Integer> idCombos,List<Integer>idCarts, List<Integer> idForms, Integer totalAmount, Double totalPrice, LocalDate createDate, LocalDateTime hour, String description, OrderType type, OrderStatus status, NumberOfPeople peoples) {
         this.orderCode = orderCode;
         this.personCode = personCode;
         this.idMenus = idMenus;
         this.idCombos = idCombos;
+        this.idCarts = idCarts;
         this.idForms = idForms;
         this.totalAmount = totalAmount;
         this.totalPrice = totalPrice;

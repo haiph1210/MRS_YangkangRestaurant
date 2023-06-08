@@ -2,9 +2,11 @@ package com.haiph.menuservice.mapper.impl;
 
 import com.haiph.menuservice.dto.request.CartRequest;
 import com.haiph.menuservice.dto.response.CartResponse;
+import com.haiph.menuservice.dto.response.ComboResponse;
 import com.haiph.menuservice.dto.response.MenuResponse;
 import com.haiph.menuservice.entity.Cart;
 import com.haiph.menuservice.mapper.CartMapper;
+import com.haiph.menuservice.service.ComboService;
 import com.haiph.menuservice.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,8 @@ import java.util.List;
 public class CartMapperImpl implements CartMapper {
     @Autowired
     private MenuService menuService;
+    @Autowired
+    private ComboService comboService;
 
 
 
@@ -37,7 +41,14 @@ public class CartMapperImpl implements CartMapper {
                     response.getDescription()
             );
         } else if (checkCode.equals("COMBO")) {
-            // chưa tạo logic
+            ComboResponse response = comboService.findByCode(code);
+            responseCart = CartResponse.Response.build(
+                    response.getId(),
+                    response.getName(),
+                    response.getPrice(),
+                    response.getImgUrl(),
+                    response.getDescription()
+            );
         }
         return responseCart;
     }

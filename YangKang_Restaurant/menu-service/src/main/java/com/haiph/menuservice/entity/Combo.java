@@ -18,6 +18,7 @@ public class Combo implements Serializable {
     @Column(name = "id")
     private Integer id;
     private String name;
+    private String code;
     private Double price;
     private String description;
     @Column(length = 10000)
@@ -27,8 +28,9 @@ public class Combo implements Serializable {
     @Column(name = "menu_id")
     private List<Integer> menuIds;
 
-    public Combo(String name, Double price, String description, String imgUrl, List<Integer> menuIds) {
+    public Combo(String name, String code, Double price, String description, String imgUrl, List<Integer> menuIds) {
         this.name = name;
+        this.code = code;
         this.price = price;
         this.description = description;
         this.imgUrl = imgUrl;

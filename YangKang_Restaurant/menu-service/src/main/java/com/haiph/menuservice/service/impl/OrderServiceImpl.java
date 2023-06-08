@@ -9,6 +9,7 @@ import com.haiph.common.formEmail.AutoOrder;
 import com.haiph.common.formEmail.RefuseOrder;
 import com.haiph.menuservice.dto.form.SearchFormOrder;
 import com.haiph.menuservice.dto.request.OrderRequest;
+import com.haiph.menuservice.dto.response.CartResponse;
 import com.haiph.menuservice.dto.response.ComboResponse;
 import com.haiph.menuservice.dto.response.restApi.APIResponse;
 import com.haiph.menuservice.dto.response.restApi.APIResponse2;
@@ -21,6 +22,7 @@ import com.haiph.menuservice.feignClient.MailController;
 import com.haiph.menuservice.feignClient.PersonController;
 import com.haiph.menuservice.feignClient.RestaurantController;
 import com.haiph.menuservice.repository.OrderRepository;
+import com.haiph.menuservice.service.CartService;
 import com.haiph.menuservice.service.ComboService;
 import com.haiph.menuservice.service.MenuService;
 import org.modelmapper.ModelMapper;
@@ -44,6 +46,8 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
     @Autowired
     private MenuService menuService;
     @Autowired
+    private CartService cartService;
+    @Autowired
     private ModelMapper mapper;
 
     @Autowired
@@ -53,6 +57,14 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
     @Autowired
     private MailController mailController;
 
+    private List<CartResponse> findListCart(List<Integer> ids) {
+        List<CartResponse> cartResponses = new ArrayList<>();
+        for (Integer id : ids) {
+        CartResponse cartResponse = cartService.findById(id);
+        cartResponses.add(cartResponse);
+        }
+        return cartResponses;
+    }
     private List<MenuResponse> findMenuList(List<Integer> ids) {
         return menuService.findByListId(ids);
     }
@@ -83,6 +95,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                             findPerson(order.getPersonCode()),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
+                            findListCart(order.getIdCarts()),
                             findRestaurantFormList(order.getIdForms()),
                             order.getPeoples(),
                             order.getTotalAmount(),
@@ -109,6 +122,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                             findPerson(order.getPersonCode()),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
+                            findListCart(order.getIdCarts()),
                             findRestaurantFormList(order.getIdForms()),
                             order.getPeoples(),
                             order.getTotalAmount(),
@@ -137,6 +151,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                         findPerson(order.getPersonCode()),
                         findMenuList(order.getIdMenus()),
                         findComboList(order.getIdCombos()),
+                        findListCart(order.getIdCarts()),
                         findRestaurantFormList(order.getIdForms()),
                         order.getPeoples(),
                         order.getTotalAmount(),
@@ -159,6 +174,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                             findPerson(order.getPersonCode()),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
+                            findListCart(order.getIdCarts()),
                             findRestaurantFormList(order.getIdForms()),
                             order.getPeoples(),
                             order.getTotalAmount(),
@@ -183,9 +199,10 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                     request.getPersonCode(),
                     request.getIdMenus(),
                     request.getIdCombos(),
+                    request.getIdCarts(),
                     request.getIdForms(),
-                    totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
-                    totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
+                    totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos()),findListCart(request.getIdCarts())),
+                    totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos()),findListCart(request.getIdCarts())),
                     LocalDate.now(),
                     request.getHour(),
                     request.getDescription(),
@@ -203,9 +220,10 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                     request.getPersonCode(),
                     request.getIdMenus(),
                     request.getIdCombos(),
+                    request.getIdCarts(),
                     request.getIdForms(),
-                    totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
-                    totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
+                    totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos()),findListCart(request.getIdCarts())),
+                    totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos()),findListCart(request.getIdCarts())),
                     LocalDate.now(),
                     request.getHour(),
                     request.getDescription(),
@@ -234,8 +252,9 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                     request.getIdMenus(),
                     request.getIdCombos(),
                     request.getIdForms(),
-                    totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
-                    totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos())),
+                    request.getIdCarts(),
+                    totalAmount(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos()),findListCart(request.getIdCarts())),
+                    totalPrice(findMenuList(request.getIdMenus()), findComboList(request.getIdCombos()),findListCart(request.getIdCarts())),
                     LocalDate.now(),
                     request.getHour(),
                     request.getDescription(),
@@ -302,6 +321,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                             findPerson(order.getPersonCode()),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
+                            findListCart(order.getIdCarts()),
                             findRestaurantFormList(order.getIdForms()),
                             order.getPeoples(),
                             order.getTotalAmount(),
@@ -330,6 +350,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
                             findPerson(order.getPersonCode()),
                             findMenuList(order.getIdMenus()),
                             findComboList(order.getIdCombos()),
+                            findListCart(order.getIdCarts()),
                             findRestaurantFormList(order.getIdForms()),
                             order.getPeoples(),
                             order.getTotalAmount(),
@@ -344,7 +365,7 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         return responses;
     }
 
-    private Double totalPrice(List<MenuResponse> menuResponses, List<ComboResponse> comboResponses) {
+    private Double totalPrice(List<MenuResponse> menuResponses, List<ComboResponse> comboResponses,List<CartResponse> cartResponses) {
         Double initPrice = 0d;
         for (MenuResponse menuRespons : menuResponses) {
             initPrice += menuRespons.getPrice();
@@ -352,13 +373,17 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         for (ComboResponse comboRespons : comboResponses) {
             initPrice += comboRespons.getPrice();
         }
+        for (CartResponse cartResponse : cartResponses) {
+            initPrice += cartResponse.getInitPrice();
+        }
         return initPrice;
     }
 
-    private Integer totalAmount(List<MenuResponse> responses, List<ComboResponse> comboResponses) {
+    private Integer totalAmount(List<MenuResponse> responses, List<ComboResponse> comboResponses,List<CartResponse> cartResponses) {
         Integer totalAmountMenu = responses.size();
         Integer totalAmountCombo = comboResponses.size();
-        Integer totalAmount = totalAmountCombo + totalAmountMenu;
+        Integer totalAmountCart = cartResponses.size();
+        Integer totalAmount = totalAmountCombo + totalAmountMenu+totalAmountCart;
         return totalAmount;
     }
 

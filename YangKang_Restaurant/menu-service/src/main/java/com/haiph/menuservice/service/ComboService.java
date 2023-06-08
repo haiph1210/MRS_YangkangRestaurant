@@ -30,7 +30,9 @@ public interface ComboService {
 //    @Cacheable(cacheNames = "Combo")
     ComboResponse findById(Integer id);
 
-//    @Cacheable(cacheNames = "Combo")
+    ComboResponse findByCode(String code);
+
+    //    @Cacheable(cacheNames = "Combo")
     List<ComboResponse> findByName(String name);
 
 //    @Cacheable(cacheNames = "Combo")

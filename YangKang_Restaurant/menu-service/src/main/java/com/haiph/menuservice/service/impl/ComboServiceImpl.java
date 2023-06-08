@@ -78,7 +78,14 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
         List<ComboResponse> comboResponses = new ArrayList<>();
         Integer number = 0;
         for (Combo combo : combos) {
-            ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
+            ComboResponse response =
+                    ComboResponse.build(combo.getId(),
+                    combo.getName(),
+                            combo.getCode(),
+                            combo.getPrice(),
+                            combo.getDescription(),
+                            combo.getImgUrl(),
+                            findMenuDTO(combo.getMenuIds()));
             comboResponses.add(response);
             number++;
         }
@@ -99,7 +106,15 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
         List<ComboResponse> dtos = new ArrayList<>();
         for (Combo combo : combos) {
             if (combo != null) {
-                ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
+                ComboResponse response =
+                        ComboResponse.
+                                build(combo.getId(),
+                                        combo.getName(),
+                                        combo.getCode(),
+                                        combo.getPrice(),
+                                        combo.getDescription(),
+                                        combo.getImgUrl(),
+                                        findMenuDTO(combo.getMenuIds()));
                 dtos.add(response);
             }
 
@@ -117,7 +132,7 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
         List<ComboResponse> dtos = new ArrayList<>();
         for (Combo combo : combos) {
             if (combo != null) {
-                ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
+                ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(),combo.getCode(), combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
                 dtos.add(response);
             }
         }
@@ -133,8 +148,16 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     public ComboResponse findById(Integer id) {
         Combo combo = comboRepository.findById(id).orElseThrow(() ->
                 new CommonException(Response.DATA_NOT_FOUND.getResponseCode(), "Combo cannot having Id: " + id));
+        ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getCode(),combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
+        return response;
 
-        ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
+    }
+
+    @Override
+    public ComboResponse findByCode(String code) {
+        Combo combo = comboRepository.findByCode(code).orElseThrow(() ->
+                new CommonException(Response.DATA_NOT_FOUND.getResponseCode(), "Combo cannot having code: " + code));
+        ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getCode(),combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
         return response;
 
     }
@@ -146,7 +169,7 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
         List<ComboResponse> responses = new ArrayList<>();
         for (Combo combo : combos) {
             if (combo != null) {
-                ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
+                ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getCode(),combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
                 responses.add(response);
             }
         }
@@ -163,7 +186,7 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
         List<ComboResponse> responses = new ArrayList<>();
         for (Combo combo : combos) {
             if (combo != null) {
-                ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
+                ComboResponse response = ComboResponse.build(combo.getId(), combo.getName(), combo.getCode(),combo.getPrice(), combo.getDescription(), combo.getImgUrl(), findMenuDTO(combo.getMenuIds()));
                 responses.add(response);
             }
         }
@@ -185,6 +208,7 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
             ComboResponse response = ComboResponse
                     .build(combo.getId(),
                             combo.getName(),
+                            combo.getCode(),
                             combo.getPrice(),
                             combo.getDescription(),
                             combo.getImgUrl(),
@@ -192,7 +216,6 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
             responses.add(response);
         }
         return responses;
-//        List<ComboResponse> responses = mapper.map(combos,new TypeToken<List<ComboResponse>>(){}.getType());
 
     }
 
@@ -206,12 +229,12 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     }
 
     @Override
-//    @CachePut(cacheNames = "Combo")
     public String create(ComboRequest request) {
         List<String> urlImages = genUrlImage(request.getImgUrl(),request.getName(),path);
         String url = String.join(",",urlImages);
             Combo combo = new Combo
                     (request.getName(),
+                            checkCode(request.getName()),
                             totalPriceMenu(request.getMenuIds()),
                             request.getDescription(),
                             url,
@@ -277,6 +300,25 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
             comboRepository.deleteAllById(ids);
             return "Delete Success";
     }
-
+    private String checkCode(String comboName) {
+        String code = gennareateCode(comboName);
+        String codeBefore = code;
+        Integer number = 0;
+        while (comboRepository.findByCode(code).isPresent()) {
+            number++;
+            code = codeBefore+"-"+number;
+        }
+        return code;
+    }
+    private String gennareateCode(String comboName) {
+        String[] arrMenuName = comboName.split(" ");
+        String newCode= "";
+        for (int i = 0; i < arrMenuName.length; i++) {
+            newCode+=arrMenuName[i].substring(0,1).toUpperCase();
+        }
+        StringBuilder result = new StringBuilder();
+        result.append("COMBO").append("-").append(newCode);
+        return result.toString();
+    }
 
 }
