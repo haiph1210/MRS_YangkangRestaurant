@@ -126,7 +126,6 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     }
 
     @Override
-//    @Cacheable(cacheNames = "Combo")
     public List<ComboResponse> findForm(SearchFormCombo request) {
         List<Combo> combos = comboRepository.findWithForm(request.getSearch(), request.getMinPrice(), request.getMaxPrice());
         List<ComboResponse> dtos = new ArrayList<>();
@@ -144,7 +143,6 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
     }
 
     @Override
-//    @Cacheable(cacheNames = "Combo")
     public ComboResponse findById(Integer id) {
         Combo combo = comboRepository.findById(id).orElseThrow(() ->
                 new CommonException(Response.DATA_NOT_FOUND.getResponseCode(), "Combo cannot having Id: " + id));
@@ -321,4 +319,9 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
         return result.toString();
     }
 
+    @Override
+    public List<byte[]> readFileImg2(Integer id) {
+        ComboResponse response = findById(id);
+        return genfile.readFileContent2(response.getImgUrl(), path);
+    }
 }

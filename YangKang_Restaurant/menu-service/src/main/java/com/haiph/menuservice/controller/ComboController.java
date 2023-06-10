@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -192,5 +193,24 @@ public class ComboController {
         }catch (CommonException exception) {
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @GetMapping("/fileName/{id}")
+    public List<ResponseEntity<?>> readFileName2(@PathVariable Integer id) {
+        List<byte[]> bytes = comboService.readFileImg2(id);
+        List<ResponseEntity<?>> responses = new ArrayList<>();
+        String config = "data:image/jpeg;base64,";
+        try {
+            for (byte[] imageData : bytes) {
+                ResponseEntity<byte[]> response = ResponseEntity
+                        .ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(imageData);
+                responses.add(response);
+            }
+        } catch (CommonException exception) {
+            // Xử lý ngoại lệ nếu cần
+        }
+        return responses;
     }
 }

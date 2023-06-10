@@ -51,4 +51,6 @@ public interface ComboService {
     String deleteById(Integer id);
 
     String deleteListById(List<Integer> ids);
+
+    List<byte[]> readFileImg2(Integer id);
 }

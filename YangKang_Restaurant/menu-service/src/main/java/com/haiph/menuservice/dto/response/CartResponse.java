@@ -1,5 +1,6 @@
 package com.haiph.menuservice.dto.response;
 
+import com.haiph.menuservice.dto.response.restApi.PersonResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CartResponse {
     private Integer id;
+    private PersonResponse userResponse;
     private String code;
     private Response response;
     private Double price;

@@ -128,7 +128,6 @@ public class UploadFileImpl implements com.haiph.common.uploadfile.UploadFile {
         }
         String[] sliceFileName = newFileName.split(",");
         if (sliceFileName.length > 1) {
-            System.out.println("oke");
             for (String newF : sliceFileName) {
                 try {
                     Path file = path.resolve(newF);

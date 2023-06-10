@@ -48,14 +48,59 @@ public class CartController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
             }
         }
-    @GetMapping("/total")
-    public ResponseEntity<ResponseBody> total() {
+
+    @GetMapping("/userCode/{userCode}")
+    public ResponseEntity<ResponseBody> mapToUserCodeAndCartResponse(@PathVariable String userCode) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
                             Response.SUCCESS.getResponseCode(),
                             Response.SUCCESS.getResponseMessage(),
-                            cartService.totalCart()
+                            cartService.findUserCodeToListCart(userCode)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @GetMapping("/userCodeV2/{userCode}")
+    public ResponseEntity<ResponseBody> mapToUserCodeAndCartResponseV2(@PathVariable String userCode) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            cartService.findByUserCodeV2(userCode)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @GetMapping("/findUserCode/{userCode}")
+    public ResponseEntity<ResponseBody> findByUserCode(@PathVariable String userCode) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            cartService.findByUserCode(userCode)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+    @GetMapping("/total/{userCode}")
+    public ResponseEntity<ResponseBody> total(@PathVariable String userCode) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            cartService.totalCart(userCode)
                     )
             );
         } catch (CommonException exception) {

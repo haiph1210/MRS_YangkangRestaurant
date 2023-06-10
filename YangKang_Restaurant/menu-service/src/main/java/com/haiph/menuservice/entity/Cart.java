@@ -17,6 +17,7 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String userCode;
     private String code;
     private Double price;
     private Integer amount;
@@ -33,13 +34,12 @@ public class Cart {
         }
     }
 //create
-    public Cart(String code, Double price, Integer amount) {
+
+
+    public Cart(String userCode, String code, Double price, Integer amount) {
+        this.userCode = userCode;
         this.code = code;
         this.price = price;
         this.amount = amount;
     }
-
-
-
-
 }

@@ -93,6 +93,36 @@ public class MenuServiceImpl implements com.haiph.menuservice.service.MenuServic
     }
 
     @Override
+    public List<MenuResponse> findAll() {
+        List<Menu> menus =  menuRepository.findAll();
+        List<MenuResponse> menuResponses = new ArrayList<>();
+        for (Menu menu : menus) {
+            List<MenuResponse.Votting> vottings = new ArrayList<>();
+            for (Votting votting : menu.getVottings()) {
+                MenuResponse.Votting vottingResponse = MenuResponse.Votting.builder()
+                        .star(votting.getStar())
+                        .fullName(findFullnameByPersonCode(votting.getUserCode()))
+                        .build();
+                vottings.add(vottingResponse);
+            }
+
+            MenuResponse menuResponse = MenuResponse.builder()
+                    .id(menu.getId())
+                    .name(menu.getName())
+                    .code(menu.getCode())
+                    .price(menu.getPrice())
+                    .imgUrl(menu.getImgUrl())
+                    .description(menu.getDescription())
+                    .totalStar(menu.getInitStar())
+                    .totalStarInTotalUser(menu.getTotalStarInTotalUser())
+                    .vottings(vottings)
+                    .build();
+            menuResponses.add(menuResponse);
+        }
+        return menuResponses;
+    }
+
+    @Override
     public Page<MenuResponse> findAll(Pageable pageable) {
         Page<Menu> page = menuRepository.findAll(pageable);
         List<Menu> menus = page.getContent();

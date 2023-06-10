@@ -5,10 +5,19 @@ import com.haiph.menuservice.dto.response.CartResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+import java.util.Map;
+
 public interface CartService {
+    Map<String,List<CartResponse>> findUserCodeToListCart(String userCode);
+
     Page<CartResponse> findAll(Pageable pageable);
 
     CartResponse findById(Integer id);
+
+    List<CartResponse> findByUserCode(String userCode);
+
+    List<CartResponse> findByUserCodeV2(String userCode);
 
     String create(CartRequest request);
 
@@ -16,5 +25,5 @@ public interface CartService {
 
     String delete(Integer id);
 
-    Integer totalCart();
+    Integer totalCart(String userCode);
 }
