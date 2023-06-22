@@ -5,8 +5,11 @@ import com.haiph.common.exception.CommonException;
 import com.haiph.menuservice.dto.request.CartRequest;
 import com.haiph.menuservice.dto.response.CartResponse;
 import com.haiph.menuservice.entity.Cart;
+import com.haiph.menuservice.entity.Combo;
+import com.haiph.menuservice.entity.Menu;
 import com.haiph.menuservice.mapper.CartMapper;
 import com.haiph.menuservice.repository.CartRepository;
+import com.haiph.menuservice.repository.ComboRepository;
 import com.haiph.menuservice.repository.MenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,14 +17,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CartServiceImpl implements com.haiph.menuservice.service.CartService {
     @Autowired
     private MenuRepository menuRepository;
+    @Autowired
+    private ComboRepository comboRepository;
     @Autowired
     private CartRepository cartRepository;
 
@@ -29,11 +32,11 @@ public class CartServiceImpl implements com.haiph.menuservice.service.CartServic
     private CartMapper mapper;
 
     @Override
-    public Map<String,List<CartResponse>> findUserCodeToListCart(String userCode) {
-        Map<String,List<CartResponse>> userCodeAndCartMap = new HashMap<>();
+    public Map<String, List<CartResponse>> findUserCodeToListCart(String userCode) {
+        Map<String, List<CartResponse>> userCodeAndCartMap = new HashMap<>();
         List<CartResponse> cartResponses = findByUserCode(userCode);
         if (!cartResponses.isEmpty()) {
-            userCodeAndCartMap.put(userCode,cartResponses);
+            userCodeAndCartMap.put(userCode, cartResponses);
         }
         return userCodeAndCartMap;
     }
@@ -45,7 +48,6 @@ public class CartServiceImpl implements com.haiph.menuservice.service.CartServic
         List<CartResponse> responses = mapper.ListCartMapListCartResponse(carts);
         return new PageImpl<>(responses, pageable, page.getTotalElements());
     }
-
 
 
     @Override
@@ -65,22 +67,31 @@ public class CartServiceImpl implements com.haiph.menuservice.service.CartServic
     }
 
     @Override
-    public List<CartResponse> findByUserCodeV2(String userCode) {
+    public Map<String, List<CartResponse>> findByUserCodeV2(String userCode) {
+        Map<String, List<CartResponse>> cartToUserCodeMap = new HashMap<>();
         List<Cart> carts = cartRepository.findAllLeftJoinCartAndMenu(userCode);
-        List<CartResponse> cartResponse = mapper.ListCartMapListCartResponse(carts);
-        return cartResponse;
+        List<Cart> newCart = checkCodeIsEmpty(carts);
+        List<CartResponse> cartResponse = mapper.ListCartMapListCartResponse(newCart);
+        cartToUserCodeMap.put(userCode, cartResponse);
+        return cartToUserCodeMap;
     }
 
 
-
-//    private boolean checkCodeIsEmpty(List<Cart> carts) {
-//        String code = carts.iterator().next().getCode();
-//        Integer id = carts.iterator().next().getId();
-//        Optional<Menu> menu = menuRepository.findByCode(code);
-//        if (!menu.isPresent()) {
-//            cartRepository.deleteById(id);
-//        }
-//    }
+    private List<Cart> checkCodeIsEmpty(List<Cart> carts) {
+        List<Cart> newCarts = new ArrayList<>();
+        for (Cart cart : carts) {
+            String code = cart.getCode();
+            Integer id = cart.getId();
+            Optional<Menu> menu = menuRepository.findByCode(code);
+            Optional<Combo> combo = comboRepository.findByCode(code);
+            if (!menu.isPresent() && !combo.isPresent()) {
+                cartRepository.deleteById(id);
+            } else {
+                newCarts.add(cart);
+            }
+        }
+        return newCarts;
+    }
 
     @Override
     public String create(CartRequest request) {
@@ -103,6 +114,7 @@ public class CartServiceImpl implements com.haiph.menuservice.service.CartServic
         cartRepository.deleteById(id);
         return "Delete Cart Success";
     }
+
     @Override
     public Integer totalCart(String userCode) {
         return cartRepository.totalCart(userCode);

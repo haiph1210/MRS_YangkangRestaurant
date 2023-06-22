@@ -21,13 +21,26 @@ import java.util.List;
 public class RestaurantFormController {
     @Autowired
     private RestaurantFormService formService;
-    @GetMapping("/findAll")
+    @GetMapping("/findAllPage")
     public ResponseEntity<ResponseBody> findAll(Pageable pageable) {
         try {
             return ResponseEntity.ok(
                     new ResponseBody(
                             Response.SUCCESS,
                             formService.findAllPage(pageable)
+                    ));
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<ResponseBody> findAll() {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS,
+                            formService.findAll()
                     ));
         } catch (CommonException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));

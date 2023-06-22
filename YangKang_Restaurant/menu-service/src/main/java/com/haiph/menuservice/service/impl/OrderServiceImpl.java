@@ -111,6 +111,32 @@ public class OrderServiceImpl implements com.haiph.menuservice.service.OrderServ
         return responses;
     }
     @Override
+    public List<OrderResponse> findByUserCode(String userCode) {
+        List<Order> orders = orderRepository.findByUserCode(userCode);
+        List<OrderResponse> responses = new ArrayList<>();
+        for (Order order : orders) {
+            OrderResponse response = OrderResponse
+                    .build(order.getId(),
+                            order.getOrderCode(),
+                            findPerson(order.getPersonCode()),
+                            findMenuList(order.getIdMenus()),
+                            findComboList(order.getIdCombos()),
+                            findListCart(order.getIdCarts()),
+                            findRestaurantFormList(order.getIdForms()),
+                            order.getPeoples(),
+                            order.getTotalAmount(),
+                            order.getTotalPrice(),
+                            order.getCreateDate(),
+                            order.getHour(),
+                            order.getDescription(),
+                            order.getType(),
+                            order.getStatus()
+                    );
+            responses.add(response);
+        }
+        return responses;
+    }
+    @Override
     public Page<OrderResponse> findAllPage(Pageable pageable) {
         Page<Order> page = orderRepository.findAll(pageable);
         List<Order> orders = page.getContent();

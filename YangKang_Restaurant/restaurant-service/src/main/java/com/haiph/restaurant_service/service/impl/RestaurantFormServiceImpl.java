@@ -51,8 +51,25 @@ public class RestaurantFormServiceImpl implements RestaurantFormService {
                 responses.add(newForm);
             }
         }
-        return new PageImpl<>(responses, pageable, page.getTotalPages());
+        return new PageImpl<>(responses, pageable, page.getTotalElements());
     }
+
+    @Override
+    public List<RestaurantFormResponse> findAll() {
+
+        List<RestaurantForm> forms = formRepository.findAll();
+        List<RestaurantFormResponse> responses = new ArrayList<>();
+        for (RestaurantForm form : forms) {
+            if (form != null) {
+                RestaurantFormResponse newForm = RestaurantFormResponse
+                        .build(form.getId(),
+                                findByMasterialName(form.getMasterialName()), form.getFormCode(), form.getStatus());
+                responses.add(newForm);
+            }
+        }
+        return responses;
+    }
+
 
     @Override
     public RestaurantFormResponse findById(Integer id) {
@@ -75,8 +92,9 @@ public class RestaurantFormServiceImpl implements RestaurantFormService {
 
         List<MasterialDTO> masterialDTO = findByMasterialName(form.getMasterialName());
         for (MasterialDTO dto : masterialDTO) {
-            List<String> genarateForm = Arrays.stream(genarateFormCode(dto.getDetailName(),
-                    dto.getName(), dto.getQuantity()).split(",")).toList();
+
+            List<String> genarateForm = Arrays.asList(genarateFormCode(dto.getDetailName(),
+                    dto.getName(), dto.getQuantity()).split(","));
             List<RestaurantForm> forms = new ArrayList<>();
             for (int i = 0; i < genarateForm.size(); i++) {
                 RestaurantForm newForm = new RestaurantForm(

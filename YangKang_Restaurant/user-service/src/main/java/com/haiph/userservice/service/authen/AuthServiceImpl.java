@@ -55,7 +55,8 @@ public class AuthServiceImpl implements com.haiph.userservice.service.AuthServic
             );
             if (authentication.isAuthenticated()) {
                 token = generateToken(request.getUsername());
-            } else throw new CommonException(Response.ACCESS_DENIED, "Invalid Access");
+            }
+            else throw new CommonException(Response.ACCESS_DENIED, "Invalid Access");
             if (checkActive(request.getUsername()) == false) {
                 throw new CommonException(Response.ACCESS_DENIED, "USER NOT ACTIVE");
             }

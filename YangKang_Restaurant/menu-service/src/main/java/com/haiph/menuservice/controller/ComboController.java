@@ -37,6 +37,21 @@ public class ComboController {
         }
     }
 
+    @GetMapping("/findAllList")
+    public ResponseEntity<ResponseBody> findAllList() {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            comboService.findAllList()
+                    )
+            );
+        }catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(),exception.getMessage()));
+        }
+    }
+
     @GetMapping("/findList/{ids}")
     public ResponseEntity<ResponseBody> findAll(@PathVariable List<Integer> ids) {
         try {

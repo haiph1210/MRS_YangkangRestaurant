@@ -29,7 +29,7 @@ public class RestaurantServiceApplication implements CommandLineRunner {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://127.0.0.1:5502") // Nguồn gốc của frontend
+                        .allowedOrigins("http://localhost:3000") // Nguồn gốc của frontend
                         .allowedMethods("HEAD","GET", "POST", "PUT", "DELETE") // Phương thức được phép
                         .allowedHeaders("*") // Các header được phép
                         .allowCredentials(true); // Cho phép gửi cookie

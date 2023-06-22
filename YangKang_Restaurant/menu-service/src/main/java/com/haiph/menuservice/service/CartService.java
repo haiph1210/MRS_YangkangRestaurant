@@ -17,7 +17,7 @@ public interface CartService {
 
     List<CartResponse> findByUserCode(String userCode);
 
-    List<CartResponse> findByUserCodeV2(String userCode);
+    Map<String,List<CartResponse>> findByUserCodeV2(String userCode);
 
     String create(CartRequest request);
 

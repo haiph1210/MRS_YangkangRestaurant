@@ -11,6 +11,8 @@ import java.util.List;
 public interface OrderService {
     List<OrderResponse> findAll();
 
+    List<OrderResponse> findByUserCode(String userCode);
+
     Page<OrderResponse> findAllPage(Pageable pageable);
 
     OrderResponse findById(Integer id);

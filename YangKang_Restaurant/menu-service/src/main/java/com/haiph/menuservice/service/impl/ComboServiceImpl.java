@@ -69,6 +69,29 @@ public class ComboServiceImpl implements com.haiph.menuservice.service.ComboServ
             List<MenuResponse> menu = menuService.findByListId(ids);
         return menu;
     }
+    @Override
+//    @Cacheable(cacheNames = "Combo")
+    public List<ComboResponse> findAllList() {
+        List<Combo> combos = comboRepository.findAll();
+        List<ComboResponse> comboResponses = new ArrayList<>();
+        Integer number = 0;
+        for (Combo combo : combos) {
+            ComboResponse response =
+                    ComboResponse.build(combo.getId(),
+                            combo.getName(),
+                            combo.getCode(),
+                            combo.getPrice(),
+                            combo.getDescription(),
+                            combo.getImgUrl(),
+                            findMenuDTO(combo.getMenuIds()));
+            comboResponses.add(response);
+            number++;
+        }
+        if (combos.isEmpty()) {
+            throw new CommonException(Response.DATA_NOT_FOUND, "List Combo Have Not Data");
+        }
+        return comboResponses;
+    }
 
     @Override
 //    @Cacheable(cacheNames = "Combo")

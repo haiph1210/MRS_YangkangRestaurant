@@ -12,6 +12,8 @@ import java.util.List;
 public interface RestaurantFormService {
     Page<RestaurantFormResponse> findAllPage(Pageable pageable);
 
+    List<RestaurantFormResponse> findAll();
+
     RestaurantFormResponse findById(Integer id);
 
     RestaurantFormResponse findByFormCode(String formCode);

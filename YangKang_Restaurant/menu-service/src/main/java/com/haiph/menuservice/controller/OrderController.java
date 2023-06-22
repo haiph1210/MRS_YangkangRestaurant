@@ -50,6 +50,21 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/findAllByUserCode/{userCode}")
+    public ResponseEntity<ResponseBody> findPageByUserCode(@PathVariable String userCode) {
+        try {
+            return ResponseEntity.ok(
+                    new ResponseBody(
+                            Response.SUCCESS.getResponseCode(),
+                            Response.SUCCESS.getResponseMessage(),
+                            service.findByUserCode(userCode)
+                    )
+            );
+        } catch (CommonException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseBody(exception.getResponse(), exception.getMessage()));
+        }
+    }
+
 
     @GetMapping("/findId/{id}")
     public ResponseEntity<ResponseBody> findById(@PathVariable Integer id) {

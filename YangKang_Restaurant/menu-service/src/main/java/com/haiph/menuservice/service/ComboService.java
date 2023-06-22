@@ -18,6 +18,9 @@ public interface ComboService {
 
     byte[] readListFileImg(String fileName);
 
+    //    @Cacheable(cacheNames = "Combo")
+    List<ComboResponse> findAllList();
+
     //    @Cacheable(cacheNames = "combo")
     Map<Integer, List<ComboResponse>> findAll();
 
